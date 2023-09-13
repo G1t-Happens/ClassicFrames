@@ -388,14 +388,14 @@ local function ShowSpecIcon()
             iconFrame:SetPoint("BOTTOMLEFT", PlayerFrame, "BOTTOMLEFT", 24, 18.5)
             iconFrame:SetFrameStrata("HIGH")
 
-            local iconTexture = iconFrame:CreateTexture(nil, "OVERLAY") -- Ändere die Schicht auf "OVERLAY"
-            iconTexture:SetPoint("CENTER", iconFrame, "CENTER") -- Zentriere das Icon in Bezug auf den Icon-Frame
-            iconTexture:SetAllPoints(iconFrame) -- Setze die Größe des Icons auf die des Frames
+            local iconTexture = iconFrame:CreateTexture(nil, "OVERLAY")
+            iconTexture:SetPoint("CENTER", iconFrame, "CENTER")
+            iconTexture:SetAllPoints(iconFrame)
             iconTexture:SetTexture(specIcon)
             iconTexture:SetTexCoord(0.03, 0.97, 0.03, 0.97)
 
             local maskTexture = iconFrame:CreateMaskTexture()
-            maskTexture:SetTexture("Interface\\AddOns\\Masque_Diablo_III\\Textures\\SBackdrop") -- Passe den Pfad entsprechend an
+            maskTexture:SetTexture("Interface\\AddOns\\Masque_Diablo_III\\Textures\\SBackdrop")
             maskTexture:SetAllPoints(iconFrame)
             iconTexture:AddMaskTexture(maskTexture)
         end
