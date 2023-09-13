@@ -186,6 +186,7 @@ hooksecurefunc("PlayerFrame_ToPlayerArt", function(self)
 
     PlayerFrameBackground:SetWidth(119);
     PlayerLevelText:Hide();
+    SpecIconFrame:Show()
 end)
 
 hooksecurefunc("PlayerFrame_ToVehicleArt", function(self)
@@ -222,6 +223,7 @@ hooksecurefunc("PlayerFrame_ToVehicleArt", function(self)
 
     PlayerFrameBackground:SetWidth(114);
     PlayerLevelText:Hide()
+    SpecIconFrame:Hide()
 end)
 
 local function updateBarColor(self, r, g, b, a)
