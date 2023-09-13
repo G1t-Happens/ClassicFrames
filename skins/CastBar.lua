@@ -82,7 +82,7 @@ hooksecurefunc(PlayerCastingBarFrame, 'SetLook', function(self, look)
         self.Border:SetPoint("TOP", 0, 28);
         self.TextBorder:Hide()
         self.Text:ClearAllPoints()
-        self.Text:SetPoint("TOP", 0, 5)
+        self.Text:SetPoint("TOP", 0, 4)
         self.Text:SetWidth(185)
         self.Text:SetHeight(16)
         self.Text:SetFontObject("GameFontHighlight")
