@@ -4,6 +4,8 @@ This Retail AddOn restores the Pre-10.0 UI frames with a focus on PvP, minimalis
 <br>The focus of this AddOn was on coloring the name frame backgrounds, minimalism, and performance, which is why it
 <br>includes only a small portion of the features of the original addon.
 
+![ClassicFrames](https://github.com/G1t-Happens/ClassicFrames/assets/44774729/89d6f927-4221-4d8d-961b-7b0ed536dd25)
+
 ## Installation:
 1. Download ZIP from GitHub
 2. Extract the ClassicFrames-main into the `C:\Program Files (x86)\World of Warcraft\_retail_\Interface\AddOns` Folder
