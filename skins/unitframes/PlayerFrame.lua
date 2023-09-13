@@ -395,7 +395,7 @@ local function ShowSpecIcon()
             iconTexture:SetTexCoord(0.03, 0.97, 0.03, 0.97)
 
             local maskTexture = iconFrame:CreateMaskTexture()
-            maskTexture:SetTexture("Interface\\AddOns\\Masque_Diablo_III\\Textures\\SBackdrop")
+            maskTexture:SetTexture("Interface\\AddOns\\ClassicFrames\\icons\\SpecIconBackdrop")
             maskTexture:SetAllPoints(iconFrame)
             iconTexture:AddMaskTexture(maskTexture)
         end
