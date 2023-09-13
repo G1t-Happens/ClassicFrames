@@ -1,0 +1,14 @@
+## Interface: 100107
+## IconTexture: Interface/Icons/achievement_featsofstrength_gladiator_09
+## Title: Classic Frames
+## Notes: Restores the Pre-10.0 UI frames with a focus on PvP, minimalism, and performance.
+## Author: I made some changes to his addon, but most of the credit should go to luckfore(https://legacy.curseforge.com/members/luckfore)
+## Version: B-1.6.3
+## OptionalDeps: SexyMap
+embeds.xml
+skins\CastBar.lua
+skins\Minimap.lua
+skins\unitframes\PetFrame.lua
+skins\unitframes\PlayerFrame.lua
+skins\unitframes\TargetFrame.lua
+skins\unitframes\UnitFrame.lua
