@@ -372,3 +372,44 @@ PlayerFrame:HookScript("OnUpdate", function(self)
         PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.StatusTexture:Hide()
     end
 end)
+
+local function ShowSpecIcon()
+    local specIndex = GetSpecialization()
+    if specIndex then
+        local _, specName, _, specIcon, _, _, _, _, _, specIconId = GetSpecializationInfo(specIndex)
+        if specIcon then
+            if SpecIconFrame then
+                SpecIconFrame:ClearAllPoints()
+                SpecIconFrame:Hide()
+            end
+
+            local iconFrame = CreateFrame("Frame", "SpecIconFrame", PlayerFrame)
+            iconFrame:SetSize(21, 21)
+            iconFrame:SetPoint("BOTTOMLEFT", PlayerFrame, "BOTTOMLEFT", 24, 18.5)
+            iconFrame:SetFrameStrata("HIGH")
+
+            local iconTexture = iconFrame:CreateTexture(nil, "OVERLAY") -- Ändere die Schicht auf "OVERLAY"
+            iconTexture:SetPoint("CENTER", iconFrame, "CENTER") -- Zentriere das Icon in Bezug auf den Icon-Frame
+            iconTexture:SetAllPoints(iconFrame) -- Setze die Größe des Icons auf die des Frames
+            iconTexture:SetTexture(specIcon)
+            iconTexture:SetTexCoord(0.03, 0.97, 0.03, 0.97)
+
+            local maskTexture = iconFrame:CreateMaskTexture()
+            maskTexture:SetTexture("Interface\\AddOns\\Masque_Diablo_III\\Textures\\SBackdrop") -- Passe den Pfad entsprechend an
+            maskTexture:SetAllPoints(iconFrame)
+            iconTexture:AddMaskTexture(maskTexture)
+        end
+    end
+end
+
+local function OnEvent(self, event)
+    if event == "PLAYER_LOGIN" or event == "PLAYER_SPECIALIZATION_CHANGED" or event == "PLAYER_LOOT_SPEC_UPDATED" then
+        ShowSpecIcon()
+    end
+end
+
+local frame = CreateFrame("Frame")
+frame:RegisterEvent("PLAYER_LOGIN")
+frame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
+frame:RegisterEvent("PLAYER_LOOT_SPEC_UPDATED")
+frame:SetScript("OnEvent", OnEvent)
