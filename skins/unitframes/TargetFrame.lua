@@ -179,11 +179,9 @@ local function SkinFrame(frame)
     end)
 
     hooksecurefunc(frame, "CheckLevel", function(self)
-        local levelText = self.TargetFrameContent.TargetFrameContentMain.LevelText;
-        local highLevelTexture = contextual.HighLevelTexture;
+        self.TargetFrameContent.TargetFrameContentMain.LevelText:Hide();
+        contextual.HighLevelTexture:Hide();
         local petBattle = contextual.PetBattleIcon;
-        levelText:Hide()
-        highLevelTexture:Hide()
         petBattle:ClearAllPoints()
         petBattle:SetParent(contextual)
         petBattle:SetPoint("CENTER", contextual, "CENTER", 82, 24)
