@@ -85,7 +85,7 @@ hooksecurefunc(PlayerCastingBarFrame, 'SetLook', function(self, look)
         self.Text:SetPoint("TOP", 0, 4)
         self.Text:SetWidth(185)
         self.Text:SetHeight(16)
-        self.Text:SetFontObject("GameFontHighlight")
+        self.Text:SetFont("Fonts\\FRIZQT__.TTF", 12, "OUTLINE")
         self.Spark.offsetY = 2;
     elseif (look == "UNITFRAME") then
         self:SetWidth(150);
@@ -103,7 +103,7 @@ hooksecurefunc(PlayerCastingBarFrame, 'SetLook', function(self, look)
         self.Text:SetHeight(16)
         self.Text:SetPoint("TOPLEFT", 0, 4)
         self.Text:SetPoint("TOPRIGHT", 0, 4)
-        self.Text:SetFontObject("SystemFont_Shadow_Small")
+        self.Text:SetFont("Fonts\\FRIZQT__.TTF", 10, "OUTLINE")
         self.Spark.offsetY = 0;
     end
 end)
@@ -124,6 +124,7 @@ local function CastbarStyle(frame)
     frame.Text:ClearAllPoints()
     frame.Text:SetPoint("CENTER", frame, "CENTER", 0, 1)
     frame.Text:SetWidth(130)
+    frame.Text:SetFont("Fonts\\FRIZQT__.TTF", 10, "OUTLINE")
     frame.TextBorder:Hide()
     frame.Icon:ClearAllPoints()
     frame.Icon:SetPoint("TOPLEFT", -21, 3)
