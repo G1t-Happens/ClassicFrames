@@ -380,33 +380,30 @@ end)
 local function ShowSpecIcon()
     local specIndex = GetSpecialization()
     if specIndex then
-        local _, specName, _, specIcon, _, _, _, _, _, specIconId = GetSpecializationInfo(specIndex)
-        if specIcon then
-            if not SpecIconFrame then
-                SpecIconFrame = CreateFrame("Frame", "SpecIconFrame", PlayerFrame)
-                SpecIconFrame:SetSize(21, 21)
-                SpecIconFrame:SetPoint("BOTTOMLEFT", PlayerFrame, "BOTTOMLEFT", 24, 18.5)
-                SpecIconFrame:SetFrameStrata("HIGH")
+        local _, _, _, specIcon, _, _, _, _, _, specIconId = GetSpecializationInfo(specIndex)
+        if not SpecIconFrame then
+            SpecIconFrame = CreateFrame("Frame", "SpecIconFrame", PlayerFrame)
+            SpecIconFrame:SetSize(21, 21)
+            SpecIconFrame:SetPoint("BOTTOMLEFT", PlayerFrame, "BOTTOMLEFT", 24, 18.5)
+            SpecIconFrame:SetFrameStrata("HIGH")
 
-                SpecIconFrame.iconTexture = SpecIconFrame:CreateTexture(nil, "OVERLAY")
-                SpecIconFrame.iconTexture:SetPoint("CENTER", SpecIconFrame, "CENTER")
-                SpecIconFrame.iconTexture:SetAllPoints(SpecIconFrame)
-                SpecIconFrame.iconTexture:SetTexCoord(0.03, 0.97, 0.03, 0.97)
+            SpecIconFrame.iconTexture = SpecIconFrame:CreateTexture(nil, "OVERLAY")
+            SpecIconFrame.iconTexture:SetPoint("CENTER", SpecIconFrame, "CENTER")
+            SpecIconFrame.iconTexture:SetAllPoints(SpecIconFrame)
+            SpecIconFrame.iconTexture:SetTexCoord(0.03, 0.97, 0.03, 0.97)
 
-                SpecIconFrame.maskTexture = SpecIconFrame:CreateMaskTexture()
-                SpecIconFrame.maskTexture:SetTexture("Interface\\AddOns\\ClassicFrames\\icons\\SpecIconBackdrop")
-                SpecIconFrame.maskTexture:SetAllPoints(SpecIconFrame)
-                SpecIconFrame.iconTexture:AddMaskTexture(SpecIconFrame.maskTexture)
-            end
-            SpecIconFrame.iconTexture:SetTexture(specIcon)
-            SpecIconFrame:Show()
-        elseif SpecIconFrame then
-            SpecIconFrame:Hide()
+            SpecIconFrame.maskTexture = SpecIconFrame:CreateMaskTexture()
+            SpecIconFrame.maskTexture:SetTexture("Interface\\AddOns\\ClassicFrames\\icons\\SpecIconBackdrop")
+            SpecIconFrame.maskTexture:SetAllPoints(SpecIconFrame)
+            SpecIconFrame.iconTexture:AddMaskTexture(SpecIconFrame.maskTexture)
         end
+        SpecIconFrame.iconTexture:SetTexture(specIcon)
+        SpecIconFrame:Show()
     elseif SpecIconFrame then
         SpecIconFrame:Hide()
     end
 end
+
 
 local function OnEvent(self, event)
     if event == "PLAYER_LOGIN" or event == "PLAYER_SPECIALIZATION_CHANGED" or event == "PLAYER_LOOT_SPEC_UPDATED" then
