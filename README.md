@@ -4,7 +4,8 @@ This Retail AddOn restores the Pre-10.0 UI frames with a focus on PvP, minimalis
 <br>The focus of this AddOn was on coloring the name frame backgrounds, minimalism, and performance,
 <br>which is why it includes only a small portion of the features of the original addon.
 
-![ClassicFrames](https://github.com/G1t-Happens/ClassicFrames/assets/44774729/89d6f927-4221-4d8d-961b-7b0ed536dd25)
+![ClassicFramesGit](https://github.com/G1t-Happens/ClassicFrames/assets/44774729/41010ded-268c-4218-8fc8-38db6e638ad4)
+
 
 ## Installation:
 1. Download ZIP from GitHub
