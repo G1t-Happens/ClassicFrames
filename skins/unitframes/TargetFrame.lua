@@ -23,7 +23,7 @@ local function ToTHealthBarColoring(frame)
     end
 end
 
-local function CreateNameBackground(frame)
+local function NameBackgroundColoring(frame)
     if (frame.nameBackground == nil) then
         frame.nameBackground = frame.TargetFrameContainer:CreateTexture(nil, "BORDER")
     end
@@ -169,7 +169,7 @@ local function SkinFrame(frame)
 
     hooksecurefunc(frame, "CheckFaction", function(self)
         if self == TargetFrame or self == FocusFrame then
-            CreateNameBackground(self)
+            NameBackgroundColoring(self)
         end
         if (self.showPVP) then
             self.TargetFrameContent.TargetFrameContentContextual.PvpIcon:Hide()
