@@ -10,7 +10,7 @@ hooksecurefunc(PlayerCastingBarFrame, 'UpdateShownState', function(self)
         if self.channeling then
             self.Spark:Hide()
         end
-        local FadeOutAnim = self.FadeOutAnim:CreateAnimation("Alpha") 
+        local FadeOutAnim = self.FadeOutAnim:CreateAnimation("Alpha")
         FadeOutAnim:SetDuration(0.2)
         FadeOutAnim:SetFromAlpha(1)
         FadeOutAnim:SetToAlpha(0)
@@ -27,7 +27,7 @@ hooksecurefunc(PlayerCastingBarFrame, 'PlayInterruptAnims', function(self)
 end)
 
 hooksecurefunc(PlayerCastingBarFrame, 'GetTypeInfo', function(self)
-    if ( self.barType == "interrupted") then
+    if (self.barType == "interrupted") then
         self:SetValue(100)
         self:SetStatusBarColor(1, 0, 0, 1)
     elseif (self.barType == "channel") then
@@ -52,8 +52,8 @@ hooksecurefunc(PlayerCastingBarFrame.Flash, 'SetAtlas', function(self)
     else
         self:SetVertexColor(self:GetParent():GetStatusBarColor())
     end
-    if (PlayerCastingBarFrame.attachedToPlayerFrame) then 
-        self:SetSize(0,49)
+    if (PlayerCastingBarFrame.attachedToPlayerFrame) then
+        self:SetSize(0, 49)
         self:SetTexture("Interface\\CastingBar\\UI-CastingBar-Flash-Small")
         self:ClearAllPoints()
         self:SetPoint("TOPLEFT", -23, 20)
@@ -129,12 +129,12 @@ local function CastbarStyle(frame)
     frame.Icon:ClearAllPoints()
     frame.Icon:SetPoint("TOPLEFT", -21, 3)
     frame.Icon:SetSize(16, 16)
-end 
+end
 
 local function SetAtlasTexture(frame)
     local Castbar = frame:GetParent()
-    local barType = Castbar.barType 
-    
+    local barType = Castbar.barType
+
     if (frame.NewFlash == nil) then
         frame.NewFlash = frame:GetParent():CreateTexture(nil, "OVERLAY")
         frame.NewFlash:SetSize(0, 49)
@@ -146,12 +146,12 @@ local function SetAtlasTexture(frame)
         frame.NewFlash:SetAlpha(0)
         frame.NewFlashAnim = frame.NewFlash:CreateAnimationGroup()
         frame.NewFlashAnim:SetToFinalAlpha(true)
-        local anim = frame.NewFlashAnim:CreateAnimation("Alpha") 
+        local anim = frame.NewFlashAnim:CreateAnimation("Alpha")
         anim:SetDuration(0.2)
         anim:SetFromAlpha(1)
         anim:SetToAlpha(0)
     end
-      
+
     frame.NewFlashAnim:Play()
 
     if (barType == "channel") then
@@ -169,7 +169,7 @@ local function HookOnEvent(self, event, ...)
     local parentFrame = self:GetParent();
     local useSpellbarAnchor = (not parentFrame.buffsOnTop) and ((parentFrame.haveToT and parentFrame.auraRows > 2) or ((not parentFrame.haveToT) and parentFrame.auraRows > 0));
     local relativeKey = useSpellbarAnchor and parentFrame.spellbarAnchor or parentFrame;
-    local pointX = useSpellbarAnchor and 20 or  (parentFrame.smallSize and 40 or 45);
+    local pointX = useSpellbarAnchor and 20 or (parentFrame.smallSize and 40 or 45);
     local pointY = useSpellbarAnchor and -15 or (parentFrame.smallSize and 3 or 5);
 
     if ((not useSpellbarAnchor) and parentFrame.haveToT) then
@@ -202,7 +202,7 @@ local function SkinTargetCastbar(frame)
             if self.channeling then
                 self.Spark:Hide()
             end
-            local FadeOutAnim = self.FadeOutAnim:CreateAnimation("Alpha") 
+            local FadeOutAnim = self.FadeOutAnim:CreateAnimation("Alpha")
             FadeOutAnim:SetDuration(0.2)
             FadeOutAnim:SetFromAlpha(1)
             FadeOutAnim:SetToAlpha(0)
@@ -225,7 +225,7 @@ local function SkinTargetCastbar(frame)
     --Castbar Color (Type)
     hooksecurefunc(frame, 'GetTypeInfo', function(self)
         self:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
-        if ( self.barType == "interrupted") then
+        if (self.barType == "interrupted") then
             self:SetStatusBarColor(1, 0, 0)
             self:SetValue(100)
         elseif (self.barType == "channel") then
