@@ -26,7 +26,6 @@ The default path for your interface folder is `C:\Program Files (x86)\World of W
 <br><br>
 
 ## Credits:
-Most of the credit should go to luckfore: https://legacy.curseforge.com/members/luckfore
 <br>Original Project by luckfore: https://legacy.curseforge.com/wow/addons/classic-frames
 <br>
 <br>
