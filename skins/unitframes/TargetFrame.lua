@@ -2,27 +2,6 @@ if not _G.TargetFrame then
     return
 end
 
-local function BackgroundColoring(frame)
-    if UnitIsPlayer(frame.unit) and UnitIsConnected(frame.unit) and UnitClass(frame.unit) then
-        _, Class = UnitClass(frame.unit)
-        local Color = RAID_CLASS_COLORS[Class]
-        frame.nameBackground:SetVertexColor(Color.r, Color.g, Color.b)
-    elseif UnitIsPlayer(frame.unit) and not UnitIsConnected(frame.unit) then
-        frame.nameBackground:SetVertexColor(.5, .5, .5)
-    else
-        if UnitExists(frame.unit) then
-            if (not UnitPlayerControlled(frame.unit) and UnitIsTapDenied(frame.unit)) then
-                frame.nameBackground:SetVertexColor(.5, .5, .5)
-            elseif not UnitIsTapDenied(frame.unit) then
-                local Reaction = FACTION_BAR_COLORS[UnitReaction(frame.unit, "player")]
-                if Reaction then
-                    frame.nameBackground:SetVertexColor(Reaction.r, Reaction.g, Reaction.b)
-                end
-            end
-        end
-    end
-end
-
 local function ToTHealthBarColoring(frame)
     if UnitIsPlayer(frame.unit) and UnitIsConnected(frame.unit) and UnitClass(frame.unit) then
         _, Class = UnitClass(frame.unit)
@@ -53,13 +32,24 @@ local function CreateNameBackground(frame)
     frame.nameBackground:SetTexture("Interface\\TargetingFrame\\UI-TargetingFrame-LevelBackground")
     frame.nameBackground:ClearAllPoints()
     frame.nameBackground:SetPoint("TOPRIGHT", frame.TargetFrameContent.TargetFrameContentMain, "TOPRIGHT", -88, -30)
-    if (frame == TargetFrame) then
-        BackgroundColoring(TargetFrame)
-    elseif (frame == FocusFrame) then
-        BackgroundColoring(FocusFrame)
+
+    if UnitIsPlayer(frame.unit) and UnitIsConnected(frame.unit) and UnitClass(frame.unit) then
+        _, Class = UnitClass(frame.unit)
+        local Color = RAID_CLASS_COLORS[Class]
+        frame.nameBackground:SetVertexColor(Color.r, Color.g, Color.b)
+    elseif UnitIsPlayer(frame.unit) and not UnitIsConnected(frame.unit) then
+        frame.nameBackground:SetVertexColor(.5, .5, .5)
     else
-        local r, g, b = UnitSelectionColor(frame.unit)
-        frame.nameBackground:SetVertexColor(r, g, b);
+        if UnitExists(frame.unit) then
+            if (not UnitPlayerControlled(frame.unit) and UnitIsTapDenied(frame.unit)) then
+                frame.nameBackground:SetVertexColor(.5, .5, .5)
+            elseif not UnitIsTapDenied(frame.unit) then
+                local Reaction = FACTION_BAR_COLORS[UnitReaction(frame.unit, "player")]
+                if Reaction then
+                    frame.nameBackground:SetVertexColor(Reaction.r, Reaction.g, Reaction.b)
+                end
+            end
+        end
     end
 end
 
@@ -178,7 +168,9 @@ local function SkinFrame(frame)
     end)
 
     hooksecurefunc(frame, "CheckFaction", function(self)
-        CreateNameBackground(self)
+        if self == TargetFrame or self == FocusFrame then
+            CreateNameBackground(self)
+        end
         if (self.showPVP) then
             self.TargetFrameContent.TargetFrameContentContextual.PvpIcon:Hide()
             self.TargetFrameContent.TargetFrameContentContextual.PrestigePortrait:Hide()
