@@ -404,7 +404,6 @@ local function ShowSpecIcon()
     end
 end
 
-
 local function OnEvent(self, event)
     if event == "PLAYER_LOGIN" or event == "PLAYER_SPECIALIZATION_CHANGED" or event == "PLAYER_LOOT_SPEC_UPDATED" then
         ShowSpecIcon()
