@@ -270,7 +270,9 @@ end)
 if IsAddOnLoaded("BigDebuffs") then
     hooksecurefunc(BigDebuffs, "UNIT_AURA", function(self, unit)
         local Frame = self.UnitFrames[unit]
-        if not Frame then return end
+        if not Frame then
+            return
+        end
         if Frame.mask then
             if Frame.unit == "player" then
                 Frame.mask:SetTexture("Interface/CHARACTERFRAME/TempPortraitAlphaMask", "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
@@ -380,27 +382,29 @@ local function ShowSpecIcon()
     if specIndex then
         local _, specName, _, specIcon, _, _, _, _, _, specIconId = GetSpecializationInfo(specIndex)
         if specIcon then
-            if SpecIconFrame then
-                SpecIconFrame:ClearAllPoints()
-                SpecIconFrame:Hide()
+            if not SpecIconFrame then
+                SpecIconFrame = CreateFrame("Frame", "SpecIconFrame", PlayerFrame)
+                SpecIconFrame:SetSize(21, 21)
+                SpecIconFrame:SetPoint("BOTTOMLEFT", PlayerFrame, "BOTTOMLEFT", 24, 18.5)
+                SpecIconFrame:SetFrameStrata("HIGH")
+
+                SpecIconFrame.iconTexture = SpecIconFrame:CreateTexture(nil, "OVERLAY")
+                SpecIconFrame.iconTexture:SetPoint("CENTER", SpecIconFrame, "CENTER")
+                SpecIconFrame.iconTexture:SetAllPoints(SpecIconFrame)
+                SpecIconFrame.iconTexture:SetTexCoord(0.03, 0.97, 0.03, 0.97)
+
+                SpecIconFrame.maskTexture = SpecIconFrame:CreateMaskTexture()
+                SpecIconFrame.maskTexture:SetTexture("Interface\\AddOns\\ClassicFrames\\icons\\SpecIconBackdrop")
+                SpecIconFrame.maskTexture:SetAllPoints(SpecIconFrame)
+                SpecIconFrame.iconTexture:AddMaskTexture(SpecIconFrame.maskTexture)
             end
-
-            local iconFrame = CreateFrame("Frame", "SpecIconFrame", PlayerFrame)
-            iconFrame:SetSize(21, 21)
-            iconFrame:SetPoint("BOTTOMLEFT", PlayerFrame, "BOTTOMLEFT", 24, 18.5)
-            iconFrame:SetFrameStrata("HIGH")
-
-            local iconTexture = iconFrame:CreateTexture(nil, "OVERLAY")
-            iconTexture:SetPoint("CENTER", iconFrame, "CENTER")
-            iconTexture:SetAllPoints(iconFrame)
-            iconTexture:SetTexture(specIcon)
-            iconTexture:SetTexCoord(0.03, 0.97, 0.03, 0.97)
-
-            local maskTexture = iconFrame:CreateMaskTexture()
-            maskTexture:SetTexture("Interface\\AddOns\\ClassicFrames\\icons\\SpecIconBackdrop")
-            maskTexture:SetAllPoints(iconFrame)
-            iconTexture:AddMaskTexture(maskTexture)
+            SpecIconFrame.iconTexture:SetTexture(specIcon)
+            SpecIconFrame:Show()
+        elseif SpecIconFrame then
+            SpecIconFrame:Hide()
         end
+    elseif SpecIconFrame then
+        SpecIconFrame:Hide()
     end
 end
 
