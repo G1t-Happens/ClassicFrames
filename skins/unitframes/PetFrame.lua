@@ -1,4 +1,6 @@
-if not _G.PetFrame then return end
+if not _G.PetFrame then
+    return
+end
 
 PetFrame:SetSize(128, 53)
 
@@ -43,7 +45,7 @@ PetFrameHealthBarTextLeft:SetPoint("LEFT", PetFrame, "TOPLEFT", 46, -26)
 PetFrameHealthBarTextRight:SetParent(PetFrame)
 PetFrameHealthBarTextRight:ClearAllPoints()
 PetFrameHealthBarTextRight:SetPoint("RIGHT", PetFrame, "TOPLEFT", 113, -26)
-			
+
 PetFrameManaBarText:SetParent(PetFrame)
 PetFrameManaBarText:ClearAllPoints()
 PetFrameManaBarText:SetPoint("CENTER", PetFrame, "TOPLEFT", 82, -35)
