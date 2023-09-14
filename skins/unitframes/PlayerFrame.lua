@@ -24,12 +24,12 @@ PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.ManaBarArea.ManaBar.LeftTe
 PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.ManaBarArea.ManaBar.RightText:SetParent(PlayerFrame.PlayerFrameContainer)
 
 if (PlayerFrameBackground == nil) then
-    PlayerFrame:CreateTexture("PlayerFrameBackground", "BACKGROUND");
-    PlayerFrameBackground:SetPoint("TOPLEFT", 87, -28);
+    PlayerFrameBackground = PlayerFrame:CreateTexture(nil, "BACKGROUND")
+    PlayerFrameBackground:SetPoint("TOPLEFT", 87, -28)
     PlayerFrameBackground:SetSize(119, 20)
-    local _, Player = UnitClass("player")
-    local r, g, b = GetClassColor(Player)
-    PlayerFrameBackground:SetColorTexture(r * 0.70, g * 0.70, b * 0.70)
+    local _, playerClass = UnitClass("player")
+    local classColor = RAID_CLASS_COLORS[playerClass]
+    PlayerFrameBackground:SetColorTexture(classColor.r * 0.70, classColor.g * 0.70, classColor.b * 0.70)
 end
 
 if (PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.ManaBarArea.ManaBar.Background == nil) then
