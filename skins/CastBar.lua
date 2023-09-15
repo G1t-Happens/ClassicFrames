@@ -244,7 +244,3 @@ end
 
 SkinTargetCastbar(TargetFrame.spellbar)
 SkinTargetCastbar(FocusFrame.spellbar)
-
-for _, frame in _G.pairs(_G.BossTargetFrameContainer.BossTargetFrames) do
-    SkinTargetCastbar(frame.spellbar)
-end
