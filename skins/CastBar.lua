@@ -72,17 +72,17 @@ end)
 hooksecurefunc(PlayerCastingBarFrame, 'SetLook', function(self, look)
     if (look == "CLASSIC") then
         self:SetWidth(190);
-        self:SetHeight(10);
+        self:SetHeight(11);
         self.playCastFX = false
         self.Background:SetColorTexture(0, 0, 0, 0.5)
         self.Border:ClearAllPoints();
         self.Border:SetTexture("Interface\\CastingBar\\UI-CastingBar-Border");
         self.Border:SetWidth(256);
         self.Border:SetHeight(64);
-        self.Border:SetPoint("TOP", 0, 28);
+        self.Border:SetPoint("TOP", 0, 27);
         self.TextBorder:Hide()
         self.Text:ClearAllPoints()
-        self.Text:SetPoint("TOP", 0, 4)
+        self.Text:SetPoint("TOP", 0, 3)
         self.Text:SetWidth(185)
         self.Text:SetHeight(16)
         self.Text:SetFont("Fonts\\FRIZQT__.TTF", 11, "OUTLINE")
