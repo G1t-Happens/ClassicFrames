@@ -94,8 +94,8 @@ Minimap:HookScript("OnEvent", function(self, event, ...)
         end
 
         hooksecurefunc(ExpansionLandingPageMinimapButton, "UpdateIconForGarrison", function(self)
-            local garrisonType = C_Garrison.GetLandingPageGarrisonType();
-            self.garrisonType = garrisonType;
+            local garrisonType = C_Garrison.GetLandingPageGarrisonType()
+            self.garrisonType = garrisonType
 
             if (garrisonType == Enum.GarrisonType.Type_9_0_Garrison) then
                 self:ClearAllPoints()
@@ -138,8 +138,8 @@ Minimap:HookScript("OnEvent", function(self, event, ...)
         GameTimeFrame:GetNormalTexture():SetDrawLayer("BACKGROUND")
         GameTimeFrame:GetPushedTexture():SetDrawLayer("BACKGROUND")
         GameTimeFrame:GetFontString():SetDrawLayer("BACKGROUND")
-        local currentCalendarTime = C_DateAndTime.GetCurrentCalendarTime();
-        GameTimeFrame:SetText(currentCalendarTime.monthDay);
+        local currentCalendarTime = C_DateAndTime.GetCurrentCalendarTime()
+        GameTimeFrame:SetText(currentCalendarTime.monthDay)
 
         MinimapCluster.Tracking:SetParent(MinimapBackdrop)
         MinimapCluster.Tracking:SetSize(32, 32)
@@ -271,22 +271,22 @@ end)
 --queuestatusbutton
 local function MinimapButton_OnMouseDown(self, button)
     if (self.isDown) then
-        return ;
+        return
     end
-    local button = _G[self:GetName() .. "Icon"];
-    local point, relativeTo, relativePoint, offsetX, offsetY = button:GetPoint();
-    button:SetPoint(point, relativeTo, relativePoint, offsetX + 1, offsetY - 1);
-    self.isDown = 1;
+    local button = _G[self:GetName() .. "Icon"]
+    local point, relativeTo, relativePoint, offsetX, offsetY = button:GetPoint()
+    button:SetPoint(point, relativeTo, relativePoint, offsetX + 1, offsetY - 1)
+    self.isDown = 1
 end
 
 local function MinimapButton_OnMouseUp(self)
     if (not self.isDown) then
-        return ;
+        return
     end
-    local button = _G[self:GetName() .. "Icon"];
-    local point, relativeTo, relativePoint, offsetX, offsetY = button:GetPoint();
-    button:SetPoint(point, relativeTo, relativePoint, offsetX - 1, offsetY + 1);
-    self.isDown = nil;
+    local button = _G[self:GetName() .. "Icon"]
+    local point, relativeTo, relativePoint, offsetX, offsetY = button:GetPoint()
+    button:SetPoint(point, relativeTo, relativePoint, offsetX - 1, offsetY + 1)
+    self.isDown = nil
 end
 
 hooksecurefunc(QueueStatusButton, "UpdatePosition", function(self)
@@ -306,38 +306,38 @@ if (QueueStatusButtonBorder == nil) then
     QueueStatusButtonBorder:SetPoint("TOPLEFT", QueueStatusButton, "TOPLEFT", 1, 0)
 end
 
-local LFG_EYE_TEXTURES = { };
-LFG_EYE_TEXTURES["default"] = { file = "Interface\\LFGFrame\\LFG-Eye", width = 512, height = 256, frames = 29, iconSize = 64, delay = 0.1 };
-LFG_EYE_TEXTURES["raid"] = { file = "Interface\\LFGFrame\\LFR-Anim", width = 256, height = 256, frames = 16, iconSize = 64, delay = 0.05 };
-LFG_EYE_TEXTURES["unknown"] = { file = "Interface\\LFGFrame\\WaitAnim", width = 128, height = 128, frames = 4, iconSize = 64, delay = 0.25 };
+local LFG_EYE_TEXTURES = { }
+LFG_EYE_TEXTURES["default"] = { file = "Interface\\LFGFrame\\LFG-Eye", width = 512, height = 256, frames = 29, iconSize = 64, delay = 0.1 }
+LFG_EYE_TEXTURES["raid"] = { file = "Interface\\LFGFrame\\LFR-Anim", width = 256, height = 256, frames = 16, iconSize = 64, delay = 0.05 }
+LFG_EYE_TEXTURES["unknown"] = { file = "Interface\\LFGFrame\\WaitAnim", width = 128, height = 128, frames = 4, iconSize = 64, delay = 0.25 }
 
 local function EyeTemplate_OnUpdate(self, elapsed)
-    local textureInfo = LFG_EYE_TEXTURES[self.queueType or "default"];
+    local textureInfo = LFG_EYE_TEXTURES[self.queueType or "default"]
     AnimateTexCoords(self.texture, textureInfo.width, textureInfo.height, textureInfo.iconSize, textureInfo.iconSize, textureInfo.frames, elapsed, textureInfo.delay)
 end
 
 local function EyeTemplate_StartAnimating()
-    QueueStatusButton.Eye:SetScript("OnUpdate", EyeTemplate_OnUpdate);
+    QueueStatusButton.Eye:SetScript("OnUpdate", EyeTemplate_OnUpdate)
 end
 
 local function EyeTemplate_StopAnimating()
-    QueueStatusButton.Eye:SetScript("OnUpdate", nil);
+    QueueStatusButton.Eye:SetScript("OnUpdate", nil)
     if (QueueStatusButton.Eye.texture.frame) then
-        QueueStatusButton.Eye.texture.frame = 1;    --To start the animation over.
+        QueueStatusButton.Eye.texture.frame = 1    --To start the animation over.
     end
-    local textureInfo = LFG_EYE_TEXTURES[QueueStatusButton.Eye.queueType or "default"];
-    QueueStatusButton.Eye.texture:SetTexCoord(0, textureInfo.iconSize / textureInfo.width, 0, textureInfo.iconSize / textureInfo.height);
+    local textureInfo = LFG_EYE_TEXTURES[QueueStatusButton.Eye.queueType or "default"]
+    QueueStatusButton.Eye.texture:SetTexCoord(0, textureInfo.iconSize / textureInfo.width, 0, textureInfo.iconSize / textureInfo.height)
 end
 
 local function QueueStatusButton_OnUpdate(self, elapsed)
     if (self:IsShown()) then
-        self.Eye.texture:Show();
+        self.Eye.texture:Show()
     else
-        self.Eye.texture:Hide();
+        self.Eye.texture:Hide()
     end
 
     if (self.Eye:IsStaticMode()) then
-        EyeTemplate_StopAnimating(self.Eye);
+        EyeTemplate_StopAnimating(self.Eye)
     end
 
     self.Eye.texture:SetTexture("Interface\\LFGFrame\\LFG-Eye")
@@ -365,19 +365,19 @@ end
 QueueStatusButton:HookScript("OnUpdate", QueueStatusButton_OnUpdate)
 QueueStatusButton:HookScript("OnHide", function(self)
     if (self.isDown) then
-        MinimapButton_OnMouseUp(self);
+        MinimapButton_OnMouseUp(self)
     end
 end)
 QueueStatusButton:HookScript("OnMouseDown", MinimapButton_OnMouseDown)
 QueueStatusButton:HookScript("OnMouseUp", MinimapButton_OnMouseUp)
 
 --queuestatusframe
-QueueStatusFrame:ClearAllPoints();
-QueueStatusFrame:SetPoint("TOPRIGHT", QueueStatusButton, "TOPLEFT", -1, 1);
+QueueStatusFrame:ClearAllPoints()
+QueueStatusFrame:SetPoint("TOPRIGHT", QueueStatusButton, "TOPLEFT", -1, 1)
 
 hooksecurefunc(QueueStatusFrame, "UpdatePosition", function(self)
-    self:ClearAllPoints();
-    self:SetPoint("TOPRIGHT", QueueStatusButton, "TOPLEFT", -1, 1);
+    self:ClearAllPoints()
+    self:SetPoint("TOPRIGHT", QueueStatusButton, "TOPLEFT", -1, 1)
 end)
 
 hooksecurefunc("QueueStatusDropDown_Show", function()
@@ -386,66 +386,66 @@ hooksecurefunc("QueueStatusDropDown_Show", function()
 end)
 
 hooksecurefunc(QueueStatusFrame, "Update", function(self)
-    local animateEye;
+    local animateEye
 
     --Try each LFG type
     for i = 1, NUM_LE_LFG_CATEGORYS do
-        local mode, submode = GetLFGMode(i);
+        local mode, submode = GetLFGMode(i)
         if (mode and submode ~= "noteleport") then
             if (mode == "queued") then
-                animateEye = true;
+                animateEye = true
             end
         end
     end
 
     --Try LFGList entries
-    local isActive = C_LFGList.HasActiveEntryInfo();
+    local isActive = C_LFGList.HasActiveEntryInfo()
     if (isActive) then
-        animateEye = true;
+        animateEye = true
     end
 
     --Try LFGList applications
-    local apps = C_LFGList.GetApplications();
+    local apps = C_LFGList.GetApplications()
     for i = 1, #apps do
-        local _, appStatus = C_LFGList.GetApplicationInfo(apps[i]);
+        local _, appStatus = C_LFGList.GetApplicationInfo(apps[i])
         if (appStatus == "applied" or appStatus == "invited") then
             if (appStatus == "applied") then
-                animateEye = true;
+                animateEye = true
             end
         end
     end
 
     --Try all PvP queues
     for i = 1, GetMaxBattlefieldID() do
-        local status, mapName, teamSize, registeredMatch, suspend = GetBattlefieldStatus(i);
+        local status, mapName, teamSize, registeredMatch, suspend = GetBattlefieldStatus(i)
         if (status and status ~= "none") then
             if (status == "queued" and not suspend) then
-                animateEye = true;
+                animateEye = true
             end
         end
     end
 
     --Try all World PvP queues
     for i = 1, MAX_WORLD_PVP_QUEUES do
-        local status, mapName, queueID = GetWorldPVPQueueStatus(i);
+        local status, mapName, queueID = GetWorldPVPQueueStatus(i)
         if (status and status ~= "none") then
             if (status == "queued") then
-                animateEye = true;
+                animateEye = true
             end
         end
     end
 
     --Pet Battle PvP Queue
-    local pbStatus = C_PetBattles.GetPVPMatchmakingInfo();
+    local pbStatus = C_PetBattles.GetPVPMatchmakingInfo()
     if (pbStatus) then
         if (pbStatus == "queued") then
-            animateEye = true;
+            animateEye = true
         end
     end
 
     if (animateEye) then
-        EyeTemplate_StartAnimating(QueueStatusButton.Eye);
+        EyeTemplate_StartAnimating(QueueStatusButton.Eye)
     else
-        EyeTemplate_StopAnimating(QueueStatusButton.Eye);
+        EyeTemplate_StopAnimating(QueueStatusButton.Eye)
     end
 end)
