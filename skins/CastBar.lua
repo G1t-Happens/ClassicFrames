@@ -1,7 +1,7 @@
 --Player
 hooksecurefunc(PlayerCastingBarFrame, 'UpdateShownState', function(self)
     if not (self.barType == "empowered") then
-        self:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
+        self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-StatusBar")
         self.Spark:SetTexture("Interface\\CastingBar\\UI-CastingBar-Spark")
         self.Spark:SetSize(32, 32)
         self.Spark:ClearAllPoints()
@@ -18,11 +18,11 @@ hooksecurefunc(PlayerCastingBarFrame, 'UpdateShownState', function(self)
 end)
 
 hooksecurefunc(PlayerCastingBarFrame, 'SetAndUpdateShowCastbar', function(self)
-    self:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
+    self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-StatusBar")
 end)
 
 hooksecurefunc(PlayerCastingBarFrame, 'PlayInterruptAnims', function(self)
-    self:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
+    self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-StatusBar")
     self.Spark:Hide()
 end)
 
@@ -41,7 +41,7 @@ end)
 
 hooksecurefunc(PlayerCastingBarFrame, 'PlayFinishAnim', function(self)
     if not (self.barType == "empowered") then
-        self:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
+        self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-StatusBar")
     end
 end)
 
@@ -191,7 +191,7 @@ local function SkinTargetCastbar(frame)
     --Castbar OnShow
     hooksecurefunc(frame, 'UpdateShownState', function(self)
         if not (self.barType == "empowered") then
-            self:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
+            self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-StatusBar")
             self.Spark:SetTexture("Interface\\CastingBar\\UI-CastingBar-Spark")
             self.Spark:SetSize(32, 32)
             self.Spark:ClearAllPoints()
@@ -211,19 +211,19 @@ local function SkinTargetCastbar(frame)
     --Force our texture on Animation Finish
     hooksecurefunc(frame, 'PlayFinishAnim', function(self)
         if not (self.barType == "empowered") then
-            self:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
+            self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-StatusBar")
         end
     end)
 
     --Interrupted
     hooksecurefunc(frame, 'PlayInterruptAnims', function(self)
-        self:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
+        self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-StatusBar")
         self.Spark:Hide()
     end)
 
     --Castbar Color (Type)
     hooksecurefunc(frame, 'GetTypeInfo', function(self)
-        self:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
+        self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-StatusBar")
         if (self.barType == "interrupted") then
             self:SetStatusBarColor(1, 0, 0)
             self:SetValue(100)
@@ -243,15 +243,3 @@ end
 
 SkinTargetCastbar(TargetFrame.spellbar)
 SkinTargetCastbar(FocusFrame.spellbar)
-
---local function ScaleCastBars()
---    local castBars = { FocusFrameSpellBar, TargetFrameSpellBar }
---    for _, castBar in ipairs(castBars) do
---        if castBar then
---            castBar:SetScale(1.2)
---        end
---    end
---end
---local f = CreateFrame("Frame")
---f:RegisterEvent("PLAYER_ENTERING_WORLD")
---f:SetScript("OnEvent", ScaleCastBars)
