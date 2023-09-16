@@ -23,15 +23,15 @@ PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.ManaBarArea.ManaBar.TextSt
 PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.ManaBarArea.ManaBar.LeftText:SetParent(PlayerFrame.PlayerFrameContainer)
 PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.ManaBarArea.ManaBar.RightText:SetParent(PlayerFrame.PlayerFrameContainer)
 
-if (PlayerFrameBackground == nil) then
-    PlayerFrameBackground = PlayerFrame.PlayerFrameContent:CreateTexture(nil, "BORDER")
-    PlayerFrameBackground:SetSize(118, 20)
-    PlayerFrameBackground:SetTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-TargetingFrame-LevelBackground")
-    PlayerFrameBackground:ClearAllPoints()
-    PlayerFrameBackground:SetPoint("TOPLEFT", 87, -28)
-    local _, playerClass = UnitClass("player")
-    local classColor = RAID_CLASS_COLORS[playerClass]
-    PlayerFrameBackground:SetColorTexture(classColor.r * 0.70, classColor.g * 0.70, classColor.b * 0.70)
+if (PlayerFrame.nameBackground == nil) then
+    PlayerFrame.nameBackground = PlayerFrame:CreateTexture(nil, "BORDER")
+    PlayerFrame.nameBackground:SetSize(118, 20)
+    PlayerFrame.nameBackground:SetTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-TargetingFrame-LevelBackground")
+    PlayerFrame.nameBackground:ClearAllPoints()
+    PlayerFrame.nameBackground:SetPoint("TOPLEFT", 87.5, -28)
+    local _, Class = UnitClass("Player")
+    local Color = RAID_CLASS_COLORS[Class]
+    PlayerFrame.nameBackground:SetVertexColor(Color.r, Color.g, Color.b)
 end
 
 if (PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.ManaBarArea.ManaBar.Background == nil) then
@@ -186,7 +186,7 @@ hooksecurefunc("PlayerFrame_ToPlayerArt", function(self)
     self.PlayerFrameContent.PlayerFrameContentContextual.GroupIndicator:SetPoint("BOTTOMRIGHT", self, "TOPLEFT", 161, -26)
     self.PlayerFrameContent.PlayerFrameContentContextual.RoleIcon:SetPoint("TOPLEFT", 75, -20)
 
-    PlayerFrameBackground:SetWidth(118)
+    PlayerFrame.nameBackground:SetWidth(118)
     PlayerLevelText:Hide()
     SpecIconFrame:Show()
 end)
@@ -223,7 +223,7 @@ hooksecurefunc("PlayerFrame_ToVehicleArt", function(self)
     PlayerName:ClearAllPoints()
     PlayerName:SetPoint("TOPLEFT", self.PlayerFrameContainer, "TOPLEFT", 96, -26.5)
 
-    PlayerFrameBackground:SetWidth(114)
+    PlayerFrame.nameBackground:SetWidth(114)
     PlayerLevelText:Hide()
     SpecIconFrame:Hide()
 end)
