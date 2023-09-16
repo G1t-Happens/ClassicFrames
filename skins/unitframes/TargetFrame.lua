@@ -240,7 +240,7 @@ local function SkinFrame(frame)
         frame.totFrame.ManaBar:SetFrameLevel(1)
 
         hooksecurefunc(frame.totFrame, "Update", function(self)
-            if (self) then
+            if self and not UnitIsUnit(self.unit, "Player") then
                 self.HealthBar.HealthBarMask:Hide()
                 self.ManaBar.ManaBarMask:Hide()
                 ToTHealthBarColoring(self)
