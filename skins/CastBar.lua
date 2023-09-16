@@ -60,43 +60,43 @@ hooksecurefunc(PlayerCastingBarFrame.Flash, 'SetAtlas', function(self)
         self:SetPoint("TOPRIGHT", 23, 20)
         self:SetBlendMode("ADD")
     else
-        self:ClearAllPoints();
-        self:SetTexture("Interface\\CastingBar\\UI-CastingBar-Flash");
-        self:SetWidth(256);
-        self:SetHeight(64);
-        self:SetPoint("TOP", 0, 28);
+        self:ClearAllPoints()
+        self:SetTexture("Interface\\CastingBar\\UI-CastingBar-Flash")
+        self:SetWidth(256)
+        self:SetHeight(64)
+        self:SetPoint("TOP", 0, 28)
         self:SetBlendMode("ADD")
     end
 end)
 
 hooksecurefunc(PlayerCastingBarFrame, 'SetLook', function(self, look)
     if (look == "CLASSIC") then
-        self:SetWidth(190);
-        self:SetHeight(11);
+        self:SetWidth(190)
+        self:SetHeight(11)
         self.playCastFX = false
         self.Background:SetColorTexture(0, 0, 0, 0.5)
-        self.Border:ClearAllPoints();
-        self.Border:SetTexture("Interface\\CastingBar\\UI-CastingBar-Border");
-        self.Border:SetWidth(256);
-        self.Border:SetHeight(64);
-        self.Border:SetPoint("TOP", 0, 27);
+        self.Border:ClearAllPoints()
+        self.Border:SetTexture("Interface\\CastingBar\\UI-CastingBar-Border")
+        self.Border:SetWidth(256)
+        self.Border:SetHeight(64)
+        self.Border:SetPoint("TOP", 0, 27)
         self.TextBorder:Hide()
         self.Text:ClearAllPoints()
         self.Text:SetPoint("TOP", 0, 3)
         self.Text:SetWidth(185)
         self.Text:SetHeight(16)
         self.Text:SetFont("Fonts\\FRIZQT__.TTF", 11, "OUTLINE")
-        self.Spark.offsetY = 2;
+        self.Spark.offsetY = 2
     elseif (look == "UNITFRAME") then
-        self:SetWidth(150);
-        self:SetHeight(10);
+        self:SetWidth(150)
+        self:SetHeight(10)
         self.Background:SetColorTexture(0, 0, 0, 0.5)
-        self.Border:ClearAllPoints();
-        self.Border:SetTexture("Interface\\CastingBar\\UI-CastingBar-Border-Small");
-        self.Border:SetWidth(0);
-        self.Border:SetHeight(49);
-        self.Border:SetPoint("TOPLEFT", -23, 20);
-        self.Border:SetPoint("TOPRIGHT", 23, 20);
+        self.Border:ClearAllPoints()
+        self.Border:SetTexture("Interface\\CastingBar\\UI-CastingBar-Border-Small")
+        self.Border:SetWidth(0)
+        self.Border:SetHeight(49)
+        self.Border:SetPoint("TOPLEFT", -23, 20)
+        self.Border:SetPoint("TOPRIGHT", 23, 20)
         self.Background:SetAllPoints()
         self.Text:ClearAllPoints()
         self.Text:SetWidth(0)
@@ -104,7 +104,7 @@ hooksecurefunc(PlayerCastingBarFrame, 'SetLook', function(self, look)
         self.Text:SetPoint("TOPLEFT", 0, 4)
         self.Text:SetPoint("TOPRIGHT", 0, 4)
         self.Text:SetFont("Fonts\\FRIZQT__.TTF", 9, "OUTLINE")
-        self.Spark.offsetY = 0;
+        self.Spark.offsetY = 0
     end
 end)
 
@@ -166,17 +166,16 @@ local function SetAtlasTexture(frame)
 end
 
 local function HookOnEvent(self, event, ...)
-    local parentFrame = self:GetParent();
-    local useSpellbarAnchor = (not parentFrame.buffsOnTop) and ((parentFrame.haveToT and parentFrame.auraRows > 2) or ((not parentFrame.haveToT) and parentFrame.auraRows > 0));
-    local relativeKey = useSpellbarAnchor and parentFrame.spellbarAnchor or parentFrame;
-    local pointX = useSpellbarAnchor and 20 or (parentFrame.smallSize and 40 or 45);
-    local pointY = useSpellbarAnchor and -15 or (parentFrame.smallSize and 3 or 5);
+    local parentFrame = self:GetParent()
+    local useSpellbarAnchor = (not parentFrame.buffsOnTop) and ((parentFrame.haveToT and parentFrame.auraRows > 2) or ((not parentFrame.haveToT) and parentFrame.auraRows > 0))
+    local relativeKey = useSpellbarAnchor and parentFrame.spellbarAnchor or parentFrame
+    local pointX = useSpellbarAnchor and 20 or (parentFrame.smallSize and 40 or 45)
+    local pointY = useSpellbarAnchor and -15 or (parentFrame.smallSize and 3 or 5)
 
     if ((not useSpellbarAnchor) and parentFrame.haveToT) then
-        pointY = parentFrame.smallSize and -30 or -28;
+        pointY = parentFrame.smallSize and -30 or -28
     end
-
-    self:SetPoint("TOPLEFT", relativeKey, "BOTTOMLEFT", pointX, pointY);
+    self:SetPoint("TOPLEFT", relativeKey, "BOTTOMLEFT", pointX, pointY)
 end
 TargetFrame.spellbar:HookScript("OnEvent", HookOnEvent)
 FocusFrame.spellbar:HookScript("OnEvent", HookOnEvent)
