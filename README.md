@@ -16,7 +16,7 @@ This Retail AddOn restores the Pre-10.0 UI frames with a focus on PvP, minimalis
 The default path for your interface folder is `C:\Program Files (x86)\World of Warcraft\_retail_\Interface`
 > [!NOTE]  
 > The textures you transfer from the TEXTURE folder to the Interface folder are meant to align the **RaidFrames** and 
-> **Nameplates** with the textures of the Unitframes. If you have no interest or need for this, you can safely skip step 4.
+> **Nameplates** with the textures of the Unitframes. If you have no interest or need for this, you can skip step 4.
 5. You are done with the installation.
 <br>
 
