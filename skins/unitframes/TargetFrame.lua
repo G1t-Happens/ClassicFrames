@@ -228,7 +228,6 @@ local function SkinFrame(frame)
         frame.totFrame.Name:SetFont("Fonts\\FRIZQT__.TTF", 8, "OUTLINE")
 
         frame.totFrame.HealthBar:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-StatusBar")
-        frame.totFrame.HealthBar:SetStatusBarColor(0, 1, 0)
         frame.totFrame.HealthBar:SetSize(46, 7)
         frame.totFrame.HealthBar:ClearAllPoints()
         frame.totFrame.HealthBar:SetPoint("BOTTOMRIGHT", frame, 5, -1)
