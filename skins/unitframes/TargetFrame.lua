@@ -29,7 +29,7 @@ local function NameBackgroundColoring(frame)
     end
 
     frame.nameBackground:SetSize(118, 19)
-    frame.nameBackground:SetTexture("Interface\\TargetingFrame\\UI-TargetingFrame-LevelBackground")
+    frame.nameBackground:SetTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-TargetingFrame-LevelBackground")
     frame.nameBackground:ClearAllPoints()
     frame.nameBackground:SetPoint("TOPRIGHT", frame.TargetFrameContent.TargetFrameContentMain, "TOPRIGHT", -88, -30)
 
@@ -128,7 +128,7 @@ local function SkinFrame(frame)
         self.TargetFrameContainer.Portrait:ClearAllPoints()
         self.TargetFrameContainer.Portrait:SetPoint("TOPRIGHT", -22, -19)
 
-        FrameHealthBar:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
+        FrameHealthBar:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-StatusBar")
         FrameHealthBar:SetStatusBarColor(0, 1, 0)
         FrameHealthBar:ClearAllPoints()
         FrameHealthBar:SetPoint("TOPLEFT", 27, -48)
@@ -227,7 +227,7 @@ local function SkinFrame(frame)
         frame.totFrame.Name:SetWidth(60)
         frame.totFrame.Name:SetFont("Fonts\\FRIZQT__.TTF", 8, "OUTLINE")
 
-        frame.totFrame.HealthBar:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
+        frame.totFrame.HealthBar:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-StatusBar")
         frame.totFrame.HealthBar:SetStatusBarColor(0, 1, 0)
         frame.totFrame.HealthBar:SetSize(46, 7)
         frame.totFrame.HealthBar:ClearAllPoints()

@@ -6,7 +6,7 @@ hooksecurefunc("UnitFrameManaBar_UpdateType", function(manaBar)
     local powerType, powerToken, altR, altG, altB = UnitPowerType(manaBar.unit);
     local info = PowerBarColor[powerToken];
 
-    manaBar:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar");
+    manaBar:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-StatusBar");
 
     if (info) then
         local playerDeadOrGhost = (manaBar.unit == "player" and (UnitIsDead("player") or UnitIsGhost("player")));

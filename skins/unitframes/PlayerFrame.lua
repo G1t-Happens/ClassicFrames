@@ -80,7 +80,7 @@ if (_G.AlternatePowerBar) then
     end
 
     hooksecurefunc(AlternatePowerBar, "EvaluateUnit", function(self)
-        self:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar");
+        self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-StatusBar");
         self:SetStatusBarColor(0, 0, 1);
 
         if self.PowerBarMask then
@@ -117,7 +117,7 @@ if (_G.MonkStaggerBar) then
     end
 
     hooksecurefunc(MonkStaggerBar, "EvaluateUnit", function(self)
-        self:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar");
+        self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-StatusBar");
         self:SetStatusBarColor(0, 0, 1);
     end)
 end
@@ -162,7 +162,7 @@ hooksecurefunc("PlayerFrame_ToPlayerArt", function(self)
     StatusTexture:ClearAllPoints()
     StatusTexture:SetPoint("TOPLEFT", 15, -13)
 
-    self.PlayerFrameContent.PlayerFrameContentMain.HealthBarArea.HealthBar:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
+    self.PlayerFrameContent.PlayerFrameContentMain.HealthBarArea.HealthBar:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-StatusBar")
     self.PlayerFrameContent.PlayerFrameContentMain.HealthBarArea.HealthBar:ClearAllPoints()
     self.PlayerFrameContent.PlayerFrameContentMain.HealthBarArea.HealthBar:SetPoint("TOPLEFT", 86, -46)
     self.PlayerFrameContent.PlayerFrameContentMain.HealthBarArea.HealthBar:SetPoint("BOTTOMRIGHT", -27, 42)
@@ -195,7 +195,7 @@ hooksecurefunc("PlayerFrame_ToVehicleArt", function(self)
     self.PlayerFrameContainer.VehicleFrameTexture:ClearAllPoints()
     self.PlayerFrameContainer.VehicleFrameTexture:SetPoint("TOPLEFT", -4, 5)
 
-    self.PlayerFrameContent.PlayerFrameContentMain.HealthBarArea.HealthBar:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
+    self.PlayerFrameContent.PlayerFrameContentMain.HealthBarArea.HealthBar:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-StatusBar")
     self.PlayerFrameContent.PlayerFrameContentMain.HealthBarArea.HealthBar:ClearAllPoints()
     self.PlayerFrameContent.PlayerFrameContentMain.HealthBarArea.HealthBar:SetPoint("TOPLEFT", 86, -46)
     self.PlayerFrameContent.PlayerFrameContentMain.HealthBarArea.HealthBar:SetPoint("BOTTOMRIGHT", -33, 42)
