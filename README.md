@@ -14,12 +14,15 @@ This Retail AddOn restores the Pre-10.0 UI frames with a focus on PvP, minimalis
 4. After you've installed ClassicFrames in the AddOns folder, go into your **TEXTURES** folder
 <br>inside your ClassicFrames and transfer the **RaidFrame** und **TargetingFrame** folder to your interface folder.
 The default path for your interface folder is `C:\Program Files (x86)\World of Warcraft\_retail_\Interface`
+> [!NOTE]  
+> The textures you transfer from the TEXTURE folder to the Interface folder are meant to align the **RaidFrames** and 
+> **Nameplates** with the textures of the Unitframes. If you have no interest or need for this, you can safely skip step 4.
 5. You are done with the installation.
 <br>
 
 ## FAQ:
 
-**<br>Does this work in Retail or Classic ?**
+**<br>Does this work on Retail or Classic ?**
 <br>Retail only !
 
 **<br>Are you going to keep updating the addon for Retail?**
