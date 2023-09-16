@@ -71,8 +71,8 @@ end)
 
 hooksecurefunc(PlayerCastingBarFrame, 'SetLook', function(self, look)
     if (look == "CLASSIC") then
-        self:SetWidth(195);
-        self:SetHeight(13);
+        self:SetWidth(190);
+        self:SetHeight(10);
         self.playCastFX = false
         self.Background:SetColorTexture(0, 0, 0, 0.5)
         self.Border:ClearAllPoints();
@@ -85,7 +85,7 @@ hooksecurefunc(PlayerCastingBarFrame, 'SetLook', function(self, look)
         self.Text:SetPoint("TOP", 0, 4)
         self.Text:SetWidth(185)
         self.Text:SetHeight(16)
-        self.Text:SetFont("Fonts\\FRIZQT__.TTF", 12, "OUTLINE")
+        self.Text:SetFont("Fonts\\FRIZQT__.TTF", 11, "OUTLINE")
         self.Spark.offsetY = 2;
     elseif (look == "UNITFRAME") then
         self:SetWidth(150);
@@ -103,7 +103,7 @@ hooksecurefunc(PlayerCastingBarFrame, 'SetLook', function(self, look)
         self.Text:SetHeight(16)
         self.Text:SetPoint("TOPLEFT", 0, 4)
         self.Text:SetPoint("TOPRIGHT", 0, 4)
-        self.Text:SetFont("Fonts\\FRIZQT__.TTF", 10, "OUTLINE")
+        self.Text:SetFont("Fonts\\FRIZQT__.TTF", 9, "OUTLINE")
         self.Spark.offsetY = 0;
     end
 end)
