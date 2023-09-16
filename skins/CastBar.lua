@@ -244,14 +244,14 @@ end
 SkinTargetCastbar(TargetFrame.spellbar)
 SkinTargetCastbar(FocusFrame.spellbar)
 
-local function ScaleCastBars()
-    local castBars = { FocusFrameSpellBar, TargetFrameSpellBar }
-    for _, castBar in ipairs(castBars) do
-        if castBar then
-            castBar:SetScale(1.2)
-        end
-    end
-end
-local f = CreateFrame("Frame")
-f:RegisterEvent("PLAYER_ENTERING_WORLD")
-f:SetScript("OnEvent", ScaleCastBars)
+--local function ScaleCastBars()
+--    local castBars = { FocusFrameSpellBar, TargetFrameSpellBar }
+--    for _, castBar in ipairs(castBars) do
+--        if castBar then
+--            castBar:SetScale(1.2)
+--        end
+--    end
+--end
+--local f = CreateFrame("Frame")
+--f:RegisterEvent("PLAYER_ENTERING_WORLD")
+--f:SetScript("OnEvent", ScaleCastBars)
