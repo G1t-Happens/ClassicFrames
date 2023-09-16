@@ -4,7 +4,7 @@ end
 
 local function ToTHealthBarColoring(frame)
     if UnitIsPlayer(frame.unit) and UnitIsConnected(frame.unit) and UnitClass(frame.unit) then
-        _, Class = UnitClass(frame.unit)
+        local _, Class = UnitClass(frame.unit)
         local Color = RAID_CLASS_COLORS[Class]
         frame.HealthBar:SetStatusBarColor(Color.r, Color.g, Color.b)
     elseif UnitIsPlayer(frame.unit) and not UnitIsConnected(frame.unit) then
@@ -34,7 +34,7 @@ local function NameBackgroundColoring(frame)
     frame.nameBackground:SetPoint("TOPRIGHT", frame.TargetFrameContent.TargetFrameContentMain, "TOPRIGHT", -88, -30)
 
     if UnitIsPlayer(frame.unit) and UnitIsConnected(frame.unit) and UnitClass(frame.unit) then
-        _, Class = UnitClass(frame.unit)
+        local _, Class = UnitClass(frame.unit)
         local Color = RAID_CLASS_COLORS[Class]
         frame.nameBackground:SetVertexColor(Color.r, Color.g, Color.b)
     elseif UnitIsPlayer(frame.unit) and not UnitIsConnected(frame.unit) then
@@ -54,11 +54,11 @@ local function NameBackgroundColoring(frame)
 end
 
 local function SkinFrame(frame)
-    local contextual = frame.TargetFrameContent.TargetFrameContentContextual;
-    local contentMain = frame.TargetFrameContent.TargetFrameContentMain;
-    local nameText = contentMain.Name;
-    local FrameHealthBar = contentMain.HealthBar;
-    local FrameManaBar = contentMain.ManaBar;
+    local contextual = frame.TargetFrameContent.TargetFrameContentContextual
+    local contentMain = frame.TargetFrameContent.TargetFrameContentMain
+    local nameText = contentMain.Name
+    local FrameHealthBar = contentMain.HealthBar
+    local FrameManaBar = contentMain.ManaBar
 
     contextual:SetFrameStrata("MEDIUM")
     frame.TargetFrameContainer:SetFrameStrata("MEDIUM")
@@ -85,7 +85,7 @@ local function SkinFrame(frame)
     FrameManaBar.LeftText:SetParent(frame.TargetFrameContainer)
 
     if (frame.Background == nil) then
-        frame.Background = frame:CreateTexture(nil, "BACKGROUND");
+        frame.Background = frame:CreateTexture(nil, "BACKGROUND")
         frame.Background:SetColorTexture(0, 0, 0, 0.5)
     end
 
@@ -100,20 +100,20 @@ local function SkinFrame(frame)
     end
 
     hooksecurefunc(frame, "CheckClassification", function(self)
-        local leaderIcon = contextual.LeaderIcon;
+        local leaderIcon = contextual.LeaderIcon
         leaderIcon:SetSize(16, 16)
         leaderIcon:SetTexture("Interface\\GroupFrame\\UI-Group-LeaderIcon")
         leaderIcon:ClearAllPoints()
         leaderIcon:SetPoint("TOPRIGHT", -24, -17)
 
-        local guideIcon = contextual.GuideIcon;
+        local guideIcon = contextual.GuideIcon
         guideIcon:SetSize(19, 19)
         guideIcon:SetTexture("Interface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES")
         guideIcon:SetTexCoord(0, 0.296875, 0.015625, 0.3125)
         guideIcon:ClearAllPoints()
         guideIcon:SetPoint("TOPRIGHT", -20, -17)
 
-        local questIcon = contextual.QuestIcon;
+        local questIcon = contextual.QuestIcon
         questIcon:SetSize(32, 32)
         questIcon:SetTexture("Interface\\TargetingFrame\\PortraitQuestBadge")
         questIcon:ClearAllPoints()
@@ -152,7 +152,7 @@ local function SkinFrame(frame)
         end
 
         self.Background:SetSize(119, 41)
-        self.Background:SetPoint("TOPLEFT", 26, -29);
+        self.Background:SetPoint("TOPLEFT", 26, -29)
         self.TargetFrameContainer.ClassicTexture:SetSize(232, 100)
         self.TargetFrameContainer.ClassicTexture:SetTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-TargetingFrameNoLevel")
         self.TargetFrameContainer.ClassicTexture:SetTexCoord(0.09375, 1, 0, 0.78125)
@@ -179,9 +179,9 @@ local function SkinFrame(frame)
     end)
 
     hooksecurefunc(frame, "CheckLevel", function(self)
-        self.TargetFrameContent.TargetFrameContentMain.LevelText:Hide();
-        contextual.HighLevelTexture:Hide();
-        local petBattle = contextual.PetBattleIcon;
+        self.TargetFrameContent.TargetFrameContentMain.LevelText:Hide()
+        contextual.HighLevelTexture:Hide()
+        local petBattle = contextual.PetBattleIcon
         petBattle:ClearAllPoints()
         petBattle:SetParent(contextual)
         petBattle:SetPoint("CENTER", contextual, "CENTER", 82, 24)
@@ -194,12 +194,12 @@ local function SkinFrame(frame)
 
     if (frame.totFrame) then
         local function fixDebuffs()
-            local frameNameWithSuffix = frame.totFrame:GetName() .. "Debuff";
+            local frameNameWithSuffix = frame.totFrame:GetName() .. "Debuff"
             for i = 1, 4 do
-                local debuffIcon = _G[frameNameWithSuffix .. i];
-                debuffIcon:ClearAllPoints();
+                local debuffIcon = _G[frameNameWithSuffix .. i]
+                debuffIcon:ClearAllPoints()
                 if debuffIcon:IsShown() then
-                    debuffIcon:Hide();
+                    debuffIcon:Hide()
                 end
             end
         end
@@ -209,11 +209,11 @@ local function SkinFrame(frame)
         frame.totFrame:SetPoint("TOPLEFT", frame, "BOTTOMRIGHT", -85, 21)
 
         if (frame.totFrame.Background == nil) then
-            frame.totFrame.Background = frame.totFrame.HealthBar:CreateTexture(nil, "BACKGROUND");
+            frame.totFrame.Background = frame.totFrame.HealthBar:CreateTexture(nil, "BACKGROUND")
             frame.totFrame.Background:SetSize(46, 15)
             frame.totFrame.Background:SetColorTexture(0, 0, 0, 0.5)
             frame.totFrame.Background:ClearAllPoints()
-            frame.totFrame.Background:SetPoint("BOTTOMLEFT", frame.totFrame, "BOTTOMLEFT", 45, 20);
+            frame.totFrame.Background:SetPoint("BOTTOMLEFT", frame.totFrame, "BOTTOMLEFT", 45, 20)
         end
 
         frame.totFrame.FrameTexture:SetSize(93, 45)
