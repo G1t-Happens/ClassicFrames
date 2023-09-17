@@ -240,10 +240,30 @@ local function SkinFrame(frame)
         frame.totFrame.ManaBar:SetFrameLevel(1)
 
         hooksecurefunc(frame.totFrame, "Update", function(self)
-            if self and not UnitIsUnit(self.unit, "Player") then
+            local parent = self:GetParent()
+            if (CVarCallbackRegistry:GetCVarValueBool("showTargetOfTarget") and UnitExists(parent.unit) and UnitExists(self.unit)
+                    and (not UnitIsUnit(PlayerFrame.unit, parent.unit)) and (UnitHealth(parent.unit) > 0)) then
                 self.HealthBar.HealthBarMask:Hide()
                 self.ManaBar.ManaBarMask:Hide()
                 ToTHealthBarColoring(self)
+                if (not self:IsShown()) then
+                    self:Show()
+                    if (parent.spellbar) then
+                        parent.haveToT = true
+                        parent.spellbar:AdjustPosition()
+                    end
+                end
+                UnitFrame_Update(self)
+                self:CheckDead()
+                self:HealthCheck()
+            else
+                if (self:IsShown()) then
+                    self:Hide()
+                    if (parent.spellbar) then
+                        parent.haveToT = nil
+                        parent.spellbar:AdjustPosition()
+                    end
+                end
             end
         end)
 
