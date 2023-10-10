@@ -194,16 +194,6 @@ local function SkinFrame(frame)
     end)
 
     if (frame.totFrame) then
-        local function fixDebuffs()
-            local frameNameWithSuffix = frame.totFrame:GetName() .. "Debuff"
-            for i = 1, 4 do
-                local debuffIcon = _G[frameNameWithSuffix .. i]
-                debuffIcon:ClearAllPoints()
-                if debuffIcon:IsShown() then
-                    debuffIcon:Hide()
-                end
-            end
-        end
 
         frame.totFrame:SetFrameStrata("HIGH")
         frame.totFrame:ClearAllPoints()
@@ -268,14 +258,24 @@ local function SkinFrame(frame)
                 end
             end
         end)
-
-        hooksecurefunc("TargetFrame_UpdateBuffAnchor", function(self)
-            if (self) then
-                fixDebuffs()
-            end
-        end)
-
     end
+
+    hooksecurefunc("TargetFrame_UpdateBuffAnchor", function(self, buff)
+        buff:SetSize(20, 20)
+        if self.totFrame then
+            for i = 1, 4 do
+                local debuffIcon = _G[self.totFrame:GetName() .. "Debuff" .. i]
+                if debuffIcon then
+                    debuffIcon:ClearAllPoints()
+                    debuffIcon:Hide()
+                end
+            end
+        end
+    end)
+
+    hooksecurefunc("TargetFrame_UpdateDebuffAnchor", function(_, debuff)
+        debuff:SetSize(22, 22)
+    end)
 end
 
 SkinFrame(FocusFrame)
