@@ -211,7 +211,7 @@ local function SkinFrame(frame)
         frame.totFrame.FrameTexture:SetTexture("Interface\\TargetingFrame\\UI-TargetofTargetFrame")
         frame.totFrame.FrameTexture:SetTexCoord(0.015625, 0.7265625, 0, 0.703125)
         frame.totFrame.FrameTexture:ClearAllPoints()
-        frame.totFrame.FrameTexture:SetPoint("TOPLEFT", 0, 0)
+        frame.totFrame.FrameTexture:SetPoint("TOPLEFT", 1, 0)
 
         frame.totFrame.Name:ClearAllPoints()
         frame.totFrame.Name:SetPoint("BOTTOMLEFT", 42, 6)
