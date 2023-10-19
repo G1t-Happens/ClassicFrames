@@ -382,7 +382,7 @@ end)
 local function ShowSpecIcon()
     local specIndex = GetSpecialization()
     if specIndex then
-        local _, _, _, specIcon, _, _, _, _, _, specIconId = GetSpecializationInfo(specIndex)
+        local _, _, _, specIcon, _, _, _, _, _, _ = GetSpecializationInfo(specIndex)
         if not SpecIconFrame then
             SpecIconFrame = CreateFrame("Frame", "SpecIconFrame", PlayerFrame)
             SpecIconFrame:SetSize(21, 19)
@@ -406,14 +406,8 @@ local function ShowSpecIcon()
     end
 end
 
-local function OnEvent(self, event)
-    if event == "PLAYER_LOGIN" or event == "PLAYER_SPECIALIZATION_CHANGED" or event == "PLAYER_LOOT_SPEC_UPDATED" then
-        ShowSpecIcon()
-    end
-end
-
 local frame = CreateFrame("Frame")
 frame:RegisterEvent("PLAYER_LOGIN")
 frame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
 frame:RegisterEvent("PLAYER_LOOT_SPEC_UPDATED")
-frame:SetScript("OnEvent", OnEvent)
+frame:SetScript("OnEvent", ShowSpecIcon)
