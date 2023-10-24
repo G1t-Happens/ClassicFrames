@@ -188,7 +188,6 @@ hooksecurefunc("PlayerFrame_ToPlayerArt", function(self)
 
     PlayerFrame.nameBackground:SetWidth(118)
     PlayerLevelText:Hide()
-    SpecIconFrame:Show()
 end)
 
 hooksecurefunc("PlayerFrame_ToVehicleArt", function(self)
@@ -316,12 +315,86 @@ hooksecurefunc("PlayerFrame_UpdateRolesAssigned", function()
     PlayerLevelText:Hide()
 end)
 
+local PlayerAttackIcon = PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual:CreateTexture(nil, "OVERLAY")
+PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.PlayerAttackIcon = PlayerAttackIcon;
+PlayerAttackIcon:SetSize(29, 27)
+PlayerAttackIcon:SetTexture("Interface\\CharacterFrame\\UI-StateIcon")
+PlayerAttackIcon:SetTexCoord(0.5, 1.0, 0, 0.484375)
+PlayerAttackIcon:ClearAllPoints()
+PlayerAttackIcon:SetPoint("LEFT", PlayerFrame, "LEFT", 21, -20)
+
+local PlayerAttackGlow = PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual:CreateTexture(nil, "OVERLAY")
+PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.PlayerAttackGlow = PlayerAttackGlow;
+PlayerAttackGlow:SetSize(29, 27)
+PlayerAttackGlow:SetTexture("Interface\\CharacterFrame\\UI-StateIcon")
+PlayerAttackGlow:SetTexCoord(0.5, 1, 0.5, 1)
+PlayerAttackGlow:SetVertexColor(1, 0, 0)
+PlayerAttackGlow:SetBlendMode("ADD")
+PlayerAttackGlow:ClearAllPoints()
+PlayerAttackGlow:SetPoint("LEFT", PlayerAttackIcon)
+
+local SpecIconFrame
+local function ShowSpecIcon()
+    local specIndex = GetSpecialization()
+    if specIndex then
+        local _, _, _, specIcon, _, _, _, _, _, _ = GetSpecializationInfo(specIndex)
+        if not SpecIconFrame then
+            SpecIconFrame = CreateFrame("Frame", "SpecIconFrame", PlayerFrame)
+            SpecIconFrame:SetSize(21, 19)
+            SpecIconFrame:SetPoint("BOTTOMLEFT", PlayerFrame, "BOTTOMLEFT", 23.5, 19.5)
+            SpecIconFrame:SetFrameStrata("HIGH")
+
+            SpecIconFrame.iconTexture = SpecIconFrame:CreateTexture(nil, "OVERLAY")
+            SpecIconFrame.iconTexture:SetPoint("CENTER", SpecIconFrame, "CENTER")
+            SpecIconFrame.iconTexture:SetAllPoints(SpecIconFrame)
+            SpecIconFrame.iconTexture:SetTexCoord(0.03, 0.97, 0.03, 0.97)
+
+            SpecIconFrame.maskTexture = SpecIconFrame:CreateMaskTexture()
+            SpecIconFrame.maskTexture:SetTexture("Interface\\AddOns\\ClassicFrames\\icons\\SpecIconBackdrop")
+            SpecIconFrame.maskTexture:SetAllPoints(SpecIconFrame)
+            SpecIconFrame.iconTexture:AddMaskTexture(SpecIconFrame.maskTexture)
+        end
+        SpecIconFrame.iconTexture:SetTexture(specIcon)
+        SpecIconFrame:Show()
+    elseif SpecIconFrame then
+        SpecIconFrame:Hide()
+    end
+end
+
+local frame = CreateFrame("Frame")
+frame:RegisterEvent("PLAYER_LOGIN")
+frame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
+frame:RegisterEvent("PLAYER_LOOT_SPEC_UPDATED")
+frame:SetScript("OnEvent", ShowSpecIcon)
+
 hooksecurefunc("PlayerFrame_UpdateStatus", function()
     PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.PlayerRestLoop:Hide()
     PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.StatusTexture:Hide()
     PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.AttackIcon:Hide()
     PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.PlayerPortraitCornerIcon:Hide()
     PlayerLevelText:Hide()
+
+    if (UnitHasVehiclePlayerFrameUI("player")) then
+        PlayerAttackIcon:Hide()
+        PlayerAttackGlow:Hide()
+        SpecIconFrame:Hide()
+    elseif (IsResting()) then
+        PlayerAttackIcon:Hide()
+        PlayerAttackGlow:Hide()
+        SpecIconFrame:Show()
+    elseif (UnitAffectingCombat('Player')) then
+        PlayerAttackIcon:Show()
+        PlayerAttackGlow:Show()
+        SpecIconFrame:Hide()
+    elseif (PlayerFrame.onHateList) then
+        PlayerAttackIcon:Show()
+        PlayerAttackGlow:Show()
+        SpecIconFrame:Hide()
+    else
+        PlayerAttackIcon:Hide()
+        PlayerAttackGlow:Hide()
+        SpecIconFrame:Show()
+    end
 end)
 
 hooksecurefunc(PlayerFrame, "menu", function(self)
@@ -379,35 +452,5 @@ PlayerFrame:HookScript("OnUpdate", function(self)
     end
 end)
 
-local function ShowSpecIcon()
-    local specIndex = GetSpecialization()
-    if specIndex then
-        local _, _, _, specIcon, _, _, _, _, _, _ = GetSpecializationInfo(specIndex)
-        if not SpecIconFrame then
-            SpecIconFrame = CreateFrame("Frame", "SpecIconFrame", PlayerFrame)
-            SpecIconFrame:SetSize(21, 19)
-            SpecIconFrame:SetPoint("BOTTOMLEFT", PlayerFrame, "BOTTOMLEFT", 23.5, 19.5)
-            SpecIconFrame:SetFrameStrata("HIGH")
-
-            SpecIconFrame.iconTexture = SpecIconFrame:CreateTexture(nil, "OVERLAY")
-            SpecIconFrame.iconTexture:SetPoint("CENTER", SpecIconFrame, "CENTER")
-            SpecIconFrame.iconTexture:SetAllPoints(SpecIconFrame)
-            SpecIconFrame.iconTexture:SetTexCoord(0.03, 0.97, 0.03, 0.97)
-
-            SpecIconFrame.maskTexture = SpecIconFrame:CreateMaskTexture()
-            SpecIconFrame.maskTexture:SetTexture("Interface\\AddOns\\ClassicFrames\\icons\\SpecIconBackdrop")
-            SpecIconFrame.maskTexture:SetAllPoints(SpecIconFrame)
-            SpecIconFrame.iconTexture:AddMaskTexture(SpecIconFrame.maskTexture)
-        end
-        SpecIconFrame.iconTexture:SetTexture(specIcon)
-        SpecIconFrame:Show()
-    elseif SpecIconFrame then
-        SpecIconFrame:Hide()
-    end
-end
-
-local frame = CreateFrame("Frame")
-frame:RegisterEvent("PLAYER_LOGIN")
-frame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
-frame:RegisterEvent("PLAYER_LOOT_SPEC_UPDATED")
-frame:SetScript("OnEvent", ShowSpecIcon)
+--Cvars
+C_CVar.SetCVar("threatWarning", 0)
