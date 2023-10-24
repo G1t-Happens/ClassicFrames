@@ -316,7 +316,7 @@ hooksecurefunc("PlayerFrame_UpdateRolesAssigned", function()
 end)
 
 local PlayerAttackIcon = PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual:CreateTexture(nil, "OVERLAY")
-PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.PlayerAttackIcon = PlayerAttackIcon;
+PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.PlayerAttackIcon = PlayerAttackIcon
 PlayerAttackIcon:SetSize(29, 27)
 PlayerAttackIcon:SetTexture("Interface\\CharacterFrame\\UI-StateIcon")
 PlayerAttackIcon:SetTexCoord(0.5, 1.0, 0, 0.484375)
@@ -324,7 +324,7 @@ PlayerAttackIcon:ClearAllPoints()
 PlayerAttackIcon:SetPoint("LEFT", PlayerFrame, "LEFT", 21, -20)
 
 local PlayerAttackGlow = PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual:CreateTexture(nil, "OVERLAY")
-PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.PlayerAttackGlow = PlayerAttackGlow;
+PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.PlayerAttackGlow = PlayerAttackGlow
 PlayerAttackGlow:SetSize(29, 27)
 PlayerAttackGlow:SetTexture("Interface\\CharacterFrame\\UI-StateIcon")
 PlayerAttackGlow:SetTexCoord(0.5, 1, 0.5, 1)
@@ -374,7 +374,7 @@ hooksecurefunc("PlayerFrame_UpdateStatus", function()
     PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.PlayerPortraitCornerIcon:Hide()
     PlayerLevelText:Hide()
 
-    if (UnitHasVehiclePlayerFrameUI("player")) then
+    if (UnitHasVehiclePlayerFrameUI("Player")) then
         PlayerAttackIcon:Hide()
         PlayerAttackGlow:Hide()
         SpecIconFrame:Hide()
