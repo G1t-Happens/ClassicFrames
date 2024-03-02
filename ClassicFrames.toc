@@ -1,14 +1,23 @@
-## Interface: 100107
-## IconTexture: Interface/Icons/achievement_featsofstrength_gladiator_09
+## Interface: 100205
+## IconTexture: Interface/Icons/INV_Sword_2H_AshbringerCorrupt
 ## Title: Classic Frames
 ## Notes: Restores the Pre-10.0 UI frames with a focus on PvP, minimalism, and performance.
 ## Author: I made some changes to his addon, but most of the credit should go to luckfore(https://legacy.curseforge.com/members/luckfore)
-## Version: B-1.6.3
+## Version: 1.5
 ## OptionalDeps: SexyMap
+libs\TaintLess\TaintLess.xml
 embeds.xml
-skins\CastBar.lua
+skins\Castbar.lua
 skins\Minimap.lua
+skins\unitframes\UnitFrame.xml
+skins\unitframes\PlayerFrame.xml
+skins\unitframes\TargetFrame.xml
 skins\unitframes\PetFrame.lua
-skins\unitframes\PlayerFrame.lua
-skins\unitframes\TargetFrame.lua
-skins\unitframes\UnitFrame.lua
+skins\unitframes\classbars\ClassPowerBar.xml
+skins\unitframes\classbars\Combo.xml
+skins\unitframes\classbars\DK.xml
+skins\unitframes\classbars\Evoker.xml
+skins\unitframes\classbars\Mage.xml
+skins\unitframes\classbars\Monk.xml
+skins\unitframes\classbars\Paladin.xml
+skins\unitframes\classbars\Warlock.xml
