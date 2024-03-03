@@ -169,12 +169,6 @@ local function SkinFrame(frame)
 		end
 	end)
 
-	hooksecurefunc(TargetFrame, "Update", function(self)
-		if (UnitExists(self.unit)) then
-			CfUnitFrame_Update(CfTargetFrame)
-		end
-	end)
-
 	hooksecurefunc(frame, "CheckFaction", function(self)
 	if self == TargetFrame or self == FocusFrame then
             NameBackgroundColoring(self)
