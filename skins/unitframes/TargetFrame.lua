@@ -265,7 +265,7 @@ local function SkinFrame(frame)
 		local targetFrameContentContextual = frame.TargetFrameContent.TargetFrameContentContextual;
 		if (index == 1) then
 			if (isFriend and numBuffs > 0) then
-				buff:SetPoint(point.."LEFT", frame.TargetFrameContent.TargetFrameContentContextual.buffs, relativePoint.."LEFT", 0, -offsetY)
+				buff:SetPoint(point.."LEFT", targetFrameContentContextual.buffs, relativePoint.."LEFT", 0, -offsetY)
 			else
 				buff:SetPoint(point.."LEFT", frame.TargetFrameContainer.FrameTexture, relativePoint.."LEFT", 5, startY)
 			end
