@@ -218,24 +218,30 @@ local function SkinFrame(frame)
 			startY = 32;
 			auraOffsetY = 3;
 		end
+
+		buff:ClearAllPoints();
+		local targetFrameContentContextual = frame.TargetFrameContent.TargetFrameContentContextual;
 		if (index == 1) then
 			if (UnitIsFriend("player", frame.unit) or numDebuffs == 0) then
 				buff:SetPoint(point.."LEFT", frame.TargetFrameContainer.FrameTexture, relativePoint.."LEFT", 5, startY)
 			else
-				buff:SetPoint(point.."LEFT", contextual.debuffs, relativePoint.."LEFT", 0, -offsetY)
+				buff:SetPoint(point.."LEFT", frame.TargetFrameContent.TargetFrameContentContextual.debuffs, relativePoint.."LEFT", 0, -offsetY)
 			end
-			contextual.buffs:SetPoint(point.."LEFT", buff, point.."LEFT", 0, 0)
-			contextual.buffs:SetPoint(relativePoint.."LEFT", buff, relativePoint.."LEFT", 0, -auraOffsetY)
+			targetFrameContentContextual.buffs:SetPoint(point.."LEFT", buff, point.."LEFT", 0, 0)
+			targetFrameContentContextual.buffs:SetPoint(relativePoint.."LEFT", buff, relativePoint.."LEFT", 0, -auraOffsetY)
 		elseif (anchorIndex ~= (index-1)) then
 			buff:SetPoint(point.."LEFT", anchorBuff, relativePoint.."LEFT", 0, -offsetY)
-			contextual.buffs:SetPoint(relativePoint.."LEFT", buff, relativePoint.."LEFT", 0, -auraOffsetY)
+			frame.TargetFrameContent.TargetFrameContentContextual.buffs:SetPoint(relativePoint.."LEFT", buff, relativePoint.."LEFT", 0, -auraOffsetY)
 		else
 			buff:SetPoint(point.."LEFT", anchorBuff, point.."RIGHT", offsetX, 0)
 		end
-		buff:SetSize(19, 19)
+		buff:SetWidth(19)
+		buff:SetHeight(19)
 	end)
 
 	hooksecurefunc('TargetFrame_UpdateDebuffAnchor', function(frame, buff, index, numBuffs, anchorBuff, anchorIndex, size, offsetX, offsetY, mirrorVertically)
+		local isFriend = UnitIsFriend("player", frame.unit);
+
 		--For mirroring vertically
 		local point, relativePoint;
 		local startY, auraOffsetY;
@@ -254,21 +260,29 @@ local function SkinFrame(frame)
 			startY = 32;
 			auraOffsetY = 3;
 		end
+
+		buff:ClearAllPoints();
+		local targetFrameContentContextual = frame.TargetFrameContent.TargetFrameContentContextual;
 		if (index == 1) then
-			if (UnitIsFriend("player", frame.unit) and numBuffs > 0) then
-				buff:SetPoint(point.."LEFT", contextual.buffs, relativePoint.."LEFT", 0, -offsetY)
+			if (isFriend and numBuffs > 0) then
+				buff:SetPoint(point.."LEFT", frame.TargetFrameContent.TargetFrameContentContextual.buffs, relativePoint.."LEFT", 0, -offsetY)
 			else
 				buff:SetPoint(point.."LEFT", frame.TargetFrameContainer.FrameTexture, relativePoint.."LEFT", 5, startY)
 			end
-			contextual.debuffs:SetPoint(point.."LEFT", buff, point.."LEFT", 0, 0)
-			contextual.debuffs:SetPoint(relativePoint.."LEFT", buff, relativePoint.."LEFT", 0, -auraOffsetY)
+			targetFrameContentContextual.debuffs:SetPoint(point.."LEFT", buff, point.."LEFT", 0, 0)
+			targetFrameContentContextual.debuffs:SetPoint(relativePoint.."LEFT", buff, relativePoint.."LEFT", 0, -auraOffsetY)
 		elseif (anchorIndex ~= (index-1)) then
 			buff:SetPoint(point.."LEFT", anchorBuff, relativePoint.."LEFT", 0, -offsetY)
-			contextual.debuffs:SetPoint(relativePoint.."LEFT", buff, relativePoint.."LEFT", 0, -auraOffsetY)
+			targetFrameContentContextual.debuffs:SetPoint(relativePoint.."LEFT", buff, relativePoint.."LEFT", 0, -auraOffsetY)
 		else
 			buff:SetPoint(point.."LEFT", anchorBuff, point.."RIGHT", offsetX, 0)
 		end
-		buff:SetSize(22, 22)
+		-- Resize
+		buff:SetWidth(22);
+		buff:SetHeight(22);
+		local buffBorder = buff.Border;
+		buffBorder:SetWidth(24);
+		buffBorder:SetHeight(24);
 	end)
 
 	hooksecurefunc(frame, "menu", function(self)
