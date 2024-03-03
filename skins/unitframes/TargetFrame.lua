@@ -152,27 +152,26 @@ local function SkinFrame(frame)
 	end)
 
 	hooksecurefunc(frame, "CheckDead", function(self)
+		local frameName = frame:GetName()
 		if ((UnitHealth(self.unit) <= 0) and UnitIsConnected(self.unit)) then
-			CfTargetFrameBackground:SetAlpha(0.9)
-			CfFocusFrameBackground:SetAlpha(0.9)
+			_G["Cf"..frameName.."Background"]:SetAlpha(0.9)
 			if (UnitIsUnconscious(self.unit)) then
-				CfTargetFrameUnconsciousText:Show()
-				CfTargetFrameDeadText:Hide()
-				CfFocusFrameUnconsciousText:Show()
-				CfFocusFrameDeadText:Hide()
+				_G["Cf"..frameName.."UnconsciousText"]:Show()
+				_G["Cf"..frameName.."DeadText"]:Hide()
 			else
-				CfTargetFrameUnconsciousText:Hide()
-				CfTargetFrameDeadText:Show()
-				CfFocusFrameUnconsciousText:Hide()
-				CfFocusFrameDeadText:Show()
+				_G["Cf"..frameName.."UnconsciousText"]:Hide()
+				_G["Cf"..frameName.."DeadText"]:Show()
 			end
 		else
-			CfTargetFrameBackground:SetAlpha(1)
-			CfFocusFrameBackground:SetAlpha(1)
-			CfTargetFrameDeadText:Hide()
-			CfTargetFrameUnconsciousText:Hide()
-			CfFocusFrameDeadText:Hide()
-			CfFocusFrameUnconsciousText:Hide()
+			_G["Cf"..frameName.."Background"]:SetAlpha(1)
+			_G["Cf"..frameName.."DeadText"]:Hide()
+			_G["Cf"..frameName.."UnconsciousText"]:Hide()
+		end
+	end)
+
+	hooksecurefunc(TargetFrame, "Update", function(self)
+		if (UnitExists(self.unit)) then
+			CfUnitFrame_Update(CfTargetFrame)
 		end
 	end)
 
