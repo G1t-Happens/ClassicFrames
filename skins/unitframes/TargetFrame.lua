@@ -225,13 +225,13 @@ local function SkinFrame(frame)
 			if (UnitIsFriend("player", frame.unit) or numDebuffs == 0) then
 				buff:SetPoint(point.."LEFT", frame.TargetFrameContainer.FrameTexture, relativePoint.."LEFT", 5, startY)
 			else
-				buff:SetPoint(point.."LEFT", frame.TargetFrameContent.TargetFrameContentContextual.debuffs, relativePoint.."LEFT", 0, -offsetY)
+				buff:SetPoint(point.."LEFT", targetFrameContentContextual.debuffs, relativePoint.."LEFT", 0, -offsetY)
 			end
 			targetFrameContentContextual.buffs:SetPoint(point.."LEFT", buff, point.."LEFT", 0, 0)
 			targetFrameContentContextual.buffs:SetPoint(relativePoint.."LEFT", buff, relativePoint.."LEFT", 0, -auraOffsetY)
 		elseif (anchorIndex ~= (index-1)) then
 			buff:SetPoint(point.."LEFT", anchorBuff, relativePoint.."LEFT", 0, -offsetY)
-			frame.TargetFrameContent.TargetFrameContentContextual.buffs:SetPoint(relativePoint.."LEFT", buff, relativePoint.."LEFT", 0, -auraOffsetY)
+			targetFrameContentContextual.buffs:SetPoint(relativePoint.."LEFT", buff, relativePoint.."LEFT", 0, -auraOffsetY)
 		else
 			buff:SetPoint(point.."LEFT", anchorBuff, point.."RIGHT", offsetX, 0)
 		end
