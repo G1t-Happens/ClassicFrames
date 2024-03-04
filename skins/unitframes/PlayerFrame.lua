@@ -5,12 +5,13 @@ function CfPlayerFrame_OnLoad(self)
 	PlayerFrameManaBar.RightText = PlayerFrameManaBarTextRight;
 
 	CfUnitFrame_Initialize(self, "player", nil, nil,
-		PlayerFrameHealthBar, PlayerFrameManaBar,
-		nil, nil, nil,
-		CfPlayerFrameMyHealPredictionBar, CfPlayerFrameOtherHealPredictionBar,
-		CfPlayerFrameTotalAbsorbBar, CfPlayerFrameTotalAbsorbBarOverlay, CfPlayerFrameOverAbsorbGlow,
-		CfPlayerFrameOverHealAbsorbGlow, CfPlayerFrameHealAbsorbBar, CfPlayerFrameHealAbsorbBarLeftShadow,
-		CfPlayerFrameHealAbsorbBarRightShadow)
+			PlayerFrameHealthBar, nil,
+			PlayerFrameManaBar, nil,
+			nil, nil, nil,
+			CfPlayerFrameMyHealPredictionBar, CfPlayerFrameOtherHealPredictionBar,
+			CfPlayerFrameTotalAbsorbBar, CfPlayerFrameTotalAbsorbBarOverlay, CfPlayerFrameOverAbsorbGlow,
+			CfPlayerFrameOverHealAbsorbGlow, CfPlayerFrameHealAbsorbBar, CfPlayerFrameHealAbsorbBarLeftShadow,
+			CfPlayerFrameHealAbsorbBarRightShadow)
 
 	CfPlayerFrameOverAbsorbGlow:SetParent(PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual)
 

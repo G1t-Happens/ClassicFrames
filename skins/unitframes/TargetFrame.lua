@@ -6,12 +6,13 @@ function CfTargetFrame_OnLoad(self, unit)
 	_G[thisName.."ManaBar"].RightText = _G[thisName.."ManaBarTextRight"];
 
 	CfUnitFrame_Initialize(self, unit, nil, nil,
-		_G[thisName.."HealthBar"], _G[thisName.."ManaBar"],
-		nil, nil, nil,
-		_G[thisName.."MyHealPredictionBar"], _G[thisName.."OtherHealPredictionBar"],
-		_G[thisName.."TotalAbsorbBar"], _G[thisName.."TotalAbsorbBarOverlay"], _G[thisName.."OverAbsorbGlow"],
-		_G[thisName.."OverHealAbsorbGlow"], _G[thisName.."HealAbsorbBar"],
-		_G[thisName.."HealAbsorbBarLeftShadow"], _G[thisName.."HealAbsorbBarRightShadow"]);
+			_G[thisName.."HealthBar"], nil,
+			_G[thisName.."ManaBar"], nil,
+			nil, nil, nil,
+			_G[thisName.."MyHealPredictionBar"], _G[thisName.."OtherHealPredictionBar"],
+			_G[thisName.."TotalAbsorbBar"], _G[thisName.."TotalAbsorbBarOverlay"], _G[thisName.."OverAbsorbGlow"],
+			_G[thisName.."OverHealAbsorbGlow"], _G[thisName.."HealAbsorbBar"],
+			_G[thisName.."HealAbsorbBarLeftShadow"], _G[thisName.."HealAbsorbBarRightShadow"]);
 
 	if CfTargetFrame then
 		CfTargetFrameDeadText:SetParent(TargetFrame.TargetFrameContent.TargetFrameContentContextual)
