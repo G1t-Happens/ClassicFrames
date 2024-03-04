@@ -395,5 +395,7 @@ hooksecurefunc(PlayerFrame, "menu", function(self)
     DropDownList1:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 87, 23)
 end)
 
---Cvars
+--Cvars & other
 C_CVar.SetCVar("threatWarning", 0)
+UIErrorsFrame:SetAlpha(0)
+PlayerFrame:UnregisterEvent("UNIT_COMBAT")
