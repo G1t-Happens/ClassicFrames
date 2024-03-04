@@ -240,7 +240,8 @@ function CfUnitFrameHealPredictionBars_Update(frame)
 		frame.overAbsorbGlow:Hide();
 	end
 
-	local healthTexture = frame.healthbar:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-StatusBar")
+	frame.healthbar:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-StatusBar")
+	local healthTexture = frame.healthbar:GetStatusBarTexture()
 	local myCurrentHealAbsorbPercent = 0;
 	local healAbsorbTexture = nil;
 
