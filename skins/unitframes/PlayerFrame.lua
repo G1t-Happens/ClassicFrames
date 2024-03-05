@@ -319,7 +319,7 @@ local function ShowSpecIcon()
 		if not SpecIconFrame then
 			SpecIconFrame = CreateFrame("Frame", "SpecIconFrame", PlayerFrame)
 			SpecIconFrame:SetSize(21, 19)
-			SpecIconFrame:SetPoint("BOTTOMLEFT", PlayerFrame, "BOTTOMLEFT", 25, 20)
+			SpecIconFrame:SetPoint("BOTTOMLEFT", PlayerFrame, "BOTTOMLEFT", 25, 20.5)
 			SpecIconFrame:SetFrameStrata("HIGH")
 
 			SpecIconFrame.iconTexture = SpecIconFrame:CreateTexture(nil, "OVERLAY")
