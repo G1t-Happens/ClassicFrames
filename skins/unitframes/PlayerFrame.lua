@@ -21,10 +21,6 @@ end
 
 function CfPlayerFrame_OnEvent(self, event, ...)
 	CfUnitFrame_OnEvent(self, event, ...)
-
-	if ( event == "PLAYER_ENTERING_WORLD" ) then
-		CfUnitFrame_Update(self)
-	end
 end
 
 PlayerFrame.PlayerFrameContainer:SetFrameLevel(4)
