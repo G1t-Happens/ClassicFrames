@@ -195,6 +195,15 @@ hooksecurefunc("PlayerFrame_ToVehicleArt", function(self)
 	self.PlayerFrameContainer.VehicleFrameTexture:ClearAllPoints()
 	self.PlayerFrameContainer.VehicleFrameTexture:SetPoint("TOPLEFT", -3, 6)
 
+	local FrameFlash = self.PlayerFrameContainer.FrameFlash;
+	FrameFlash:SetParent(self)
+	FrameFlash:SetSize(242, 93)
+	FrameFlash:SetTexture("Interface\\Vehicles\\UI-Vehicle-Frame-Flash")
+	FrameFlash:SetTexCoord(-0.02, 1, 0.07, 0.86)
+	FrameFlash:ClearAllPoints()
+	FrameFlash:SetPoint("TOPLEFT", -6, -4)
+	FrameFlash:SetDrawLayer("BACKGROUND", 0)
+
 	self.PlayerFrameContent.PlayerFrameContentContextual.GroupIndicator:SetPoint("BOTTOMRIGHT", self, "TOPLEFT", 161, -25)
 	self.PlayerFrameContent.PlayerFrameContentContextual.RoleIcon:SetPoint("TOPLEFT", 76, -19)
 
