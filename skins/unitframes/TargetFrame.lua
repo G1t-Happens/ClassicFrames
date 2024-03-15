@@ -229,8 +229,8 @@ local function SkinFrame(frame)
 		else
 			buff:SetPoint(point.."LEFT", anchorBuff, point.."RIGHT", offsetX, 0)
 		end
-		buff:SetWidth(19)
-		buff:SetHeight(19)
+		buff:SetWidth(18)
+		buff:SetHeight(18)
 	end)
 
 	hooksecurefunc('TargetFrame_UpdateDebuffAnchor', function(frame, buff, index, numBuffs, anchorBuff, anchorIndex, size, offsetX, offsetY, mirrorVertically)
@@ -272,11 +272,11 @@ local function SkinFrame(frame)
 			buff:SetPoint(point.."LEFT", anchorBuff, point.."RIGHT", offsetX, 0)
 		end
 		-- Resize
-		buff:SetWidth(22);
-		buff:SetHeight(22);
+		buff:SetWidth(21);
+		buff:SetHeight(21);
 		local buffBorder = buff.Border;
-		buffBorder:SetWidth(24);
-		buffBorder:SetHeight(24);
+		buffBorder:SetWidth(23);
+		buffBorder:SetHeight(23);
 	end)
 
 	hooksecurefunc(frame, "menu", function(self)
