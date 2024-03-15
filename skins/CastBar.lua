@@ -108,22 +108,53 @@ hooksecurefunc(PlayerCastingBarFrame, 'SetLook', function(self, look)
     end
 end)
 
---Target & Boss
-local function CastbarStyle(frame)
+--Target/Focus
+local function AdjustPosition(self)
+    local parentFrame = self:GetParent();
+    if (parentFrame.haveToT) then
+        if (parentFrame.buffsOnTop or parentFrame.auraRows <= 1) then
+            self:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 45, -24)
+        else
+            self:SetPoint("TOPLEFT", parentFrame.spellbarAnchor, "BOTTOMLEFT", 20, -15)
+        end
+    elseif (parentFrame.haveElite) then
+        if (parentFrame.buffsOnTop or parentFrame.auraRows <= 1) then
+            self:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 45, -9)
+        else
+            self:SetPoint("TOPLEFT", parentFrame.spellbarAnchor, "BOTTOMLEFT", 20, -15)
+        end
+    else
+        if ((not parentFrame.buffsOnTop) and parentFrame.auraRows > 0) then
+            self:SetPoint("TOPLEFT", parentFrame.spellbarAnchor, "BOTTOMLEFT", 20, -15)
+        else
+            self:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 45, 3)
+        end
+    end
+end
+
+hooksecurefunc(TargetFrame.spellbar, "AdjustPosition", AdjustPosition)
+hooksecurefunc(FocusFrame.spellbar, "AdjustPosition", AdjustPosition)
+TargetFrame.spellbar:HookScript("OnEvent", AdjustPosition)
+FocusFrame.spellbar:HookScript("OnEvent", AdjustPosition)
+
+local function SetLook(frame)
     frame.Background:SetColorTexture(0, 0, 0, 0.5)
+    frame.Border:SetTexture("Interface\\CastingBar\\UI-CastingBar-Border-Small")
+    frame.Border:SetWidth(0)
+    frame.Border:SetHeight(60)
     frame.Border:ClearAllPoints()
     frame.Border:SetPoint("TOPLEFT", -32, 24)
     frame.Border:SetPoint("TOPRIGHT", 32, 24)
-    frame.Border:SetTexture("Interface\\CastingBar\\UI-CastingBar-Border-Small")
-    frame.Border:SetSize(0, 60)
     frame.BorderShield:SetTexture("Interface\\CastingBar\\UI-CastingBar-Small-Shield")
+    frame.BorderShield:SetWidth(0)
+    frame.BorderShield:SetHeight(58)
     frame.BorderShield:ClearAllPoints()
     frame.BorderShield:SetPoint("TOPLEFT", -32, 22.5)
     frame.BorderShield:SetPoint("TOPRIGHT", 25, 22.5)
-    frame.BorderShield:SetSize(0, 58)
+    frame.Text:SetWidth(0)
+    frame.Text:SetHeight(16)
     frame.Text:ClearAllPoints()
     frame.Text:SetPoint("CENTER", frame, "CENTER", 0, 0)
-    frame.Text:SetWidth(175)
     frame.Text:SetFont("Fonts\\FRIZQT__.TTF", 11, "OUTLINE")
     frame.TextBorder:Hide()
     frame.Icon:ClearAllPoints()
@@ -133,101 +164,71 @@ local function CastbarStyle(frame)
     frame:SetHeight(12)
 end
 
-local function SetAtlasTexture(frame)
-    local Castbar = frame:GetParent()
-    local barType = Castbar.barType
-
-    if (frame.NewFlash == nil) then
-        frame.NewFlash = frame:GetParent():CreateTexture(nil, "OVERLAY")
-        frame.NewFlash:SetSize(0, 60)
-        frame.NewFlash:SetTexture("Interface\\CastingBar\\UI-CastingBar-Flash-Small")
-        frame.NewFlash:ClearAllPoints()
-        frame.NewFlash:SetPoint("TOPLEFT", -32, 24)
-        frame.NewFlash:SetPoint("TOPRIGHT", 32, 24)
-        frame.NewFlash:SetBlendMode("ADD")
-        frame.NewFlash:SetAlpha(0)
-        frame.NewFlashAnim = frame.NewFlash:CreateAnimationGroup()
-        frame.NewFlashAnim:SetToFinalAlpha(true)
-        local anim = frame.NewFlashAnim:CreateAnimation("Alpha")
-        anim:SetDuration(0.2)
-        anim:SetFromAlpha(1)
-        anim:SetToAlpha(0)
-    end
-
-    frame.NewFlashAnim:Play()
-
-    if (barType == "channel") then
-        frame.NewFlash:SetVertexColor(0, 1, 0)
-    elseif (barType == "uninterruptable") then
-        frame.NewFlash:SetVertexColor(0.7, 0.7, 0.7)
-    elseif (barType == "empowered") then
-        frame.NewFlash:SetVertexColor(0, 0, 0)
-    else
-        frame.NewFlash:SetVertexColor(1, 0.7, 0)
-    end
-end
-
-local function HookOnEvent(self, event, ...)
-    local parentFrame = self:GetParent()
-    local useSpellbarAnchor = (not parentFrame.buffsOnTop) and ((parentFrame.haveToT and parentFrame.auraRows > 2) or ((not parentFrame.haveToT) and parentFrame.auraRows > 0))
-    local relativeKey = useSpellbarAnchor and parentFrame.spellbarAnchor or parentFrame
-    local pointX = useSpellbarAnchor and 20 or (parentFrame.smallSize and 40 or 45)
-    local pointY = useSpellbarAnchor and -15 or (parentFrame.smallSize and 3 or 5)
-
-    if ((not useSpellbarAnchor) and parentFrame.haveToT) then
-        pointY = parentFrame.smallSize and -30 or -28
-    end
-    self:SetPoint("TOPLEFT", relativeKey, "BOTTOMLEFT", pointX, pointY)
-end
-TargetFrame.spellbar:HookScript("OnEvent", HookOnEvent)
-FocusFrame.spellbar:HookScript("OnEvent", HookOnEvent)
-
 local function SkinTargetCastbar(frame)
-    --General Textures
-    CastbarStyle(frame)
+    SetLook(frame)
 
-    --Flash Texture
-    hooksecurefunc(frame.Flash, "SetAtlas", SetAtlasTexture)
+    hooksecurefunc(frame.Flash, "SetAtlas", function(frame)
+        local Castbar = frame:GetParent()
+        local barType = Castbar.barType
 
-    --Castbar OnShow
+        if (frame.NewFlash == nil) then
+            frame.NewFlash = frame:GetParent():CreateTexture(nil, "OVERLAY")
+            frame.NewFlash:SetSize(0, 60)
+            frame.NewFlash:SetTexture("Interface\\CastingBar\\UI-CastingBar-Flash-Small")
+            frame.NewFlash:ClearAllPoints()
+            frame.NewFlash:SetPoint("TOPLEFT", -32, 24)
+            frame.NewFlash:SetPoint("TOPRIGHT", 32, 24)
+            frame.NewFlash:SetBlendMode("ADD")
+            frame.NewFlash:SetAlpha(0)
+            frame.NewFlashAnim = frame.NewFlash:CreateAnimationGroup()
+            frame.NewFlashAnim:SetToFinalAlpha(true)
+            local anim = frame.NewFlashAnim:CreateAnimation("Alpha")
+            anim:SetDuration(0.2)
+            anim:SetFromAlpha(1)
+            anim:SetToAlpha(0)
+        end
+        frame.NewFlashAnim:Play()
+
+        if (barType == "channel") then
+            frame.NewFlash:SetVertexColor(0, 1, 0)
+        elseif (barType == "uninterruptable") then
+            frame.NewFlash:SetVertexColor(0.7, 0.7, 0.7)
+        else
+            frame.NewFlash:SetVertexColor(1, 0.7, 0)
+        end
+    end)
+
     hooksecurefunc(frame, 'UpdateShownState', function(self)
-        if not (self.barType == "empowered") then
-            self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-StatusBar")
-            self.Spark:SetTexture("Interface\\CastingBar\\UI-CastingBar-Spark")
-            self.Spark:SetSize(32, 32)
-            self.Spark:ClearAllPoints()
-            self.Spark:SetPoint("CENTER", 0, 0)
-            self.Spark:SetBlendMode("ADD")
-            self:SetFrameStrata("HIGH")
-            if self.channeling then
-                self.Spark:Hide()
-            end
-            local FadeOutAnim = self.FadeOutAnim:CreateAnimation("Alpha")
-            FadeOutAnim:SetDuration(0.2)
-            FadeOutAnim:SetFromAlpha(1)
-            FadeOutAnim:SetToAlpha(0)
+        self:SetFrameStrata("HIGH")
+        self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-StatusBar")
+        self.Spark:SetTexture("Interface\\CastingBar\\UI-CastingBar-Spark")
+        self.Spark:SetSize(32, 32)
+        self.Spark:ClearAllPoints()
+        self.Spark:SetPoint("CENTER", 0, 0)
+        self.Spark:SetBlendMode("ADD")
+        if self.channeling then
+            self.Spark:Hide()
         end
+        local FadeOutAnim = self.FadeOutAnim:CreateAnimation("Alpha")
+        FadeOutAnim:SetDuration(0.2)
+        FadeOutAnim:SetFromAlpha(1)
+        FadeOutAnim:SetToAlpha(0)
     end)
 
-    --Force our texture on Animation Finish
-    hooksecurefunc(frame, 'PlayFinishAnim', function(self)
-        if not (self.barType == "empowered") then
-            self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-StatusBar")
-        end
-    end)
-
-    --Interrupted
     hooksecurefunc(frame, 'PlayInterruptAnims', function(self)
         self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-StatusBar")
         self.Spark:Hide()
     end)
 
-    --Castbar Color (Type)
+    hooksecurefunc(frame, 'PlayFinishAnim', function(self)
+        self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-StatusBar")
+    end)
+
     hooksecurefunc(frame, 'GetTypeInfo', function(self)
         self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-StatusBar")
-        if (self.barType == "interrupted") then
-            self:SetStatusBarColor(1, 0, 0)
+        if ( self.barType == "interrupted") then
             self:SetValue(100)
+            self:SetStatusBarColor(1, 0, 0)
         elseif (self.barType == "channel") then
             self:SetStatusBarColor(0, 1, 0)
         elseif (self.barType == "uninterruptable") then
@@ -236,10 +237,6 @@ local function SkinTargetCastbar(frame)
             self:SetStatusBarColor(1, 0.7, 0)
         end
     end)
-
-    if frame == TargetFrame or FocusFrame then
-        hooksecurefunc(frame, "AdjustPosition", HookOnEvent)
-    end
 end
 
 SkinTargetCastbar(TargetFrame.spellbar)
