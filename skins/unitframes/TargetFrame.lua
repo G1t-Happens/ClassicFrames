@@ -287,7 +287,6 @@ local function SkinFrame(frame)
 	hooksecurefunc(frame.totFrame, "Update", function(self)
 		self.HealthBar.HealthBarMask:Hide()
         self.ManaBar.ManaBarMask:Hide()
-		self:SetScale(0.8)
         ToTHealthBarColoring(self)
 	end)
 
@@ -295,7 +294,7 @@ local function SkinFrame(frame)
 
 		frame.totFrame:SetFrameStrata("HIGH")
 		frame.totFrame:ClearAllPoints()
-		frame.totFrame:SetPoint("TOPLEFT", frame, "BOTTOMRIGHT", -115, 34)
+		frame.totFrame:SetPoint("TOPLEFT", frame, "BOTTOMRIGHT", -87, 23)
 
 		if (frame.totFrame.Background == nil) then
 			frame.totFrame.Background = frame.totFrame.HealthBar:CreateTexture(nil, "BACKGROUND")
