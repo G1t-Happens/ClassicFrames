@@ -38,8 +38,8 @@ CfPowerBarColor[17] = CfPowerBarColor["FURY"];
 CfPowerBarColor[18] = CfPowerBarColor["PAIN"];
 
 function CfUnitFrame_Initialize(self, unit, name, portrait, healthbar, healthtext, manabar, manatext, threatIndicator, threatFeedbackUnit, threatNumericIndicator,
-								myHealPredictionBar, otherHealPredictionBar, totalAbsorbBar, totalAbsorbBarOverlay, overAbsorbGlow, overHealAbsorbGlow, healAbsorbBar, healAbsorbBarLeftShadow,
-								healAbsorbBarRightShadow)
+		myHealPredictionBar, otherHealPredictionBar, totalAbsorbBar, totalAbsorbBarOverlay, overAbsorbGlow, overHealAbsorbGlow, healAbsorbBar, healAbsorbBarLeftShadow,
+		healAbsorbBarRightShadow)
 	self.unit = unit;
 	self.name = name;
 	self.portrait = portrait;
@@ -148,7 +148,7 @@ end
 
 function CfUnitFrame_OnEvent(self, event, ...)
 	local arg1 = ...
-
+	
 	local unit = self.unit;
 	if ( arg1 == unit ) then
 		if ( event == "UNIT_DISPLAYPOWER" ) then
@@ -172,7 +172,7 @@ function CfUnitFrameHealPredictionBars_UpdateMax(self)
 	if ( not self.myHealPredictionBar ) then
 		return;
 	end
-
+	
 	CfUnitFrameHealPredictionBars_Update(self)
 end
 
@@ -180,7 +180,7 @@ function CfUnitFrameHealPredictionBars_UpdateSize(self)
 	if ( not self.myHealPredictionBar or not self.otherHealPredictionBar ) then
 		return;
 	end
-
+	
 	CfUnitFrameHealPredictionBars_Update(self)
 end
 
@@ -189,17 +189,17 @@ function CfUnitFrameHealPredictionBars_Update(frame)
 	if ( not frame.myHealPredictionBar ) then
 		return;
 	end
-
+	
 	local _, maxHealth = frame.healthbar:GetMinMaxValues()
 	local health = frame.healthbar:GetValue()
 	if ( maxHealth <= 0 ) then
 		return;
 	end
-
+	
 	local myIncomingHeal = UnitGetIncomingHeals(frame.unit, "player") or 0;
 	local allIncomingHeal = UnitGetIncomingHeals(frame.unit) or 0;
 	local totalAbsorb = UnitGetTotalAbsorbs(frame.unit) or 0;
-
+	
 	local myCurrentHealAbsorb = 0;
 	if ( frame.healAbsorbBar ) then
 		myCurrentHealAbsorb = UnitGetTotalHealAbsorbs(frame.unit) or 0;
@@ -208,13 +208,13 @@ function CfUnitFrameHealPredictionBars_Update(frame)
 			myCurrentHealAbsorb = health;
 		else
 			frame.overHealAbsorbGlow:Hide()
-		end
+		end	
 	end
-
+	
 	if ( health - myCurrentHealAbsorb + allIncomingHeal > maxHealth * MAX_INCOMING_HEAL_OVERFLOW ) then
 		allIncomingHeal = maxHealth * MAX_INCOMING_HEAL_OVERFLOW - health + myCurrentHealAbsorb;
 	end
-
+	
 	local otherIncomingHeal = 0;
 	if ( allIncomingHeal >= myIncomingHeal ) then
 		otherIncomingHeal = allIncomingHeal - myIncomingHeal;
@@ -227,14 +227,14 @@ function CfUnitFrameHealPredictionBars_Update(frame)
 		if ( totalAbsorb > 0 ) then
 			overAbsorb = true;
 		end
-
+		
 		if ( allIncomingHeal > myCurrentHealAbsorb ) then
 			totalAbsorb = max(0,maxHealth - (health - myCurrentHealAbsorb + allIncomingHeal))
 		else
 			totalAbsorb = max(0,maxHealth - health)
 		end
 	end
-
+	
 	if ( overAbsorb ) then
 		frame.overAbsorbGlow:Show()
 	else
@@ -245,16 +245,16 @@ function CfUnitFrameHealPredictionBars_Update(frame)
 	local healthTexture = frame.healthbar:GetStatusBarTexture()
 	local myCurrentHealAbsorbPercent = 0;
 	local healAbsorbTexture = nil;
-
+	
 	if ( frame.healAbsorbBar ) then
 		myCurrentHealAbsorbPercent = myCurrentHealAbsorb / maxHealth;
-
+		
 		if ( myCurrentHealAbsorb > allIncomingHeal ) then
 			local shownHealAbsorb = myCurrentHealAbsorb - allIncomingHeal;
 			local shownHealAbsorbPercent = shownHealAbsorb / maxHealth;
-
+			
 			healAbsorbTexture = CfUnitFrameUtil_UpdateFillBar(frame, healthTexture, frame.healAbsorbBar, shownHealAbsorb, -shownHealAbsorbPercent)
-
+			
 			if ( allIncomingHeal > 0 ) then
 				frame.healAbsorbBarLeftShadow:Hide()
 			else
@@ -262,7 +262,7 @@ function CfUnitFrameHealPredictionBars_Update(frame)
 				frame.healAbsorbBarLeftShadow:SetPoint("BOTTOMLEFT", healAbsorbTexture, "BOTTOMLEFT", 0, 0)
 				frame.healAbsorbBarLeftShadow:Show()
 			end
-
+			
 			if ( totalAbsorb > 0 ) then
 				frame.healAbsorbBarRightShadow:SetPoint("TOPLEFT", healAbsorbTexture, "TOPRIGHT", -8, 0)
 				frame.healAbsorbBarRightShadow:SetPoint("BOTTOMLEFT", healAbsorbTexture, "BOTTOMRIGHT", -8, 0)
@@ -276,15 +276,15 @@ function CfUnitFrameHealPredictionBars_Update(frame)
 			frame.healAbsorbBarRightShadow:Hide()
 		end
 	end
-
+	
 	local incomingHealTexture = CfUnitFrameUtil_UpdateFillBar(frame, healthTexture, frame.myHealPredictionBar, myIncomingHeal, -myCurrentHealAbsorbPercent)
-
+	
 	if (myIncomingHeal > 0) then
 		incomingHealTexture = CfUnitFrameUtil_UpdateFillBar(frame, incomingHealTexture, frame.otherHealPredictionBar, otherIncomingHeal)
 	else
 		incomingHealTexture = CfUnitFrameUtil_UpdateFillBar(frame, healthTexture, frame.otherHealPredictionBar, otherIncomingHeal, -myCurrentHealAbsorbPercent)
 	end
-
+	
 	local appendTexture = nil;
 	if ( healAbsorbTexture ) then
 		appendTexture = healAbsorbTexture;
@@ -302,7 +302,7 @@ function CfUnitFrameUtil_UpdateFillBar(frame, previousTexture, bar, amount, barO
 		end
 		return previousTexture;
 	end
-
+	
 	local barOffsetX = 0;
 	if ( barOffsetXPercent ) then
 		local healthbarSizeX = frame.healthbar:GetWidth()
@@ -339,7 +339,7 @@ function CfUnitFrameManaBar_UpdateType(manaBar)
 				manaBar:SetStatusBarColor(1, 1, 1)
 			else
 				manaBar:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-StatusBar")
-				manaBar:SetStatusBarColor(info.r, info.g, info.b);
+				manaBar:SetStatusBarColor(info.r, info.g, info.b)
 			end
 		end
 	else
@@ -367,7 +367,7 @@ function CfUnitFrameHealthBar_Initialize(unit, statusbar, statustext, frequentUp
 	statusbar.frequentUpdates = frequentUpdates;
 	if ( frequentUpdates ) then
 		statusbar:RegisterEvent("VARIABLES_LOADED")
-	end
+	end	
 	if ( GetCVarBool("predictedHealth") and frequentUpdates ) then
 		statusbar:SetScript("OnUpdate", CfUnitFrameHealthBar_OnUpdate)
 	else
@@ -414,7 +414,7 @@ function CfUnitFrameHealthBar_Update(statusbar, unit)
 	if ( not statusbar or statusbar.lockValues ) then
 		return;
 	end
-
+	
 	if ( unit == statusbar.unit ) then
 		local maxValue = UnitHealthMax(unit)
 
@@ -464,7 +464,7 @@ function CfUnitFrameManaBar_Initialize(unit, statusbar, statustext, frequentUpda
 	end
 	statusbar.unit = unit;
 	statusbar:SetBarText(statustext)
-
+	
 	statusbar.frequentUpdates = frequentUpdates;
 	if ( frequentUpdates ) then
 		statusbar:RegisterEvent("VARIABLES_LOADED")

@@ -1,7 +1,5 @@
 if not _G.PetFrame then return end
 
-local _, class = UnitClass("player");
-
 PetFrame:SetSize(128, 53)
 
 PetPortrait:ClearAllPoints()
@@ -15,13 +13,12 @@ PetFrameTexture:SetSize(128, 64)
 PetFrameTexture:SetTexture("Interface\\TargetingFrame\\UI-SmallTargetingFrame")
 PetFrameTexture:ClearAllPoints()
 PetFrameTexture:SetPoint("TOPLEFT", 0, -2)
-PetFrameTexture:SetDrawLayer("ARTWORK", 7)
 
 PetFrameFlash:SetSize(128, 64)
 PetFrameFlash:SetTexture("Interface\\TargetingFrame\\UI-PartyFrame-Flash")
 PetFrameFlash:SetPoint("TOPLEFT", -4, 11)
 PetFrameFlash:SetTexCoord(0, 1, 1, 0)
-PetFrameFlash:SetDrawLayer("BACKGROUND", 0)
+PetFrameFlash:SetDrawLayer("BACKGROUND")
 
 PetFrameHealthBar:SetSize(69, 8)
 PetFrameHealthBar:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
@@ -44,33 +41,18 @@ PetFrameManaBarText:SetParent(PetFrame)
 PetFrameManaBarTextLeft:SetParent(PetFrame)
 PetFrameManaBarTextRight:SetParent(PetFrame)
 
-if class == "WARLOCK" then
-	PetFrameHealthBarText:ClearAllPoints()
-	PetFrameHealthBarText:SetPoint("CENTER", PetFrame, "TOPLEFT", 83, -27)
-	PetFrameHealthBarTextLeft:ClearAllPoints()
-	PetFrameHealthBarTextLeft:SetPoint("LEFT", PetFrame, "TOPLEFT", 46, -27)
-	PetFrameHealthBarTextRight:ClearAllPoints()
-	PetFrameHealthBarTextRight:SetPoint("RIGHT", PetFrame, "TOPLEFT", 113, -27)
-	PetFrameManaBarText:ClearAllPoints()
-	PetFrameManaBarText:SetPoint("CENTER", PetFrame, "TOPLEFT", 83, -36)
-	PetFrameManaBarTextLeft:ClearAllPoints()
-	PetFrameManaBarTextLeft:SetPoint("LEFT", PetFrame, "TOPLEFT", 46, -36)
-	PetFrameManaBarTextRight:ClearAllPoints()
-	PetFrameManaBarTextRight:SetPoint("RIGHT", PetFrame, "TOPLEFT", 113, -36)
-else
-	PetFrameHealthBarText:ClearAllPoints()
-	PetFrameHealthBarText:SetPoint("CENTER", PetFrame, "TOPLEFT", 82, -26)
-	PetFrameHealthBarTextLeft:ClearAllPoints()
-	PetFrameHealthBarTextLeft:SetPoint("LEFT", PetFrame, "TOPLEFT", 47, -26)
-	PetFrameHealthBarTextRight:ClearAllPoints()
-	PetFrameHealthBarTextRight:SetPoint("RIGHT", PetFrame, "TOPLEFT", 113, -26)
-	PetFrameManaBarText:ClearAllPoints()
-	PetFrameManaBarText:SetPoint("CENTER", PetFrame, "TOPLEFT", 82, -35)
-	PetFrameManaBarTextLeft:ClearAllPoints()
-	PetFrameManaBarTextLeft:SetPoint("LEFT", PetFrame, "TOPLEFT", 46, -35)
-	PetFrameManaBarTextRight:ClearAllPoints()
-	PetFrameManaBarTextRight:SetPoint("RIGHT", PetFrame, "TOPLEFT", 113, -35)
-end
+PetFrameHealthBarText:ClearAllPoints()
+PetFrameHealthBarText:SetPoint("CENTER", PetFrame, "TOPLEFT", 82, -26)
+PetFrameHealthBarTextLeft:ClearAllPoints()
+PetFrameHealthBarTextLeft:SetPoint("LEFT", PetFrame, "TOPLEFT", 46, -26)
+PetFrameHealthBarTextRight:ClearAllPoints()
+PetFrameHealthBarTextRight:SetPoint("RIGHT", PetFrame, "TOPLEFT", 113, -26)
+PetFrameManaBarText:ClearAllPoints()
+PetFrameManaBarText:SetPoint("CENTER", PetFrame, "TOPLEFT", 82, -35)
+PetFrameManaBarTextLeft:ClearAllPoints()
+PetFrameManaBarTextLeft:SetPoint("LEFT", PetFrame, "TOPLEFT", 46, -35)
+PetFrameManaBarTextRight:ClearAllPoints()
+PetFrameManaBarTextRight:SetPoint("RIGHT", PetFrame, "TOPLEFT", 113, -35)
 
 PetFrameOverAbsorbGlow:SetParent(PetFrame)
 PetFrameOverAbsorbGlow:SetDrawLayer("ARTWORK", 7)

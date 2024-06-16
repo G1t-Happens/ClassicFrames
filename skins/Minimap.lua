@@ -1,4 +1,4 @@
-if (IsAddOnLoaded("SexyMap")) then return end
+if (C_AddOns.IsAddOnLoaded("SexyMap")) then return end
 
 local ldbi = LibStub ~= nil and LibStub:GetLibrary("LibDBIcon-1.0")
 if (ldbi ~= nil) then
@@ -488,7 +488,7 @@ MiniMapWorldMapButton:GetHighlightTexture():SetPoint("TOPRIGHT", MiniMapWorldMap
 
 MinimapZoneTextButton:SetScript("OnEnter", function(self)
 	GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-	local pvpType, isSubZonePvP, factionName = GetZonePVPInfo()
+	local pvpType, isSubZonePvP, factionName = C_PvP.GetZonePVPInfo()
 	local zoneName = GetZoneText()
 	local subzoneName = GetSubZoneText()
 	if ( subzoneName == zoneName ) then
@@ -564,11 +564,14 @@ Minimap:HookScript("OnEvent", function(self, event, ...)
 		TimeManagerClockTicker:ClearAllPoints()
 		TimeManagerClockTicker:SetPoint("CENTER", TimeManagerClockButton, "CENTER", 3, 1)
 
+		if PlayerGetTimerunningSeasonID() then
+			ExpansionLandingPageMinimapButton:Hide()
+		end
+
 		if (ExpansionLandingPageMinimapButton:GetNormalTexture():GetAtlas() == "dragonflight-landingbutton-up") then
-			ExpansionLandingPageMinimapButton:SetScale(0.84)
+			ExpansionLandingPageMinimapButton:SetScale(0.85)
 			ExpansionLandingPageMinimapButton:ClearAllPoints()
-			ExpansionLandingPageMinimapButton:SetPoint("TOPLEFT", 42, -146)
-			ExpansionLandingPageMinimapButton:SetHighlightTexture("Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight")
+			ExpansionLandingPageMinimapButton:SetPoint("TOPLEFT", 42, -144)
 		else
 			ExpansionLandingPageMinimapButton:ClearAllPoints()
 			ExpansionLandingPageMinimapButton:SetPoint("TOPLEFT", 32, -118)

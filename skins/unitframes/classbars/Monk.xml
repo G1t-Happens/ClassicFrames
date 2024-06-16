@@ -1,5 +1,5 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
-UI_shared.xsd">
+..\Blizzard_SharedXML\UI.xsd">
   <Script file="Monk.lua"/>
 	<Frame name="CfMonkLightEnergyTemplate" parentArray="LightEnergy" virtual="true">
 		<Size x="18" y="17"/>
@@ -33,7 +33,7 @@ UI_shared.xsd">
 				<Scripts>
 					<OnFinished>
 						if self:GetParent():GetParent().hasHarmony then
-							self:Play();
+							self:Play()
 						end
 					</OnFinished>
 				</Scripts>
@@ -41,13 +41,13 @@ UI_shared.xsd">
 		</Animations>
 		<Scripts>
 			<OnEnter>
-				GameTooltip:SetOwner(self:GetParent(), "ANCHOR_BOTTOMRIGHT", 70, 0);
-				GameTooltip:SetText(CHI_POWER, 1, 1, 1);
-				GameTooltip:AddLine(CHI_TOOLTIP, nil, nil, nil, true);
-				GameTooltip:Show();
+				GameTooltip:SetOwner(self:GetParent(), "ANCHOR_BOTTOMRIGHT", 70, 0)
+				GameTooltip:SetText(CHI_POWER, 1, 1, 1)
+				GameTooltip:AddLine(CHI_TOOLTIP, nil, nil, nil, true)
+				GameTooltip:Show()
 			</OnEnter>
 			<OnLeave>
-				GameTooltip:Hide();
+				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
 	</Frame>

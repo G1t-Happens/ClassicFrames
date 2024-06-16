@@ -1,5 +1,5 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
-UI_shared.xsd">
+..\Blizzard_SharedXML\UI.xsd">
 	<Script file="TargetFrame.lua"/>
 	<Button name="CfTargetFrameTemplate" virtual="true">
 		<Size x="232" y="100"/>
@@ -86,16 +86,16 @@ UI_shared.xsd">
 				</Anchors>
 				<Scripts>
 					<OnLoad>
-						TextStatusBar_Initialize(self);
+						self:InitializeTextStatusBar()
 						self.textLockable = 1;
 						self.cvar = "statusText";
 						self.cvarLabel = "STATUS_TEXT_TARGET";
 						self.zeroText = "";
-						self:EnableMouse(false);
+						self:SetMouseClickEnabled(false)
 					</OnLoad>
 					<OnValueChanged function="CfUnitFrameHealthBar_OnValueChanged"/>
 					<OnSizeChanged>
-						CfUnitFrameHealPredictionBars_UpdateSize(self:GetParent());
+						CfUnitFrameHealPredictionBars_UpdateSize(self:GetParent())
 					</OnSizeChanged>
 				</Scripts>
 				<BarTexture file="Interface\TargetingFrame\UI-StatusBar"/>
@@ -107,11 +107,11 @@ UI_shared.xsd">
 				</Anchors>
 				<Scripts>
 					<OnLoad>
-						TextStatusBar_Initialize(self);
+						self:InitializeTextStatusBar()
 						self.textLockable = 1;
 						self.cvar = "statusText";
 						self.cvarLabel = "STATUS_TEXT_TARGET";
-						self:EnableMouse(false);
+						self:SetMouseClickEnabled(false)
 					</OnLoad>
 				</Scripts>
 				<BarTexture file="Interface\TargetingFrame\UI-StatusBar"/>
@@ -128,7 +128,7 @@ UI_shared.xsd">
 		</Anchors>
 		<Scripts>
 			<OnLoad>
-				CfTargetFrame_OnLoad(self, "target");
+				CfTargetFrame_OnLoad(self, "target")
 			</OnLoad>
 		</Scripts>
 	</Button>
@@ -138,7 +138,7 @@ UI_shared.xsd">
 		</Anchors>
 		<Scripts>
 			<OnLoad>
-				CfTargetFrame_OnLoad(self, "focus");
+				CfTargetFrame_OnLoad(self, "focus")
 			</OnLoad>
 		</Scripts>
 	</Button>

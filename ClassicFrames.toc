@@ -1,4 +1,4 @@
-## Interface: 100207, 110000
+## Interface: 100207
 ## IconTexture: Interface/Icons/INV_Sword_2H_AshbringerCorrupt
 ## Title: Classic Frames
 ## Notes: Restores the Pre-10.0 UI frames with a focus on PvP, minimalism, and performance.
@@ -7,16 +7,15 @@
 ## OptionalDeps: SexyMap
 libs\TaintLess\TaintLess.xml
 embeds.xml
-skins\Castbar.lua
 skins\Minimap.lua
 skins\unitframes\UnitFrame.xml
 skins\unitframes\PlayerFrame.xml
 skins\unitframes\TargetFrame.xml
+skins\unitframes\CastBar.lua
 skins\unitframes\PetFrame.lua
 skins\unitframes\classbars\ClassPowerBar.xml
 skins\unitframes\classbars\Combo.xml
 skins\unitframes\classbars\DK.xml
-skins\unitframes\classbars\Evoker.xml
 skins\unitframes\classbars\Mage.xml
 skins\unitframes\classbars\Monk.xml
 skins\unitframes\classbars\Paladin.xml
