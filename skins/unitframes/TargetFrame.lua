@@ -150,7 +150,6 @@ local function SkinFrame(frame)
 	end)
 
 	hooksecurefunc(frame, "CheckClassification", function(self)
-		local classification = UnitClassification(self.unit)
 
 		FrameHealthBar:SetAlpha(0)
 		FrameManaBar:SetAlpha(0)
