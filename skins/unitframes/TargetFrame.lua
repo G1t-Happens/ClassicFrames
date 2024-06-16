@@ -225,28 +225,20 @@ local function SkinFrame(frame)
 		frame.totFrame.FrameTexture:SetTexCoord(0.015625, 0.7265625, 0, 0.703125)
 		frame.totFrame.FrameTexture:ClearAllPoints()
 		frame.totFrame.FrameTexture:SetPoint("TOPLEFT", 0, 0)
-
 		frame.totFrame.Portrait:SetSize(35, 35)
-
-		frame.totFrame.Name:SetWidth(100)
-		frame.totFrame.Name:ClearAllPoints()
-		frame.totFrame.Name:SetPoint("BOTTOMLEFT", 42, 6)
-		
+		frame.totFrame.Name:Hide()
 		frame.totFrame.HealthBar:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
 		frame.totFrame.HealthBar:SetStatusBarColor(0, 1, 0)
 		frame.totFrame.HealthBar:SetSize(46, 7)
 		frame.totFrame.HealthBar:ClearAllPoints()
 		frame.totFrame.HealthBar:SetPoint("BOTTOMRIGHT", frame.totFrame, "TOPLEFT", 91, -22)
 		frame.totFrame.HealthBar:SetFrameLevel(1)
-
 		frame.totFrame.HealthBar.DeadText:SetParent(frame.totFrame)
 		frame.totFrame.HealthBar.DeadText:ClearAllPoints()
 		frame.totFrame.HealthBar.DeadText:SetPoint("LEFT", 48, 3)
-
 		frame.totFrame.HealthBar.UnconsciousText:SetParent(frame.totFrame)
 		frame.totFrame.HealthBar.UnconsciousText:ClearAllPoints()
 		frame.totFrame.HealthBar.UnconsciousText:SetPoint("LEFT", 48, 3)
-		
 		frame.totFrame.ManaBar:SetSize(46, 7)
 		frame.totFrame.ManaBar:ClearAllPoints()
 		frame.totFrame.ManaBar:SetPoint("BOTTOMRIGHT", frame.totFrame, "TOPLEFT", 91, -31)
