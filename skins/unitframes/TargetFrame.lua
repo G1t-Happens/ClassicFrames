@@ -242,18 +242,13 @@ local function SkinFrame(frame)
 		frame.totFrame.ManaBar:ClearAllPoints()
 		frame.totFrame.ManaBar:SetPoint("BOTTOMRIGHT", frame.totFrame, "TOPLEFT", 91, -31)
 		frame.totFrame.ManaBar:SetFrameLevel(1)
-
-		hooksecurefunc("TargetFrame_UpdateBuffAnchor", function(self)
-			if self.totFrame then
-				for i = 1, 4 do
-					local debuffIcon = _G[self.totFrame:GetName() .. "Debuff" .. i]
-					if debuffIcon then
-						debuffIcon:ClearAllPoints()
-						debuffIcon:Hide()
-					end
-				end
+		for i = 1, 4 do
+			local debuffIcon = _G[frame.totFrame:GetName() .. "Debuff" .. i]
+			if debuffIcon then
+				debuffIcon:ClearAllPoints()
+				debuffIcon:Hide()
 			end
-		end)
+		end
 	end
 end
 
