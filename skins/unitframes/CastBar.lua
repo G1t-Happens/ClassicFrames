@@ -56,7 +56,7 @@ local function SkinTargetCastbar(self)
     SetLook(self)
 
     hooksecurefunc(self, 'UpdateShownState', function()
-        self:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
+        self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-StatusBar")
         self.Spark:SetTexture("Interface\\CastingBar\\UI-CastingBar-Spark")
         self.Spark:SetSize(32, 32)
         self.Spark:ClearAllPoints()
@@ -72,12 +72,12 @@ local function SkinTargetCastbar(self)
     end)
 
     hooksecurefunc(self, 'PlayInterruptAnims', function()
-        self:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
+        self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-StatusBar")
         self.Spark:Hide()
     end)
 
     hooksecurefunc(self, 'PlayFinishAnim', function()
-        self:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
+        self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-StatusBar")
         if (self.NewFlash == nil) then
             self.NewFlash = self.Flash:GetParent():CreateTexture(nil, "OVERLAY")
             self.NewFlash:SetSize(0, 49)
