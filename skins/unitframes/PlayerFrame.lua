@@ -400,6 +400,7 @@ PlayerAttackBackground:SetPoint("TOPLEFT", PlayerAttackIcon, "TOPLEFT", -3, -1)
 hooksecurefunc("PlayerFrame_UpdateStatus", function()
 	PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.AttackIcon:Hide()
 	PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.PlayerPortraitCornerIcon:Hide()
+	PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.StatusTexture:Hide()
 
 	if ( UnitHasVehiclePlayerFrameUI("player") ) then
 		PlayerAttackIcon:Hide()
