@@ -33,10 +33,7 @@ PlayerFrame.PlayerFrameContainer.PlayerPortraitMask:SetTexture("Interface/CHARAC
 
 PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HealthBarArea:Hide()
 PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.ManaBarArea:Hide()
-
-PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HitIndicator:SetParent(PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual)
-PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HitIndicator.HitText:ClearAllPoints()
-PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HitIndicator.HitText:SetPoint("CENTER", PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HitIndicator, "TOPLEFT", 54, -46)
+PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HitIndicator:Hide()
 
 
 if (PlayerFrame.nameBackground == nil) then
