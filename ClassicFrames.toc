@@ -1,4 +1,4 @@
-## Interface: 100207
+## Interface: 110000
 ## IconTexture: Interface/Icons/INV_Sword_2H_AshbringerCorrupt
 ## Title: Classic Frames
 ## Notes: Restores the Pre-10.0 UI frames with a focus on PvP, minimalism, and performance.

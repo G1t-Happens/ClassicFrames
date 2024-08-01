@@ -95,7 +95,7 @@ end
 local function SkinFrame(frame)
 	local contextual = frame.TargetFrameContent.TargetFrameContentContextual;
 	local contentMain = frame.TargetFrameContent.TargetFrameContentMain;
-	local FrameHealthBar = contentMain.HealthBar;
+	local FrameHealthBar = contentMain.HealthBarsContainer.HealthBar;
 	local FrameManaBar = contentMain.ManaBar;
 
 	contextual:SetFrameStrata("MEDIUM")
@@ -141,6 +141,11 @@ local function SkinFrame(frame)
 	questIcon:SetTexture("Interface\\TargetingFrame\\PortraitQuestBadge")
 	questIcon:ClearAllPoints()
 	questIcon:SetPoint("TOP", 32, -16)
+
+	if ComboFrame then
+		ComboFrame:ClearAllPoints()
+		ComboFrame:SetPoint("TOPRIGHT", TargetFrame, "TOPRIGHT", -24, -13)
+	end
 
 	hooksecurefunc(frame, "CheckBattlePet", function(self)
 		local petBattle = contextual.PetBattleIcon;

@@ -31,7 +31,7 @@ PlayerFrame.PlayerFrameContainer.PlayerPortrait:ClearAllPoints()
 PlayerFrame.PlayerFrameContainer.PlayerPortrait:SetPoint("TOPLEFT", 23, -16)
 PlayerFrame.PlayerFrameContainer.PlayerPortraitMask:SetTexture("Interface/CHARACTERFRAME/TempPortraitAlphaMask", "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
 
-PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HealthBarArea:Hide()
+PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HealthBarsContainer:Hide()
 PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.ManaBarArea:Hide()
 PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HitIndicator:Hide()
 
