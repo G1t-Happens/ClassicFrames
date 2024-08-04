@@ -232,7 +232,7 @@ end
 hooksecurefunc(QueueStatusButton, "UpdatePosition", function(self)
 	self:SetParent(MinimapBackdrop)
 	self:SetSize(33, 33)
-	self:SetScale(1.2)
+	self:SetScale(1.1)
 	self:ClearAllPoints()
 	self:SetPoint("TOPLEFT", 22, -100)
 	self:SetFrameLevel(6)
