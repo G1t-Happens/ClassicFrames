@@ -5,9 +5,8 @@
 ## Author: I made some changes to his addon, but most of the credit should go to luckfore(https://legacy.curseforge.com/members/luckfore)
 ## Version: 1.6
 ## OptionalDeps: SexyMap
-libs\TaintLess\TaintLess.xml
 embeds.xml
-skins\Minimap.lua
+libs\TaintLess\TaintLess.xml
 skins\unitframes\UnitFrame.xml
 skins\unitframes\PlayerFrame.xml
 skins\unitframes\TargetFrame.xml
@@ -20,3 +19,5 @@ skins\unitframes\classbars\Mage.xml
 skins\unitframes\classbars\Monk.xml
 skins\unitframes\classbars\Paladin.xml
 skins\unitframes\classbars\Warlock.xml
+skins\Buffs.lua
+skins\Minimap.lua
