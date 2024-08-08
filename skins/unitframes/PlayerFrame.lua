@@ -276,15 +276,11 @@ hooksecurefunc("PlayerFrame_ToVehicleArt", function(self)
 	elseif ( class == "DEATHKNIGHT" ) then
 		CfRuneFrame:Hide()
 	end
-
 	ComboPointPlayerFrame:Setup()
 end)
 
 hooksecurefunc("PlayerFrame_UpdateLevel", function()
-	PlayerLevelText:SetParent(PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual)
-	PlayerLevelText:SetDrawLayer("ARTWORK")
-	PlayerLevelText:ClearAllPoints()
-	PlayerLevelText:SetPoint("CENTER", -80, -21)
+	PlayerLevelText:Hide()
 end)
 
 hooksecurefunc("PlayerFrame_UpdatePartyLeader", function()
@@ -357,33 +353,6 @@ PlayerFrame:HookScript("OnEvent", function(self)
 	if (RuneFrame) then
 		RuneFrame:UnregisterAllEvents()
 		RuneFrame:Hide()
-	end
-end)
-
-PlayerFrame:HookScript("OnUpdate", function(self)
-	if (self.PlayerFrameContent.PlayerFrameContentMain.StatusTexture:IsShown()) then
-		local alpha = 255
-		local counter = self.statusCounter
-		local sign = self.statusSign
-
-		if (counter > 0.5) then
-			sign = -sign
-			self.statusSign = sign
-		end
-		counter = mod(counter, 0.5)
-		self.statusCounter = counter
-
-		if (sign == 1) then
-			alpha = (55 + (counter * 400)) / 255
-		else
-			alpha = (255 - (counter * 400)) / 255
-		end
-		if (self.PlayerFrameContent.PlayerFrameContentContextual.PlayerAttackGlow:IsShown()) then
-			self.PlayerFrameContent.PlayerFrameContentContextual.PlayerAttackGlow:SetAlpha(alpha)
-		end
-		if (self.PlayerFrameContent.PlayerFrameContentContextual.PlayerRestGlow:IsShown()) then
-			self.PlayerFrameContent.PlayerFrameContentContextual.PlayerRestGlow:SetAlpha(alpha)
-		end
 	end
 end)
 
