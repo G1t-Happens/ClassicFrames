@@ -34,10 +34,10 @@ PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.ManaBarArea:Hide()
 PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HitIndicator:Hide()
 
 if (PlayerFrame.nameBackground == nil) then
-	PlayerFrame.nameBackground = PlayerFrame.PlayerFrameContainer:CreateTexture(nil, "BACKGROUND")
+	PlayerFrame.nameBackground = PlayerFrame.PlayerFrameContent.PlayerFrameContentMain:CreateTexture(nil, "BACKGROUND")
 	PlayerFrame.nameBackground:SetSize(118, 19)
 	PlayerFrame.nameBackground:ClearAllPoints()
-	PlayerFrame.nameBackground:SetPoint("CENTER", PlayerFrame.PlayerFrameContainer.FrameTexture, 50, 17)
+	PlayerFrame.nameBackground:SetPoint("CENTER", PlayerFrame.PlayerFrameContent.PlayerFrameContentMain, 32, 13)
 	local _, Class = UnitClass("Player")
 	local Color = RAID_CLASS_COLORS[Class]
 	PlayerFrame.nameBackground:SetColorTexture(Color.r, Color.g, Color.b)
