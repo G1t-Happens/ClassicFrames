@@ -338,101 +338,14 @@ hooksecurefunc("PlayerFrame_UpdatePvPStatus", function()
 end)
 
 hooksecurefunc("PlayerFrame_UpdateRolesAssigned", function()
-	local roleIcon = PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.RoleIcon
-	local role =  UnitGroupRolesAssigned("player")
-
-	roleIcon:SetSize(19, 19)
-	roleIcon:SetTexture("Interface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES")
-
-	if ( role == "TANK" or role == "HEALER" or role == "DAMAGER") then
-		roleIcon:SetTexCoord(GetTexCoordsForRoleSmallCircle(role))
-		roleIcon:Show()
-	else
-		roleIcon:Hide()
-	end
-
-	if (UnitHasVehiclePlayerFrameUI("player")) then
-		PlayerLevelText:Hide()
-	else
-		PlayerLevelText:Show()
-	end
+	PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.RoleIcon:Hide()
+	PlayerLevelText:Hide()
 end)
-
-local PlayerRestIcon = PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual:CreateTexture(nil, "OVERLAY")
-PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.PlayerRestIcon = PlayerRestIcon
-PlayerRestIcon:SetSize(31, 31)
-PlayerRestIcon:SetTexture("Interface\\CharacterFrame\\UI-StateIcon")
-PlayerRestIcon:SetTexCoord(0, 0.5, 0, 0.421875)
-PlayerRestIcon:SetPoint("TOPLEFT", 20, -54)
-
-local PlayerRestGlow = PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual:CreateTexture(nil, "OVERLAY")
-PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.PlayerRestGlow = PlayerRestGlow
-PlayerRestGlow:SetSize(32, 32)
-PlayerRestGlow:SetTexture("Interface\\CharacterFrame\\UI-StateIcon")
-PlayerRestGlow:SetTexCoord(0, 0.5, 0.5, 1)
-PlayerRestGlow:SetBlendMode("ADD")
-PlayerRestGlow:SetPoint("TOPLEFT", PlayerRestIcon, "TOPLEFT")
-
-local PlayerAttackIcon = PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual:CreateTexture(nil, "OVERLAY")
-PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.PlayerAttackIcon = PlayerAttackIcon
-PlayerAttackIcon:SetSize(32, 31)
-PlayerAttackIcon:SetTexture("Interface\\CharacterFrame\\UI-StateIcon")
-PlayerAttackIcon:SetTexCoord(0.5, 1.0, 0, 0.484375)
-PlayerAttackIcon:SetPoint("TOPLEFT", PlayerRestIcon, "TOPLEFT", 1, 1)
-
-local PlayerAttackGlow = PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual:CreateTexture(nil, "OVERLAY")
-PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.PlayerAttackGlow = PlayerAttackGlow
-PlayerAttackGlow:SetSize(32, 32)
-PlayerAttackGlow:SetTexture("Interface\\CharacterFrame\\UI-StateIcon")
-PlayerAttackGlow:SetTexCoord(0.5, 1, 0.5, 1)
-PlayerAttackGlow:SetVertexColor(1, 0, 0)
-PlayerAttackGlow:SetBlendMode("ADD")
-PlayerAttackGlow:SetPoint("TOPLEFT", PlayerAttackIcon, "TOPLEFT")
-
-local PlayerAttackBackground = PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual:CreateTexture(nil, "ARTWORK")
-PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.PlayerAttackBackground = PlayerAttackBackground
-PlayerAttackBackground:SetSize(32, 32)
-PlayerAttackBackground:SetTexture("Interface\\TargetingFrame\\UI-TargetingFrame-AttackBackground")
-PlayerAttackBackground:SetVertexColor(0.8, 0.1, 0.1)
-PlayerAttackBackground:SetAlpha(0.4)
-PlayerAttackBackground:SetPoint("TOPLEFT", PlayerAttackIcon, "TOPLEFT", -3, -1)
 
 hooksecurefunc("PlayerFrame_UpdateStatus", function()
 	PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.AttackIcon:Hide()
 	PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.PlayerPortraitCornerIcon:Hide()
 	PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.StatusTexture:Hide()
-
-	if ( UnitHasVehiclePlayerFrameUI("player") ) then
-		PlayerAttackIcon:Hide()
-		PlayerAttackGlow:Hide()
-		PlayerRestIcon:Hide()
-		PlayerRestGlow:Hide()
-		PlayerAttackBackground:Hide()
-	elseif ( IsResting() ) then
-		PlayerAttackIcon:Hide()
-		PlayerAttackGlow:Hide()
-		PlayerRestIcon:Show()
-		PlayerRestGlow:Show()
-		PlayerAttackBackground:Hide()
-	elseif ( PlayerFrame.inCombat ) then
-		PlayerAttackIcon:Show()
-		PlayerAttackGlow:Show()
-		PlayerRestIcon:Hide()
-		PlayerRestGlow:Hide()
-		PlayerAttackBackground:Show()
-	elseif ( PlayerFrame.onHateList ) then
-		PlayerAttackIcon:Show()
-		PlayerAttackGlow:Hide()
-		PlayerRestIcon:Hide()
-		PlayerRestGlow:Hide()
-		PlayerAttackBackground:Hide()
-	else
-		PlayerAttackIcon:Hide()
-		PlayerAttackGlow:Hide()
-		PlayerRestIcon:Hide()
-		PlayerRestGlow:Hide()
-		PlayerAttackBackground:Hide()
-	end
 end)
 
 PlayerFrame:HookScript("OnEvent", function(self)
