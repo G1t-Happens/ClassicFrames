@@ -302,7 +302,7 @@ hooksecurefunc("PlayerFrame_UpdatePartyLeader", function()
 	guideIcon:SetPoint("TOPLEFT", 21, -16)
 end)
 
-if IsAddOnLoaded("BigDebuffs") then
+if C_AddOns.IsAddOnLoaded("BigDebuffs") then
 	hooksecurefunc(BigDebuffs, "UNIT_AURA", function(self, unit)
 		local Frame = self.UnitFrames[unit]
 		if not Frame then
