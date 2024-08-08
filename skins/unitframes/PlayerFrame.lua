@@ -25,28 +25,23 @@ end
 
 PlayerFrame.PlayerFrameContainer:SetFrameLevel(4)
 PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual:SetFrameLevel(5)
-
 PlayerFrame.PlayerFrameContainer.PlayerPortrait:SetSize(64, 64)
 PlayerFrame.PlayerFrameContainer.PlayerPortrait:ClearAllPoints()
 PlayerFrame.PlayerFrameContainer.PlayerPortrait:SetPoint("TOPLEFT", 23, -16)
 PlayerFrame.PlayerFrameContainer.PlayerPortraitMask:SetTexture("Interface/CHARACTERFRAME/TempPortraitAlphaMask", "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
-
 PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HealthBarsContainer:Hide()
 PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.ManaBarArea:Hide()
 PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HitIndicator:Hide()
 
-
 if (PlayerFrame.nameBackground == nil) then
-	PlayerFrame.nameBackground = PlayerFrame.PlayerFrameContainer:CreateTexture(nil, "BORDER")
+	PlayerFrame.nameBackground = PlayerFrame.PlayerFrameContainer:CreateTexture(nil, "BACKGROUND")
 	PlayerFrame.nameBackground:SetSize(118, 19)
 	PlayerFrame.nameBackground:ClearAllPoints()
 	PlayerFrame.nameBackground:SetPoint("CENTER", PlayerFrame.PlayerFrameContainer.FrameTexture, 50, 17)
-	PlayerFrame.nameBackground:SetDrawLayer("BACKGROUND", 0)
 	local _, Class = UnitClass("Player")
 	local Color = RAID_CLASS_COLORS[Class]
 	PlayerFrame.nameBackground:SetColorTexture(Color.r, Color.g, Color.b)
 end
-
 
 if (_G.AlternatePowerBar) then
 	AlternatePowerBar:SetSize(104, 12)
@@ -222,7 +217,7 @@ hooksecurefunc("PlayerFrame_ToPlayerArt", function(self)
 	CfPlayerFrameManaBar:SetWidth(119)
 	CfPlayerFrameManaBar:SetPoint("TOPLEFT",106,-52)
 	CfPlayerFrameBackground:SetSize(119, 41)
-	PlayerLevelText:Show()
+	PlayerLevelText:Hide()
 
 	CfUnitFrame_SetUnit(CfPlayerFrame, "player", CfPlayerFrameHealthBar, CfPlayerFrameManaBar)
 
@@ -262,6 +257,7 @@ hooksecurefunc("PlayerFrame_ToVehicleArt", function(self)
 	PlayerName:SetParent(self.PlayerFrameContainer)
 	PlayerName:ClearAllPoints()
 	PlayerName:SetPoint("TOPLEFT", self.PlayerFrameContainer, "TOPLEFT", 97, -25.5)
+	PlayerName:SetFont("Fonts\\FRIZQT__.TTF", 11, "OUTLINE")
 
 	CfPlayerFrameHealthBar:SetWidth(100)
 	CfPlayerFrameHealthBar:SetPoint("TOPLEFT",119,-41)
@@ -317,7 +313,11 @@ if C_AddOns.IsAddOnLoaded("BigDebuffs") then
 end
 
 hooksecurefunc("PlayerFrame_UpdatePlayerNameTextAnchor", function()
-	PlayerName:Hide()
+	PlayerName:SetWidth(100)
+	PlayerName:ClearAllPoints()
+	PlayerName:SetPoint("TOPLEFT", 97, -30)
+	PlayerName:SetJustifyH("CENTER")
+	PlayerName:SetFont("Fonts\\FRIZQT__.TTF", 11, "OUTLINE")
 end)
 
 hooksecurefunc("PlayerFrame_UpdatePlayerRestLoop", function()
