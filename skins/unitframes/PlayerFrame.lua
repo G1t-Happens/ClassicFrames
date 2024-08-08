@@ -183,14 +183,14 @@ end
 
 hooksecurefunc("PlayerFrame_ToPlayerArt", function(self)
 	self.PlayerFrameContainer.FrameTexture:SetSize(232, 100)
-	self.PlayerFrameContainer.FrameTexture:SetTexture("Interface\\TargetingFrame\\UI-TargetingFrame")
+	self.PlayerFrameContainer.FrameTexture:SetTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-TargetingFrameNoLevel")
 	self.PlayerFrameContainer.FrameTexture:SetTexCoord(1, 0.09375, 0, 0.78125)
 	self.PlayerFrameContainer.FrameTexture:ClearAllPoints()
 	self.PlayerFrameContainer.FrameTexture:SetPoint("TOPLEFT", -19, -4)
 	self.PlayerFrameContainer.FrameTexture:SetDrawLayer("BORDER")
 
 	self.PlayerFrameContainer.AlternatePowerFrameTexture:SetSize(232, 100)
-	self.PlayerFrameContainer.AlternatePowerFrameTexture:SetTexture("Interface\\TargetingFrame\\UI-TargetingFrame")
+	self.PlayerFrameContainer.AlternatePowerFrameTexture:SetTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-TargetingFrameNoLevel")
 	self.PlayerFrameContainer.AlternatePowerFrameTexture:SetTexCoord(1, 0.09375, 0, 0.78125)
 	self.PlayerFrameContainer.AlternatePowerFrameTexture:ClearAllPoints()
 	self.PlayerFrameContainer.AlternatePowerFrameTexture:SetPoint("TOPLEFT", -19, -4)
