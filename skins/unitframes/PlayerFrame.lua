@@ -259,7 +259,9 @@ hooksecurefunc("PlayerFrame_ToVehicleArt", function(self)
 	self.PlayerFrameContent.PlayerFrameContentContextual.GroupIndicator:SetPoint("BOTTOMLEFT", CfPlayerFrame, "TOPLEFT", 97, -13)
 	self.PlayerFrameContent.PlayerFrameContentContextual.RoleIcon:SetPoint("TOPLEFT", 76, -19)
 
-	PlayerName:Hide()
+	PlayerName:SetParent(self.PlayerFrameContainer)
+	PlayerName:ClearAllPoints()
+	PlayerName:SetPoint("TOPLEFT", self.PlayerFrameContainer, "TOPLEFT", 97, -25.5)
 
 	CfPlayerFrameHealthBar:SetWidth(100)
 	CfPlayerFrameHealthBar:SetPoint("TOPLEFT",119,-41)
