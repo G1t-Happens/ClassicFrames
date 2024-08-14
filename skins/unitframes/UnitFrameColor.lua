@@ -34,7 +34,7 @@ local function ColorFrames()
 
     for _, v in pairs(frames) do
         if v then
-            v:SetVertexColor(0.2, 0.2, 0.2)
+            v:SetVertexColor(0.6, 0.6, 0.6)
         end
     end
 end
