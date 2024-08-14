@@ -1,21 +1,29 @@
 local function ColorFrames()
     local frames = {
         PlayerFrame.PlayerFrameContainer.FrameTexture,
-        TargetFrame.TargetFrameContainer.FrameTexture,
-        FocusFrame.TargetFrameContainer.FrameTexture,
-        PetFrameTexture,
+        PlayerFrame.PlayerFrameContainer.AlternatePowerFrameTexture,
+        AlternatePowerBar.Border,
+        AlternatePowerBar.RightBorder,
+        AlternatePowerBar.LeftBorder,
         PlayerCastingBarFrame.Background,
         PlayerCastingBarFrame.Border,
         PlayerCastingBarFrame.BorderShield,
         PlayerCastingBarFrame.TextBorder,
+
+        PetFrameTexture,
+
+        TargetFrame.TargetFrameContainer.FrameTexture,
         TargetFrameSpellBar.Background,
         TargetFrameSpellBar.Border,
         TargetFrameSpellBar.TextBorder,
         TargetFrameSpellBar.BorderShield,
+
+        FocusFrame.TargetFrameContainer.FrameTexture,
         FocusFrameSpellBar.Background,
         FocusFrameSpellBar.Border,
         FocusFrameSpellBar.TextBorder,
         FocusFrameSpellBar.BorderShield,
+
         MiniMapTrackingButtonBorder,
         MinimapBorder,
         MiniMapMailBorder,

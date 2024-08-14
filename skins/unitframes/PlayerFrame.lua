@@ -25,28 +25,23 @@ end
 
 PlayerFrame.PlayerFrameContainer:SetFrameLevel(4)
 PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual:SetFrameLevel(5)
-
 PlayerFrame.PlayerFrameContainer.PlayerPortrait:SetSize(64, 64)
 PlayerFrame.PlayerFrameContainer.PlayerPortrait:ClearAllPoints()
 PlayerFrame.PlayerFrameContainer.PlayerPortrait:SetPoint("TOPLEFT", 23, -16)
 PlayerFrame.PlayerFrameContainer.PlayerPortraitMask:SetTexture("Interface/CHARACTERFRAME/TempPortraitAlphaMask", "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
-
 PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HealthBarsContainer:Hide()
 PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.ManaBarArea:Hide()
 PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HitIndicator:Hide()
 
-
 if (PlayerFrame.nameBackground == nil) then
-	PlayerFrame.nameBackground = PlayerFrame.PlayerFrameContainer:CreateTexture(nil, "BORDER")
+	PlayerFrame.nameBackground = PlayerFrame.PlayerFrameContent.PlayerFrameContentMain:CreateTexture(nil, "BACKGROUND")
 	PlayerFrame.nameBackground:SetSize(118, 19)
 	PlayerFrame.nameBackground:ClearAllPoints()
-	PlayerFrame.nameBackground:SetPoint("CENTER", PlayerFrame.PlayerFrameContainer.FrameTexture, 50, 17)
-	PlayerFrame.nameBackground:SetDrawLayer("BACKGROUND", 0)
+	PlayerFrame.nameBackground:SetPoint("CENTER", PlayerFrame.PlayerFrameContent.PlayerFrameContentMain, 32, 13)
 	local _, Class = UnitClass("Player")
 	local Color = RAID_CLASS_COLORS[Class]
 	PlayerFrame.nameBackground:SetColorTexture(Color.r, Color.g, Color.b)
 end
-
 
 if (_G.AlternatePowerBar) then
 	AlternatePowerBar:SetSize(104, 12)
@@ -183,14 +178,14 @@ end
 
 hooksecurefunc("PlayerFrame_ToPlayerArt", function(self)
 	self.PlayerFrameContainer.FrameTexture:SetSize(232, 100)
-	self.PlayerFrameContainer.FrameTexture:SetTexture("Interface\\TargetingFrame\\UI-TargetingFrame")
+	self.PlayerFrameContainer.FrameTexture:SetTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-TargetingFrameNoLevel")
 	self.PlayerFrameContainer.FrameTexture:SetTexCoord(1, 0.09375, 0, 0.78125)
 	self.PlayerFrameContainer.FrameTexture:ClearAllPoints()
 	self.PlayerFrameContainer.FrameTexture:SetPoint("TOPLEFT", -19, -4)
 	self.PlayerFrameContainer.FrameTexture:SetDrawLayer("BORDER")
 
 	self.PlayerFrameContainer.AlternatePowerFrameTexture:SetSize(232, 100)
-	self.PlayerFrameContainer.AlternatePowerFrameTexture:SetTexture("Interface\\TargetingFrame\\UI-TargetingFrame")
+	self.PlayerFrameContainer.AlternatePowerFrameTexture:SetTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-TargetingFrameNoLevel")
 	self.PlayerFrameContainer.AlternatePowerFrameTexture:SetTexCoord(1, 0.09375, 0, 0.78125)
 	self.PlayerFrameContainer.AlternatePowerFrameTexture:ClearAllPoints()
 	self.PlayerFrameContainer.AlternatePowerFrameTexture:SetPoint("TOPLEFT", -19, -4)
@@ -222,7 +217,8 @@ hooksecurefunc("PlayerFrame_ToPlayerArt", function(self)
 	CfPlayerFrameManaBar:SetWidth(119)
 	CfPlayerFrameManaBar:SetPoint("TOPLEFT",106,-52)
 	CfPlayerFrameBackground:SetSize(119, 41)
-	PlayerLevelText:Show()
+	PlayerFrame.nameBackground:SetSize(118, 19)
+	PlayerLevelText:Hide()
 
 	CfUnitFrame_SetUnit(CfPlayerFrame, "player", CfPlayerFrameHealthBar, CfPlayerFrameManaBar)
 
@@ -259,13 +255,17 @@ hooksecurefunc("PlayerFrame_ToVehicleArt", function(self)
 	self.PlayerFrameContent.PlayerFrameContentContextual.GroupIndicator:SetPoint("BOTTOMLEFT", CfPlayerFrame, "TOPLEFT", 97, -13)
 	self.PlayerFrameContent.PlayerFrameContentContextual.RoleIcon:SetPoint("TOPLEFT", 76, -19)
 
-	PlayerName:Hide()
+	PlayerName:SetParent(self.PlayerFrameContainer)
+	PlayerName:ClearAllPoints()
+	PlayerName:SetPoint("TOPLEFT", self.PlayerFrameContainer, "TOPLEFT", 97, -25.5)
+	PlayerName:SetFont("Fonts\\FRIZQT__.TTF", 11, "OUTLINE")
 
 	CfPlayerFrameHealthBar:SetWidth(100)
 	CfPlayerFrameHealthBar:SetPoint("TOPLEFT",119,-41)
 	CfPlayerFrameManaBar:SetWidth(100)
 	CfPlayerFrameManaBar:SetPoint("TOPLEFT",119,-52)
-	CfPlayerFrameBackground:SetSize(114, 41)
+	CfPlayerFrameBackground:SetSize(112, 41)
+	PlayerFrame.nameBackground:SetSize(112, 19)
 	PlayerLevelText:Hide()
 
 	CfUnitFrame_SetUnit(CfPlayerFrame, "vehicle", CfPlayerFrameHealthBar, CfPlayerFrameManaBar)
@@ -276,15 +276,11 @@ hooksecurefunc("PlayerFrame_ToVehicleArt", function(self)
 	elseif ( class == "DEATHKNIGHT" ) then
 		CfRuneFrame:Hide()
 	end
-
 	ComboPointPlayerFrame:Setup()
 end)
 
 hooksecurefunc("PlayerFrame_UpdateLevel", function()
-	PlayerLevelText:SetParent(PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual)
-	PlayerLevelText:SetDrawLayer("ARTWORK")
-	PlayerLevelText:ClearAllPoints()
-	PlayerLevelText:SetPoint("CENTER", -80, -21)
+	PlayerLevelText:Hide()
 end)
 
 hooksecurefunc("PlayerFrame_UpdatePartyLeader", function()
@@ -302,7 +298,7 @@ hooksecurefunc("PlayerFrame_UpdatePartyLeader", function()
 	guideIcon:SetPoint("TOPLEFT", 21, -16)
 end)
 
-if IsAddOnLoaded("BigDebuffs") then
+if C_AddOns.IsAddOnLoaded("BigDebuffs") then
 	hooksecurefunc(BigDebuffs, "UNIT_AURA", function(self, unit)
 		local Frame = self.UnitFrames[unit]
 		if not Frame then
@@ -319,7 +315,11 @@ if IsAddOnLoaded("BigDebuffs") then
 end
 
 hooksecurefunc("PlayerFrame_UpdatePlayerNameTextAnchor", function()
-	PlayerName:Hide()
+	PlayerName:SetWidth(100)
+	PlayerName:ClearAllPoints()
+	PlayerName:SetPoint("TOPLEFT", 97, -30)
+	PlayerName:SetJustifyH("CENTER")
+	PlayerName:SetFont("Fonts\\FRIZQT__.TTF", 11, "OUTLINE")
 end)
 
 hooksecurefunc("PlayerFrame_UpdatePlayerRestLoop", function()
@@ -338,101 +338,14 @@ hooksecurefunc("PlayerFrame_UpdatePvPStatus", function()
 end)
 
 hooksecurefunc("PlayerFrame_UpdateRolesAssigned", function()
-	local roleIcon = PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.RoleIcon
-	local role =  UnitGroupRolesAssigned("player")
-
-	roleIcon:SetSize(19, 19)
-	roleIcon:SetTexture("Interface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES")
-
-	if ( role == "TANK" or role == "HEALER" or role == "DAMAGER") then
-		roleIcon:SetTexCoord(GetTexCoordsForRoleSmallCircle(role))
-		roleIcon:Show()
-	else
-		roleIcon:Hide()
-	end
-
-	if (UnitHasVehiclePlayerFrameUI("player")) then
-		PlayerLevelText:Hide()
-	else
-		PlayerLevelText:Show()
-	end
+	PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.RoleIcon:Hide()
+	PlayerLevelText:Hide()
 end)
-
-local PlayerRestIcon = PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual:CreateTexture(nil, "OVERLAY")
-PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.PlayerRestIcon = PlayerRestIcon
-PlayerRestIcon:SetSize(31, 31)
-PlayerRestIcon:SetTexture("Interface\\CharacterFrame\\UI-StateIcon")
-PlayerRestIcon:SetTexCoord(0, 0.5, 0, 0.421875)
-PlayerRestIcon:SetPoint("TOPLEFT", 20, -54)
-
-local PlayerRestGlow = PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual:CreateTexture(nil, "OVERLAY")
-PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.PlayerRestGlow = PlayerRestGlow
-PlayerRestGlow:SetSize(32, 32)
-PlayerRestGlow:SetTexture("Interface\\CharacterFrame\\UI-StateIcon")
-PlayerRestGlow:SetTexCoord(0, 0.5, 0.5, 1)
-PlayerRestGlow:SetBlendMode("ADD")
-PlayerRestGlow:SetPoint("TOPLEFT", PlayerRestIcon, "TOPLEFT")
-
-local PlayerAttackIcon = PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual:CreateTexture(nil, "OVERLAY")
-PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.PlayerAttackIcon = PlayerAttackIcon
-PlayerAttackIcon:SetSize(32, 31)
-PlayerAttackIcon:SetTexture("Interface\\CharacterFrame\\UI-StateIcon")
-PlayerAttackIcon:SetTexCoord(0.5, 1.0, 0, 0.484375)
-PlayerAttackIcon:SetPoint("TOPLEFT", PlayerRestIcon, "TOPLEFT", 1, 1)
-
-local PlayerAttackGlow = PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual:CreateTexture(nil, "OVERLAY")
-PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.PlayerAttackGlow = PlayerAttackGlow
-PlayerAttackGlow:SetSize(32, 32)
-PlayerAttackGlow:SetTexture("Interface\\CharacterFrame\\UI-StateIcon")
-PlayerAttackGlow:SetTexCoord(0.5, 1, 0.5, 1)
-PlayerAttackGlow:SetVertexColor(1, 0, 0)
-PlayerAttackGlow:SetBlendMode("ADD")
-PlayerAttackGlow:SetPoint("TOPLEFT", PlayerAttackIcon, "TOPLEFT")
-
-local PlayerAttackBackground = PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual:CreateTexture(nil, "ARTWORK")
-PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.PlayerAttackBackground = PlayerAttackBackground
-PlayerAttackBackground:SetSize(32, 32)
-PlayerAttackBackground:SetTexture("Interface\\TargetingFrame\\UI-TargetingFrame-AttackBackground")
-PlayerAttackBackground:SetVertexColor(0.8, 0.1, 0.1)
-PlayerAttackBackground:SetAlpha(0.4)
-PlayerAttackBackground:SetPoint("TOPLEFT", PlayerAttackIcon, "TOPLEFT", -3, -1)
 
 hooksecurefunc("PlayerFrame_UpdateStatus", function()
 	PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.AttackIcon:Hide()
 	PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.PlayerPortraitCornerIcon:Hide()
 	PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.StatusTexture:Hide()
-
-	if ( UnitHasVehiclePlayerFrameUI("player") ) then
-		PlayerAttackIcon:Hide()
-		PlayerAttackGlow:Hide()
-		PlayerRestIcon:Hide()
-		PlayerRestGlow:Hide()
-		PlayerAttackBackground:Hide()
-	elseif ( IsResting() ) then
-		PlayerAttackIcon:Hide()
-		PlayerAttackGlow:Hide()
-		PlayerRestIcon:Show()
-		PlayerRestGlow:Show()
-		PlayerAttackBackground:Hide()
-	elseif ( PlayerFrame.inCombat ) then
-		PlayerAttackIcon:Show()
-		PlayerAttackGlow:Show()
-		PlayerRestIcon:Hide()
-		PlayerRestGlow:Hide()
-		PlayerAttackBackground:Show()
-	elseif ( PlayerFrame.onHateList ) then
-		PlayerAttackIcon:Show()
-		PlayerAttackGlow:Hide()
-		PlayerRestIcon:Hide()
-		PlayerRestGlow:Hide()
-		PlayerAttackBackground:Hide()
-	else
-		PlayerAttackIcon:Hide()
-		PlayerAttackGlow:Hide()
-		PlayerRestIcon:Hide()
-		PlayerRestGlow:Hide()
-		PlayerAttackBackground:Hide()
-	end
 end)
 
 PlayerFrame:HookScript("OnEvent", function(self)
@@ -444,33 +357,6 @@ PlayerFrame:HookScript("OnEvent", function(self)
 	if (RuneFrame) then
 		RuneFrame:UnregisterAllEvents()
 		RuneFrame:Hide()
-	end
-end)
-
-PlayerFrame:HookScript("OnUpdate", function(self)
-	if (self.PlayerFrameContent.PlayerFrameContentMain.StatusTexture:IsShown()) then
-		local alpha = 255
-		local counter = self.statusCounter
-		local sign = self.statusSign
-
-		if (counter > 0.5) then
-			sign = -sign
-			self.statusSign = sign
-		end
-		counter = mod(counter, 0.5)
-		self.statusCounter = counter
-
-		if (sign == 1) then
-			alpha = (55 + (counter * 400)) / 255
-		else
-			alpha = (255 - (counter * 400)) / 255
-		end
-		if (self.PlayerFrameContent.PlayerFrameContentContextual.PlayerAttackGlow:IsShown()) then
-			self.PlayerFrameContent.PlayerFrameContentContextual.PlayerAttackGlow:SetAlpha(alpha)
-		end
-		if (self.PlayerFrameContent.PlayerFrameContentContextual.PlayerRestGlow:IsShown()) then
-			self.PlayerFrameContent.PlayerFrameContentContextual.PlayerRestGlow:SetAlpha(alpha)
-		end
 	end
 end)
 
