@@ -6,7 +6,6 @@
 ## Version: 2.1
 ## OptionalDeps: SexyMap
 embeds.xml
-libs\TaintLess\TaintLess.xml
 skins\Buffs.lua
 skins\Minimap.lua
 skins\unitframes\UnitFrame.xml
