@@ -5,9 +5,10 @@ PetFrame:SetSize(128, 53)
 PetPortrait:ClearAllPoints()
 PetPortrait:SetPoint("TOPLEFT", 7, -6)
 
-PetName:SetWidth(0)
 PetName:ClearAllPoints()
 PetName:SetPoint("BOTTOMLEFT", 53, 33)
+PetName:SetJustifyH("LEFT")
+PetName:SetFont("Fonts\\FRIZQT__.TTF", 10, "OUTLINE")
 
 PetFrameTexture:SetSize(128, 64)
 PetFrameTexture:SetTexture("Interface\\TargetingFrame\\UI-SmallTargetingFrame")
