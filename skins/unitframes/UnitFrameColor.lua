@@ -1,6 +1,10 @@
 local function ColorFrames()
     local frames = {
         PlayerFrame.PlayerFrameContainer.FrameTexture,
+        PlayerFrame.PlayerFrameContainer.AlternatePowerFrameTexture,
+        AlternatePowerBar.Border,
+        AlternatePowerBar.RightBorder,
+        AlternatePowerBar.LeftBorder,
         TargetFrame.TargetFrameContainer.FrameTexture,
         FocusFrame.TargetFrameContainer.FrameTexture,
         PetFrameTexture,
@@ -26,7 +30,7 @@ local function ColorFrames()
 
     for _, v in pairs(frames) do
         if v then
-            v:SetVertexColor(0.6, 0.6, 0.6)
+            v:SetVertexColor(0.2, 0.2, 0.2)
         end
     end
 end
