@@ -5,10 +5,10 @@ local function ColorFrames()
         AlternatePowerBar.Border,
         AlternatePowerBar.RightBorder,
         AlternatePowerBar.LeftBorder,
-        PlayerCastingBarFrame.Background,
-        PlayerCastingBarFrame.Border,
-        PlayerCastingBarFrame.BorderShield,
-        PlayerCastingBarFrame.TextBorder,
+        CastingBarFrame.Background,
+        CastingBarFrame.Border,
+        CastingBarFrame.BorderShield,
+        CastingBarFrame.TextBorder,
 
         PetFrameTexture,
 
@@ -39,7 +39,9 @@ local function ColorFrames()
     end
 end
 
-Minimap:HookScript("OnEvent", function(self, event, ...)
+local Frame = CreateFrame("Frame")
+Frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+Frame:SetScript("OnEvent", function(self, event, ...)
     if event == "PLAYER_ENTERING_WORLD" then
         ColorFrames()
     end
