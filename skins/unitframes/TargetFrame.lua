@@ -259,30 +259,12 @@ local function SkinFrame(frame)
 		frame.totFrame.ManaBar:SetPoint("BOTTOMRIGHT", frame.totFrame, "TOPLEFT", 91, -31)
 		frame.totFrame.ManaBar:SetFrameLevel(1)
 
-        frame.totFrame:RegisterEvent("UNIT_AURA")
-        frame.totFrame:HookScript("OnEvent", function(s, e, ...)
-            local arg1 = ...;
-            if ((not (arg1 == "")) and (not (arg1 == nil)) and
-                    (not (s.unit == "")) and (not (s.unit == nil)) and
-                    UnitIsUnit(arg1, s.unit)) then
-                RefreshDebuffs(s, s.unit, nil, nil, true)
-            end
-        end)
-
-        local frameName = frame.totFrame:GetName();
-        local suffix = "Debuff";
-        local frameNameWithSuffix = frameName..suffix;
-        for i= 1, 4 do
-            local debuffName = frameNameWithSuffix..i;
-            _G[debuffName]:ClearAllPoints()
-            if (i == 1) then
-                _G[debuffName]:SetPoint("BOTTOMRIGHT", frame.totFrame, "TOPLEFT", 118, -22)
-            elseif (i==2) then
-                _G[debuffName]:SetPoint("BOTTOMRIGHT", frame.totFrame, "TOPLEFT", 105, -22)
-            elseif (i==3) then
-                _G[debuffName]:SetPoint("BOTTOMRIGHT", frame.totFrame, "TOPLEFT", 118, -35)
-            elseif (i==4) then
-                _G[debuffName]:SetPoint("BOTTOMRIGHT", frame.totFrame, "TOPLEFT", 105, -35)
+        local frameNameWithSuffix = frame.totFrame:GetName() .. "Debuff"
+        for i = 1, 4 do
+            local debuffIcon = _G[frameNameWithSuffix .. i]
+            debuffIcon:ClearAllPoints()
+            if debuffIcon:IsShown() then
+                debuffIcon:Hide()
             end
         end
 	end
