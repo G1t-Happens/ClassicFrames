@@ -176,7 +176,7 @@ local function ChangeSparkTexture(self, event, ...)
             if (PlayerCastingBarFrame.attachedToPlayerFrame) then
                 self.Spark.offsetY = 0
             else
-                self.Spark.offsetY = 2
+                self.Spark.offsetY = 0
             end
         end
     end
