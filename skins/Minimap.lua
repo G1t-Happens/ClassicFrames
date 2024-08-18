@@ -307,12 +307,7 @@ QueueStatusButton:HookScript("OnMouseUp", MinimapButton_OnMouseUp)
 --queuestatusframe
 hooksecurefunc(QueueStatusFrame, "UpdatePosition", function(self)
 	self:ClearAllPoints()
-	self:SetPoint("TOPRIGHT", QueueStatusButton, "TOPLEFT", 0, 0)
-end)
-
-hooksecurefunc(QueueStatusButton, "ShowContextMenu", function()
-	--DropDownList1:ClearAllPoints()
-	--DropDownList1:SetPoint("TOPLEFT", QueueStatusButton, "BOTTOMLEFT")
+	self:SetPoint("TOPRIGHT", QueueStatusButton, "TOPLEFT")
 end)
 
 hooksecurefunc(QueueStatusFrame, "Update", function(self)
