@@ -300,13 +300,41 @@ OnLogin:RegisterEvent("PLAYER_LOGIN")
 OnLogin:SetScript("OnEvent", function()
     -- Create Player CastingBarFrame
     local Castbar = CreateFrame("StatusBar", "CastingBarFrame", UIParent, "CastingBarFrameTemplate")
+
+    -- Remove old PlayerCastingBarFrame
     PlayerCastingBarFrame:UnregisterAllEvents()
     PlayerCastingBarFrame:Hide()
     PlayerCastingBarFrame:SetAlpha(0)
+    OverlayPlayerCastingBarFrame:UnregisterAllEvents()
+    OverlayPlayerCastingBarFrame:Hide()
+    OverlayPlayerCastingBarFrame:SetAlpha(0)
 
-    -- tyle all Castbars
+    -- Style all Castbars
     ApplyPlayerCastbarStyle(Castbar)
     ApplyTargetFocusCastbarStyle(TargetFrame.spellbar)
     ApplyTargetFocusCastbarStyle(FocusFrame.spellbar)
     ApplyPetCastbarStyle(PetCastingBarFrame)
+
+    -- Editmode Styling
+    local EditModeFrame = CreateFrame("Frame")
+    PlayerCastingBarFrame.Selection:HookScript("OnShow", function()
+        PlayerCastingBarFrame:SetAlpha(0)
+        if (PlayerCastingBarFrame.isInEditMode) then
+            Castbar:StopFinishAnims()
+            Castbar:ApplyAlpha(1.0)
+            Castbar:Show()
+        end
+
+        EditModeFrame:SetScript("OnUpdate", function(self, elapsed)
+            SetLookReplacementPlayer(Castbar)
+            OnFinishedFlashPlayer(Castbar)
+            Castbar:SetScale(PlayerCastingBarFrame:GetScale())
+        end)
+    end)
+
+    PlayerCastingBarFrame.Selection:HookScript("OnHide", function()
+        Castbar:SetShown(Castbar.casting and Castbar.showCastbar)
+        EditModeFrame:SetScript("OnUpdate", nil)
+        Castbar:SetScale(PlayerCastingBarFrame:GetScale())
+    end)
 end)
