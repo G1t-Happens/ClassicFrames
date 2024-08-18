@@ -39,5 +39,5 @@ Original Project by luckfore: https://legacy.curseforge.com/wow/addons/classic-f
 <br>
 <br>
 
-## Bugs, suggestions? Open an issue here on GitHub.
+## Bugs, suggestions? Open an issue here on GitHub or message me on Bnet: Noname#214275
 
