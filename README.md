@@ -4,20 +4,24 @@ This Retail AddOn restores the Pre-10.0 UI frames with a focus on PvP, minimalis
 <br>The focus of this AddOn was on coloring the name frame backgrounds, minimalism, and performance,
 <br>which is why it includes only a small portion of the features of the original addon.
 
-![ClassicFramesGit](https://github.com/G1t-Happens/ClassicFrames/assets/44774729/41010ded-268c-4218-8fc8-38db6e638ad4)
+![v2 11-NHC](https://github.com/user-attachments/assets/86e8fa48-24c7-47c1-8cb7-66b5c73fca1d)
+
 
 
 ## Installation:
-1. Download ZIP from GitHub
-2. Extract the ClassicFrames-main into the `C:\Program Files (x86)\World of Warcraft\_retail_\Interface\AddOns` Folder
-3. Rename the extracted Folder from ClassicFrames-main to ClassicFrames
-4. After you've installed ClassicFrames in the AddOns folder, go into your **TEXTURES** folder
+1. Download the ClassicFrames.zip from the [Releases page](https://github.com/G1t-Happens/ClassicFrames/releases) - two different versions available
+2. Extract the ClassicFrames into the `C:\Program Files (x86)\World of Warcraft\_retail_\Interface\AddOns` Folder
+3. After you've installed ClassicFrames in the AddOns folder, go into your **TEXTURES** folder
 <br>inside your ClassicFrames and transfer the **RaidFrame** und **TargetingFrame** folder to your interface folder.
 The default path for your interface folder is `C:\Program Files (x86)\World of Warcraft\_retail_\Interface`
 > [!NOTE]  
 > The textures you transfer from the TEXTURE folder to the Interface folder are meant to align the **RaidFrames** and 
-> **Nameplates** with the textures of the Unitframes. If you have no interest or need for this, you can skip step 4.
-5. You are done with the installation.
+> **Nameplates** with the textures of the Unitframes. If you have no interest or need for this, you can skip step 3.
+
+> [!NOTE]  
+> If you downloaded the ClassicFrames directly from the front page instead of the [Releases page](https://github.com/G1t-Happens/ClassicFrames/releases),
+> you will need to manually rename the ClassicFrames-main or ClassicFrames-main-hc folder to ClassicFrames
+4. You are done with the installation.
 <br>
 
 ## FAQ:
