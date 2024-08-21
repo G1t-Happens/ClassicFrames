@@ -7,8 +7,10 @@ if (ldbi ~= nil) then
 	end
 end
 
+MinimapCluster:SetScale(1)
 MinimapCluster:SetSize(192, 192)
 MinimapCluster:SetHitRectInsets(30, 10, 0, 30)
+Minimap:SetParent(MinimapCluster)
 Minimap:SetSize(165, 165)
 Minimap:ClearAllPoints()
 Minimap:SetPoint("CENTER", MinimapCluster, "TOP", 20, -80)
@@ -34,6 +36,7 @@ MinimapNorthTag:SetPoint("CENTER", Minimap, "CENTER", 0, 80)
 MinimapNorthTag:SetDrawLayer("OVERLAY", 0)
 
 hooksecurefunc(MinimapCluster, "Layout", function(self)
+	self:SetScale(1)
 	self:SetSize(192, 192)
 end)
 
