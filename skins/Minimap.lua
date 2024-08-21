@@ -201,10 +201,6 @@ Minimap:HookScript("OnEvent", function(self, event, ...)
 
 		TimeManagerClockTicker:ClearAllPoints()
 		TimeManagerClockTicker:SetPoint("CENTER", TimeManagerClockButton, "CENTER", 3, 1)
-
-		if PlayerGetTimerunningSeasonID() then
-			ExpansionLandingPageMinimapButton:Hide()
-		end
 	end
 end)
 
