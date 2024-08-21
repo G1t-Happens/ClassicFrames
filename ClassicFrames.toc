@@ -8,6 +8,7 @@
 embeds.xml
 skins\Buffs.lua
 skins\Minimap.lua
+skins\ObjectiveTracker.lua
 skins\unitframes\UnitFrame.xml
 skins\unitframes\UnitFrameColor.lua
 skins\unitframes\PlayerFrame.xml
