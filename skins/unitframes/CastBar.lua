@@ -69,6 +69,7 @@ local function SetLookReplacementPlayer(self, event, ...)
 end
 
 local function SetLookReplacementTargetFocus(self)
+    self:SetScale(1.1)
     self.Background:SetColorTexture(0, 0, 0, 0.5)
     self.Border:SetTexture("Interface\\CastingBar\\UI-CastingBar-Border-Small")
     self.Border:SetWidth(0)
