@@ -136,6 +136,7 @@ end
 
 local function HookOnEvent(self, event, ...)
     self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-StatusBar")
+    print(event)
     if (self.barType == "interrupted") then
         self:SetValue(self.maxValue)
         self.Spark:Hide()
@@ -143,9 +144,9 @@ local function HookOnEvent(self, event, ...)
     elseif (self.barType == "channel") then
         if event == "UNIT_SPELLCAST_CHANNEL_STOP" then
             self:SetValue(self.maxValue)
+            self.Spark:Hide()
         end
         self:SetStatusBarColor(0, 1, 0, 1)
-        self.Spark:Hide()
     elseif (self.barType == "uninterruptable") then
         if event == "UNIT_SPELLCAST_CHANNEL_STOP" then
             self:SetValue(self.maxValue)
