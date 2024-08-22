@@ -174,13 +174,6 @@ local function ChangeSparkTexture(self, event, ...)
         self.Spark:SetBlendMode("ADD")
         self.Spark:SetSize(32, 32)
         self.Spark.offsetY = 0
-        if self.unit == "player" then
-            if (PlayerCastingBarFrame.attachedToPlayerFrame) then
-                self.Spark.offsetY = 0
-            else
-                self.Spark.offsetY = 0
-            end
-        end
     end
 end
 
