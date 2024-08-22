@@ -136,7 +136,6 @@ end
 
 local function HookOnEvent(self, event, ...)
     self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-StatusBar")
-    print(event)
     if (self.barType == "interrupted") then
         self:SetValue(self.maxValue)
         self.Spark:Hide()
