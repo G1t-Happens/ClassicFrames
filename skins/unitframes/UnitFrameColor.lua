@@ -13,12 +13,14 @@ local function ColorFrames()
         PetFrameTexture,
 
         TargetFrame.TargetFrameContainer.FrameTexture,
+        TargetFrameToT.FrameTexture,
         TargetFrameSpellBar.Background,
         TargetFrameSpellBar.Border,
         TargetFrameSpellBar.TextBorder,
         TargetFrameSpellBar.BorderShield,
 
         FocusFrame.TargetFrameContainer.FrameTexture,
+        FocusFrameToT.FrameTexture,
         FocusFrameSpellBar.Background,
         FocusFrameSpellBar.Border,
         FocusFrameSpellBar.TextBorder,
