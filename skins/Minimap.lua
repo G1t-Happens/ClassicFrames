@@ -191,7 +191,7 @@ Minimap:HookScript("OnEvent", function(self, event, ...)
 
 		if (TimeManagerClockButtonBackground == nil) then
 			TimeManagerClockButtonBackground = TimeManagerClockButton:CreateTexture("TimeManagerClockButtonBackground", "BORDER")
-			TimeManagerClockButtonBackground:SetTexture("Interface\\TimeManager\\ClockBackground")
+			TimeManagerClockButtonBackground:SetTexture("Interface\\AddOns\\ClassicFrames\\frames\\MiniMap\\ClockBackground")
 			TimeManagerClockButtonBackground:SetTexCoord(0.015625, 0.8125, 0.015625, 0.390625)
 			TimeManagerClockButtonBackground:ClearAllPoints()
 			TimeManagerClockButtonBackground:SetAllPoints(TimeManagerClockButton)
