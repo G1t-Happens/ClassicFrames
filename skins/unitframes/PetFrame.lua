@@ -11,7 +11,7 @@ PetName:SetJustifyH("LEFT")
 PetName:SetFont("Fonts\\FRIZQT__.TTF", 10, "OUTLINE")
 
 PetFrameTexture:SetSize(128, 64)
-PetFrameTexture:SetTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-SmallTargetingFrame")
+PetFrameTexture:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-SmallTargetingFrame")
 PetFrameTexture:ClearAllPoints()
 PetFrameTexture:SetPoint("TOPLEFT", 0, -2)
 
@@ -22,7 +22,7 @@ PetFrameFlash:SetTexCoord(0, 1, 1, 0)
 PetFrameFlash:SetDrawLayer("BACKGROUND")
 
 PetFrameHealthBar:SetSize(68, 8)
-PetFrameHealthBar:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-StatusBar")
+PetFrameHealthBar:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
 PetFrameHealthBar:SetStatusBarColor(0, 1, 0)
 PetFrameHealthBar:ClearAllPoints()
 PetFrameHealthBar:SetPoint("TOPLEFT", 46, -22)
