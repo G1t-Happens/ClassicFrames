@@ -86,6 +86,11 @@ local comboPointMaxToLayout = {
 		["height"] = 19,
 		["xOffs"] = -1,
 	},
+	[7] = {
+		["width"] = 16,
+		["height"] = 17,
+		["xOffs"] = -1,
+	},
 }
 
 local function UpdateComboPointLayout(maxUsablePoints, comboPoint, previousComboPoint)
@@ -124,7 +129,8 @@ function ComboPointPowerBar:UpdateMaxPower()
 	local unit = self:GetParent().unit
 	local maxComboPoints = UnitPowerMax(unit, Enum.PowerType.ComboPoints)
 
-	self.ComboPoints[6]:SetShown(maxComboPoints == 6)
+	self.ComboPoints[6]:SetShown(maxComboPoints == 6 or maxComboPoints == 7)
+	self.ComboPoints[7]:SetShown(maxComboPoints == 7)
 	for i = 1, #self.ComboBonus do
 		self.ComboBonus[i]:SetShown(DetermineComboBonusVisibility(i, maxComboPoints))
 	end
@@ -133,6 +139,8 @@ function ComboPointPowerBar:UpdateMaxPower()
 		self.maxUsablePoints = 5
 	elseif (maxComboPoints == 6) then
 		self.maxUsablePoints = 6
+	elseif (maxComboPoints == 7) then
+		self.maxUsablePoints = 7
 	end
 
 	for i = 1, self.maxUsablePoints do
@@ -192,8 +200,8 @@ function ComboPointPowerBar:UpdatePower()
 		end
 		for i = comboPoints + 1, self.maxUsablePoints do
 			if (self.ComboPoints[i].on) then
-			self:AnimOut(self.ComboPoints[i])
-		end
+				self:AnimOut(self.ComboPoints[i])
+			end
 		end
 
 		if (maxComboPoints >= 8) then

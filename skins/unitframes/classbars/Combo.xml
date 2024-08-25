@@ -1,6 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\Blizzard_SharedXML\UI.xsd">
-  <Script file="Combo.lua"/>
+	<Script file="Combo.lua"/>
 	<Frame name="ComboPointPlayerTemplate" virtual="true">
 		<Size x="20" y="21"/>
 		<Layers>
@@ -53,7 +53,7 @@
 			</AnimationGroup>
 		</Animations>
 	</Frame>
-  
+
 	<Frame name="ComboPointBonusPlayerTemplate" virtual="true">
 		<Size x="9" y="10"/>
 		<Layers>
@@ -137,6 +137,11 @@
 					<Anchor point="LEFT" relativeKey="$parent.Combo5" relativePoint="RIGHT" x="1" y="0"/>
 				</Anchors>
 			</Frame>
+			<Frame parentKey="Combo7" parentArray="ComboPoints" inherits="ComboPointPlayerTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeKey="$parent.Combo6" relativePoint="RIGHT" x="1" y="0"/>
+				</Anchors>
+			</Frame>
 			<Frame parentKey="ComboBonus1" parentArray="ComboBonus" inherits="ComboPointBonusPlayerTemplate">
 				<Anchors>
 					<Anchor point="TOPLEFT" x="7" y="0"/>
@@ -163,5 +168,5 @@
 				</Anchors>
 			</Frame>
 		</Frames>
-	</Frame>	
+	</Frame>
 </Ui>
