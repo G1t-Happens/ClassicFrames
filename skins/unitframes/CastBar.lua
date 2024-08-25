@@ -106,7 +106,7 @@ local function OnFinishedFlashPlayer(self, event, ...)
         self.Flash:SetBlendMode("ADD")
     else
         self.Flash:SetSize(256, 64)
-        self.Flash:SetTexture("Interface\\CastingBar\\UI-CastingBar-Flash")
+        self.Flash:SetTexture("Interface\\AddOns\\ClassicFrames\\frames\\CastingBar\\UI-CastingBar-Flash")
         self.Flash:ClearAllPoints()
         self.Flash:SetPoint("TOP", 0, 28)
         self.Flash:SetBlendMode("ADD")
