@@ -44,9 +44,10 @@ if (PlayerFrame.nameBackground == nil) then
 	PlayerFrame.nameBackground:SetSize(118, 19)
 	PlayerFrame.nameBackground:ClearAllPoints()
 	PlayerFrame.nameBackground:SetPoint("CENTER", PlayerFrame.PlayerFrameContent.PlayerFrameContentMain, 32, 13)
+	PlayerFrame.nameBackground:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
 	local _, Class = UnitClass("Player")
 	local Color = RAID_CLASS_COLORS[Class]
-	PlayerFrame.nameBackground:SetColorTexture(Color.r, Color.g, Color.b)
+	PlayerFrame.nameBackground:SetVertexColor(Color.r, Color.g, Color.b)
 end
 
 if (_G.AlternatePowerBar) then
