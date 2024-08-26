@@ -367,11 +367,6 @@ PlayerFrame:HookScript("OnEvent", function(self)
 	end
 end)
 
-hooksecurefunc(PlayerFrame, "menu", function(self)
-    DropDownList1:ClearAllPoints()
-    DropDownList1:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 87, 23)
-end)
-
 --Cvars & other
 C_CVar.SetCVar("threatWarning", 0)
 UIErrorsFrame:SetAlpha(0)

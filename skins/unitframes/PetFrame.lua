@@ -66,8 +66,3 @@ PetAttackModeTexture:SetPoint("TOPLEFT", 6, -9)
 
 PetHitIndicator:ClearAllPoints()
 PetHitIndicator:SetPoint("CENTER", PetFrame, "TOPLEFT", 28, -27)
-
-hooksecurefunc(PetFrame, "menu", function(self)
-    DropDownList1:ClearAllPoints()
-    DropDownList1:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 44, 8)
-end)

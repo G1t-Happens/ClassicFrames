@@ -207,11 +207,6 @@ local function SkinFrame(frame)
 		highLevelTexture:Hide()
 	end)
 
-	hooksecurefunc(frame, "menu", function(self)
-		DropDownList1:ClearAllPoints()
-		DropDownList1:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 140, 6)
-	end)
-
 	hooksecurefunc(frame.totFrame, "Update", function(self)
 		self.HealthBar.HealthBarMask:Hide()
 		self.ManaBar.ManaBarMask:Hide()
