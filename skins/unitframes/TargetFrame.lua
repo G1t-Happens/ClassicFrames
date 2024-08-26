@@ -71,21 +71,22 @@ local function NameBackgroundColoring(frame)
 	frame.nameBackground:ClearAllPoints()
 	frame.nameBackground:SetPoint("TOPRIGHT", frame.TargetFrameContent.TargetFrameContentMain, "TOPRIGHT", -88, -27)
 	frame.nameBackground:SetDrawLayer("BACKGROUND", 0)
+	frame.nameBackground:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
 
 	if UnitIsPlayer(frame.unit) and UnitIsConnected(frame.unit) and UnitClass(frame.unit) then
 		local _, Class = UnitClass(frame.unit)
 		local Color = RAID_CLASS_COLORS[Class]
-		frame.nameBackground:SetColorTexture(Color.r, Color.g, Color.b)
+		frame.nameBackground:SetVertexColor(Color.r, Color.g, Color.b)
 	elseif UnitIsPlayer(frame.unit) and not UnitIsConnected(frame.unit) then
-		frame.nameBackground:SetColorTexture(.5, .5, .5)
+		frame.nameBackground:SetVertexColor(.5, .5, .5)
 	else
 		if UnitExists(frame.unit) then
 			if (not UnitPlayerControlled(frame.unit) and UnitIsTapDenied(frame.unit)) then
-				frame.nameBackground:SetColorTexture(.5, .5, .5)
+				frame.nameBackground:SetVertexColor(.5, .5, .5)
 			elseif not UnitIsTapDenied(frame.unit) then
 				local Reaction = FACTION_BAR_COLORS[UnitReaction(frame.unit, "player")]
 				if Reaction then
-					frame.nameBackground:SetColorTexture(Reaction.r, Reaction.g, Reaction.b)
+					frame.nameBackground:SetVertexColor(Reaction.r, Reaction.g, Reaction.b)
 				end
 			end
 		end
