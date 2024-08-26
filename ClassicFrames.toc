@@ -10,11 +10,11 @@ skins\Buffs.lua
 skins\Minimap.lua
 skins\ObjectiveTracker.lua
 skins\unitframes\UnitFrame.xml
-skins\unitframes\UnitFrameColor.lua
 skins\unitframes\PlayerFrame.xml
 skins\unitframes\TargetFrame.xml
 skins\unitframes\CastBar.lua
 skins\unitframes\PetFrame.lua
+skins\unitframes\UnitFrameColor.lua
 skins\unitframes\classbars\ClassPowerBar.xml
 skins\unitframes\classbars\Combo.xml
 skins\unitframes\classbars\DK.xml

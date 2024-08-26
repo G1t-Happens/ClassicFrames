@@ -91,7 +91,7 @@ if (_G.AlternatePowerBar) then
 	end
 
 	hooksecurefunc(AlternatePowerBar, "EvaluateUnit", function(self)
-		self:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
+		self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
 		self:SetStatusBarColor(0, 0, 1)
 
 		if self.PowerBarMask then
@@ -128,7 +128,7 @@ if (_G.MonkStaggerBar) then
 	end
 
 	hooksecurefunc(MonkStaggerBar, "EvaluateUnit", function(self)
-		self:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
+		self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
 		self:SetStatusBarColor(0, 0, 1)
 	end)
 end
@@ -174,7 +174,7 @@ if (_G.EvokerEbonMightBar) then
 	end
 
 	hooksecurefunc(EvokerEbonMightBar, "EvaluateUnit", function(self)
-		self:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
+		self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
 		self:SetStatusBarColor(1, 0.5, 0.25)
 
 		if self.PowerBarMask then
