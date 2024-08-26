@@ -4,7 +4,7 @@ This Retail AddOn restores the Pre-10.0 UI frames with a focus on PvP, minimalis
 <br>The focus of this AddOn was on coloring the name frame backgrounds, minimalism, and performance,
 <br>which is why it includes only a small portion of the features of the original addon.
 
-![v2 11-NHC](https://github.com/user-attachments/assets/86e8fa48-24c7-47c1-8cb7-66b5c73fca1d)
+![Main_Upscaled](https://github.com/user-attachments/assets/b6ad4cea-6547-41eb-a74d-32f15a2dccc5)
 
 
 
