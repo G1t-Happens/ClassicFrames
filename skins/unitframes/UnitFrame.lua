@@ -241,7 +241,7 @@ function CfUnitFrameHealPredictionBars_Update(frame)
 		frame.overAbsorbGlow:Hide()
 	end
 
-	frame.healthbar:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-StatusBar")
+	frame.healthbar:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
 	local healthTexture = frame.healthbar:GetStatusBarTexture()
 	local myCurrentHealAbsorbPercent = 0;
 	local healAbsorbTexture = nil;
@@ -338,7 +338,7 @@ function CfUnitFrameManaBar_UpdateType(manaBar)
 				manaBar:SetStatusBarTexture(info.atlas)
 				manaBar:SetStatusBarColor(1, 1, 1)
 			else
-				manaBar:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-StatusBar")
+				manaBar:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
 				manaBar:SetStatusBarColor(info.r, info.g, info.b)
 			end
 		end
@@ -545,7 +545,7 @@ hooksecurefunc("UnitFrameManaBar_UpdateType", function(manaBar)
 	local powerType, powerToken, altR, altG, altB = UnitPowerType(manaBar.unit)
 	local info = CfPowerBarColor[powerToken]
 
-	manaBar:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\frames\\UI-StatusBar")
+	manaBar:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
 
 	if ( info ) then
 		local playerDeadOrGhost = (manaBar.unit == "player" and (UnitIsDead("player") or UnitIsGhost("player")))
