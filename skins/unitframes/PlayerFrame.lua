@@ -51,7 +51,7 @@ if (PlayerFrame.nameBackground == nil) then
 end
 
 if (_G.AlternatePowerBar) then
-	AlternatePowerBar:SetSize(104, 12)
+	AlternatePowerBar:SetSize(103, 12)
 	AlternatePowerBar:ClearAllPoints()
 	AlternatePowerBar:SetPoint("BOTTOMLEFT", 95, 19)
 
@@ -68,7 +68,7 @@ if (_G.AlternatePowerBar) then
 	if (AlternatePowerBar.Border == nil) then
 		AlternatePowerBar.Border = AlternatePowerBar:CreateTexture(nil, "OVERLAY")
 		AlternatePowerBar.Border:SetSize(0, 16)
-		AlternatePowerBar.Border:SetTexture("Interface\\CharacterFrame\\UI-CharacterFrame-GroupIndicator")
+		AlternatePowerBar.Border:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-CharacterFrame-GroupIndicator")
 		AlternatePowerBar.Border:SetTexCoord(0.125, 0.250, 1, 0)
 		AlternatePowerBar.Border:SetPoint("TOPLEFT", 4, 0)
 		AlternatePowerBar.Border:SetPoint("TOPRIGHT", -4, 0)
@@ -77,7 +77,7 @@ if (_G.AlternatePowerBar) then
 	if (AlternatePowerBar.LeftBorder == nil) then
 		AlternatePowerBar.LeftBorder = AlternatePowerBar:CreateTexture(nil, "OVERLAY")
 		AlternatePowerBar.LeftBorder:SetSize(16, 16)
-		AlternatePowerBar.LeftBorder:SetTexture("Interface\\CharacterFrame\\UI-CharacterFrame-GroupIndicator")
+		AlternatePowerBar.LeftBorder:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-CharacterFrame-GroupIndicator")
 		AlternatePowerBar.LeftBorder:SetTexCoord(0, 0.125, 1, 0)
 		AlternatePowerBar.LeftBorder:SetPoint("RIGHT", AlternatePowerBar.Border, "LEFT")
 	end
@@ -85,7 +85,7 @@ if (_G.AlternatePowerBar) then
 	if (AlternatePowerBar.RightBorder == nil) then
 		AlternatePowerBar.RightBorder = AlternatePowerBar:CreateTexture(nil, "OVERLAY")
 		AlternatePowerBar.RightBorder:SetSize(16, 16)
-		AlternatePowerBar.RightBorder:SetTexture("Interface\\CharacterFrame\\UI-CharacterFrame-GroupIndicator")
+		AlternatePowerBar.RightBorder:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-CharacterFrame-GroupIndicator")
 		AlternatePowerBar.RightBorder:SetTexCoord(0.125, 0, 1, 0)
 		AlternatePowerBar.RightBorder:SetPoint("LEFT", AlternatePowerBar.Border, "RIGHT")
 	end
@@ -151,7 +151,7 @@ if (_G.EvokerEbonMightBar) then
 	if (EvokerEbonMightBar.Border == nil) then
 		EvokerEbonMightBar.Border = EvokerEbonMightBar:CreateTexture(nil, "OVERLAY")
 		EvokerEbonMightBar.Border:SetSize(0, 16)
-		EvokerEbonMightBar.Border:SetTexture("Interface\\CharacterFrame\\UI-CharacterFrame-GroupIndicator")
+		EvokerEbonMightBar.Border:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-CharacterFrame-GroupIndicator")
 		EvokerEbonMightBar.Border:SetTexCoord(0.125, 0.250, 1, 0)
 		EvokerEbonMightBar.Border:SetPoint("TOPLEFT", 4, 0)
 		EvokerEbonMightBar.Border:SetPoint("TOPRIGHT", -4, 0)
@@ -160,7 +160,7 @@ if (_G.EvokerEbonMightBar) then
 	if (EvokerEbonMightBar.LeftBorder == nil) then
 		EvokerEbonMightBar.LeftBorder = EvokerEbonMightBar:CreateTexture(nil, "OVERLAY")
 		EvokerEbonMightBar.LeftBorder:SetSize(16, 16)
-		EvokerEbonMightBar.LeftBorder:SetTexture("Interface\\CharacterFrame\\UI-CharacterFrame-GroupIndicator")
+		EvokerEbonMightBar.LeftBorder:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-CharacterFrame-GroupIndicator")
 		EvokerEbonMightBar.LeftBorder:SetTexCoord(0, 0.125, 1, 0)
 		EvokerEbonMightBar.LeftBorder:SetPoint("RIGHT", EvokerEbonMightBar.Border, "LEFT")
 	end
@@ -168,7 +168,7 @@ if (_G.EvokerEbonMightBar) then
 	if (EvokerEbonMightBar.RightBorder == nil) then
 		EvokerEbonMightBar.RightBorder = EvokerEbonMightBar:CreateTexture(nil, "OVERLAY")
 		EvokerEbonMightBar.RightBorder:SetSize(16, 16)
-		EvokerEbonMightBar.RightBorder:SetTexture("Interface\\CharacterFrame\\UI-CharacterFrame-GroupIndicator")
+		EvokerEbonMightBar.RightBorder:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-CharacterFrame-GroupIndicator")
 		EvokerEbonMightBar.RightBorder:SetTexCoord(0.125, 0, 1, 0)
 		EvokerEbonMightBar.RightBorder:SetPoint("LEFT", EvokerEbonMightBar.Border, "RIGHT")
 	end
