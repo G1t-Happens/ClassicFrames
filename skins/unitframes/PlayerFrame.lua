@@ -51,9 +51,9 @@ if (PlayerFrame.nameBackground == nil) then
 end
 
 if (_G.AlternatePowerBar) then
-	AlternatePowerBar:SetSize(103, 12)
+	AlternatePowerBar:SetSize(104, 12)
 	AlternatePowerBar:ClearAllPoints()
-	AlternatePowerBar:SetPoint("BOTTOMLEFT", 95, 19)
+	AlternatePowerBar:SetPoint("BOTTOMLEFT", 95, 20)
 
 	AlternatePowerBarText:SetPoint("CENTER", 0, -1)
 	AlternatePowerBar.LeftText:SetPoint("LEFT", 0, -1)
@@ -70,8 +70,8 @@ if (_G.AlternatePowerBar) then
 		AlternatePowerBar.Border:SetSize(0, 16)
 		AlternatePowerBar.Border:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-CharacterFrame-GroupIndicator")
 		AlternatePowerBar.Border:SetTexCoord(0.125, 0.250, 1, 0)
-		AlternatePowerBar.Border:SetPoint("TOPLEFT", 4, 0)
-		AlternatePowerBar.Border:SetPoint("TOPRIGHT", -4, 0)
+		AlternatePowerBar.Border:SetPoint("TOPLEFT", 4, -0.5)
+		AlternatePowerBar.Border:SetPoint("TOPRIGHT", -4, -0.5)
 	end
 
 	if (AlternatePowerBar.LeftBorder == nil) then
@@ -79,7 +79,7 @@ if (_G.AlternatePowerBar) then
 		AlternatePowerBar.LeftBorder:SetSize(16, 16)
 		AlternatePowerBar.LeftBorder:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-CharacterFrame-GroupIndicator")
 		AlternatePowerBar.LeftBorder:SetTexCoord(0, 0.125, 1, 0)
-		AlternatePowerBar.LeftBorder:SetPoint("RIGHT", AlternatePowerBar.Border, "LEFT")
+		AlternatePowerBar.LeftBorder:SetPoint("RIGHT", AlternatePowerBar.Border, "LEFT", 1, 0)
 	end
 
 	if (AlternatePowerBar.RightBorder == nil) then
@@ -87,7 +87,7 @@ if (_G.AlternatePowerBar) then
 		AlternatePowerBar.RightBorder:SetSize(16, 16)
 		AlternatePowerBar.RightBorder:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-CharacterFrame-GroupIndicator")
 		AlternatePowerBar.RightBorder:SetTexCoord(0.125, 0, 1, 0)
-		AlternatePowerBar.RightBorder:SetPoint("LEFT", AlternatePowerBar.Border, "RIGHT")
+		AlternatePowerBar.RightBorder:SetPoint("LEFT", AlternatePowerBar.Border, "RIGHT", -1, 0)
 	end
 
 	hooksecurefunc(AlternatePowerBar, "EvaluateUnit", function(self)
