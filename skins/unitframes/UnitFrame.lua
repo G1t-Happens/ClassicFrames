@@ -267,9 +267,9 @@ function CfUnitFrameHealPredictionBars_Update(frame)
 
 			healAbsorbTexture = CfUnitFrameUtil_UpdateFillBar(frame, healthTexture, frame.healAbsorbBar, shownHealAbsorb, -shownHealAbsorbPercent);
 
-			frame.healAbsorbBar.LeftShadow:SetShown(allIncomingHeal <= 0);
+			frame.healAbsorbBarLeftShadow:SetShown(allIncomingHeal <= 0);
 
-			frame.healAbsorbBar.RightShadow:SetShown(totalAbsorb > 0)
+			frame.healAbsorbBarRightShadow:SetShown(totalAbsorb > 0)
 		else
 			frame.healAbsorbBar:Hide();
 		end
