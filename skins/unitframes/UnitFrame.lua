@@ -1,3 +1,13 @@
+local ManaBarFrequentUpdateUnitTypes = {
+	"player",
+	"pet",
+	"vehicle",
+	"target",
+	"focus",
+	"targettarget",
+	"focustarget"
+};
+
 CfPowerBarColor = {};
 CfPowerBarColor["MANA"] = { r = 0.00, g = 0.00, b = 1.00 };
 CfPowerBarColor["RAGE"] = { r = 1.00, g = 0.00, b = 0.00 };
@@ -97,7 +107,16 @@ function CfUnitFrame_Initialize(self, unit, name, portrait, healthbar, healthtex
 		self.manabar.capNumericDisplay = true;
 	end
 	CfUnitFrameHealthBar_Initialize(unit, healthbar, healthtext, true)
-	CfUnitFrameManaBar_Initialize(unit, manabar, manatext, (unit == "player" or unit == "pet" or unit == "vehicle" or unit == "target" or unit == "focus"))
+
+	local manaBarFrequentUpdates = false;
+	for _, unitType in ipairs(ManaBarFrequentUpdateUnitTypes) do
+		if (unit == unitType) then
+			manaBarFrequentUpdates = true;
+			break;
+		end
+	end
+
+	CfUnitFrameManaBar_Initialize(unit, manabar, manatext, manaBarFrequentUpdates)
 	CfUnitFrame_Update(self)
 	self:RegisterEvent("UNIT_DISPLAYPOWER")
 	if ( self.healAbsorbBar ) then
@@ -112,81 +131,73 @@ function CfUnitFrame_Initialize(self, unit, name, portrait, healthbar, healthtex
 	end
 end
 
-function CfUnitFrame_SetUnit(self, unit, healthbar, manabar)
+function CfUnitFrame_SetUnit (self, unit, healthbar, manabar)
 	if ( self.unit ~= unit ) then
 		if ( self.myHealPredictionBar ) then
-			self:RegisterUnitEvent("UNIT_MAXHEALTH", unit)
-			self:RegisterUnitEvent("UNIT_HEAL_PREDICTION", unit)
+			self:RegisterUnitEvent("UNIT_MAXHEALTH", unit);
+			self:RegisterUnitEvent("UNIT_HEAL_PREDICTION", unit);
 		end
 		if ( self.totalAbsorbBar ) then
-			self:RegisterUnitEvent("UNIT_ABSORB_AMOUNT_CHANGED", unit)
+			self:RegisterUnitEvent("UNIT_ABSORB_AMOUNT_CHANGED", unit);
 		end
 		if ( not healthbar.frequentUpdates ) then
-			healthbar:RegisterUnitEvent("UNIT_HEALTH", unit)
+			healthbar:RegisterUnitEvent("UNIT_HEALTH", unit);
 		end
 		if ( manabar and not manabar.frequentUpdates ) then
-			CfUnitFrameManaBar_RegisterDefaultEvents(manabar)
+			CfUnitFrameManaBar_RegisterDefaultEvents(manabar);
 		end
-		healthbar:RegisterUnitEvent("UNIT_MAXHEALTH", unit)
+		healthbar:RegisterUnitEvent("UNIT_MAXHEALTH", unit);
 	end
 
 	self.unit = unit;
-	healthbar.unit = unit;
+
+	CfUnitFrameHealthBar_SetUnit(healthbar, unit)
 	if ( manabar ) then
 		manabar.unit = unit;
 	end
-	self:SetAttribute("unit", unit)
-	securecall("CfUnitFrame_Update", self)
+	self:SetAttribute("unit", unit);
+	securecall("CfUnitFrame_Update", self);
 end
 
 function CfUnitFrame_Update(self, isParty)
-	CfUnitFrameHealthBar_Update(self.healthbar, self.unit)
-	CfUnitFrameManaBar_Update(self.manabar, self.unit)
-	CfUnitFrameHealPredictionBars_UpdateMax(self)
-	CfUnitFrameHealPredictionBars_Update(self)
+	CfUnitFrameHealthBar_Update(self.healthbar, self.unit);
+	CfUnitFrameManaBar_Update(self.manabar, self.unit);
+	CfUnitFrameHealPredictionBars_UpdateMax(self);
+	CfUnitFrameHealPredictionBars_Update(self);
 end
 
 function CfUnitFrame_OnEvent(self, event, ...)
-	local arg1 = ...
-	
+	local eventUnit = ...
+
 	local unit = self.unit;
-	if ( arg1 == unit ) then
+	if ( eventUnit == unit ) then
 		if ( event == "UNIT_DISPLAYPOWER" ) then
 			if ( self.manabar ) then
-				CfUnitFrameManaBar_UpdateType(self.manabar)
+				CfUnitFrameManaBar_UpdateType(self.manabar);
 			end
 		elseif ( event == "UNIT_MAXHEALTH" ) then
-			CfUnitFrameHealPredictionBars_UpdateMax(self)
-			CfUnitFrameHealPredictionBars_Update(self)
+			CfUnitFrameHealPredictionBars_UpdateMax(self);
 		elseif ( event == "UNIT_HEAL_PREDICTION" ) then
-			CfUnitFrameHealPredictionBars_Update(self)
+			CfUnitFrameHealPredictionBars_Update(self);
 		elseif ( event == "UNIT_ABSORB_AMOUNT_CHANGED" ) then
-			CfUnitFrameHealPredictionBars_Update(self)
+			CfUnitFrameHealPredictionBars_Update(self);
 		elseif ( event == "UNIT_HEAL_ABSORB_AMOUNT_CHANGED" ) then
-			CfUnitFrameHealPredictionBars_Update(self)
+			CfUnitFrameHealPredictionBars_Update(self);
 		end
 	end
 end
 
 function CfUnitFrameHealPredictionBars_UpdateMax(self)
-	if ( not self.myHealPredictionBar ) then
-		return;
-	end
-	
 	CfUnitFrameHealPredictionBars_Update(self)
 end
 
 function CfUnitFrameHealPredictionBars_UpdateSize(self)
-	if ( not self.myHealPredictionBar or not self.otherHealPredictionBar ) then
-		return;
-	end
-	
 	CfUnitFrameHealPredictionBars_Update(self)
 end
 
 local MAX_INCOMING_HEAL_OVERFLOW = 1.0;
 function CfUnitFrameHealPredictionBars_Update(frame)
-	if ( not frame.myHealPredictionBar ) then
+	if ( not frame.myHealPredictionBar and not frame.otherHealPredictionBar and not frame.healAbsorbBar and not frame.totalAbsorbBar ) then
 		return;
 	end
 	
@@ -357,54 +368,63 @@ function CfUnitFrameManaBar_UpdateType(manaBar)
 	manaBar:UpdateTextString()
 end
 
-function CfUnitFrameHealthBar_Initialize(unit, statusbar, statustext, frequentUpdates)
+function CfUnitFrameHealthBar_Initialize (unit, statusbar, statustext, frequentUpdates)
 	if ( not statusbar ) then
 		return;
 	end
 
 	statusbar.unit = unit;
-	statusbar:SetBarText(statustext)
+	statusbar:SetBarText(statustext);
+
 	statusbar.frequentUpdates = frequentUpdates;
 	if ( frequentUpdates ) then
-		statusbar:RegisterEvent("VARIABLES_LOADED")
-	end	
-	if ( GetCVarBool("predictedHealth") and frequentUpdates ) then
-		statusbar:SetScript("OnUpdate", CfUnitFrameHealthBar_OnUpdate)
-	else
-		statusbar:RegisterUnitEvent("UNIT_HEALTH", unit)
+		statusbar:RegisterEvent("VARIABLES_LOADED");
 	end
-	statusbar:RegisterUnitEvent("UNIT_MAXHEALTH", unit)
-	statusbar:SetScript("OnEvent", CfUnitFrameHealthBar_OnEvent)
+
+	CfUnitFrameHealthBar_RefreshUpdateEvent(statusbar);
+
+	statusbar:RegisterUnitEvent("UNIT_MAXHEALTH", unit);
+	statusbar:SetScript("OnEvent", CfUnitFrameHealthBar_OnEvent);
+end
+
+function CfUnitFrameHealthBar_RefreshUpdateEvent(self)
+	if ( GetCVarBool("predictedHealth") and self.frequentUpdates ) then
+		self:SetScript("OnUpdate", CfUnitFrameHealthBar_OnUpdate);
+		self:UnregisterEvent("UNIT_HEALTH");
+	else
+		self:SetScript("OnUpdate", nil);
+		self:RegisterUnitEvent("UNIT_HEALTH", self.unit);
+	end
+end
+
+function CfUnitFrameHealthBar_SetUnit(self, unit)
+	self.unit = unit;
+	CfUnitFrameHealthBar_RefreshUpdateEvent(self);
 end
 
 function CfUnitFrameHealthBar_OnEvent(self, event, ...)
 	if ( event == "CVAR_UPDATE" ) then
-		self:TextStatusBarOnEvent(event, ...)
+		self:TextStatusBarOnEvent(event, ...);
 	elseif ( event == "VARIABLES_LOADED" ) then
-		self:UnregisterEvent("VARIABLES_LOADED")
-		if ( GetCVarBool("predictedHealth") and self.frequentUpdates ) then
-			self:SetScript("OnUpdate", CfUnitFrameHealthBar_OnUpdate)
-			self:UnregisterEvent("UNIT_HEALTH")
-		else
-			self:RegisterUnitEvent("UNIT_HEALTH", self.unit)
-			self:SetScript("OnUpdate", nil)
-		end
-	else
+		self:UnregisterEvent("VARIABLES_LOADED");
+		CfUnitFrameHealthBar_RefreshUpdateEvent(self);
+	elseif self:IsShown() then
 		if ( not self.ignoreNoUnit or UnitGUID(self.unit) ) then
-			CfUnitFrameHealthBar_Update(self, ...)
+			CfUnitFrameHealthBar_Update(self, ...);
 		end
 	end
 end
 
 function CfUnitFrameHealthBar_OnUpdate(self)
 	if ( not self.disconnected and not self.lockValues) then
-		local currValue = UnitHealth(self.unit)
+		local currValue = UnitHealth(self.unit);
+
 		if ( currValue ~= self.currValue ) then
 			if ( not self.ignoreNoUnit or UnitGUID(self.unit) ) then
-				self:SetValue(currValue)
+				self:SetValue(currValue);
 				self.currValue = currValue;
-				self:UpdateTextString()
-				CfUnitFrameHealPredictionBars_Update(self:GetParent())
+				self:UpdateTextString();
+				CfUnitFrameHealPredictionBars_Update(self:GetParent());
 			end
 		end
 	end
@@ -414,9 +434,9 @@ function CfUnitFrameHealthBar_Update(statusbar, unit)
 	if ( not statusbar or statusbar.lockValues ) then
 		return;
 	end
-	
+
 	if ( unit == statusbar.unit ) then
-		local maxValue = UnitHealthMax(unit)
+		local maxValue = UnitHealthMax(unit);
 
 		statusbar.forceHideText = false;
 		if ( maxValue == 0 ) then
@@ -424,38 +444,39 @@ function CfUnitFrameHealthBar_Update(statusbar, unit)
 			statusbar.forceHideText = true;
 		end
 
-		statusbar:SetMinMaxValues(0, maxValue)
-		statusbar.disconnected = not UnitIsConnected(unit)
+		statusbar:SetMinMaxValues(0, maxValue);
+
+		statusbar.disconnected = not UnitIsConnected(unit);
 		if ( statusbar.disconnected ) then
 			if ( not statusbar.lockColor ) then
-				statusbar:SetStatusBarColor(0.5, 0.5, 0.5)
+				statusbar:SetStatusBarColor(0.5, 0.5, 0.5);
 			end
-			statusbar:SetValue(maxValue)
+			statusbar:SetValue(maxValue);
 			statusbar.currValue = maxValue;
 		else
-			local currValue = UnitHealth(unit)
+			local currValue = UnitHealth(unit);
 			if ( not statusbar.lockColor ) then
-				statusbar:SetStatusBarColor(0.0, 1.0, 0.0)
+				statusbar:SetStatusBarColor(0.0, 1.0, 0.0);
 			end
-			statusbar:SetValue(currValue)
+			statusbar:SetValue(currValue);
 			statusbar.currValue = currValue;
 		end
 	end
-	statusbar:UpdateTextString()
-	CfUnitFrameHealPredictionBars_Update(statusbar:GetParent())
+	statusbar:UpdateTextString();
+	CfUnitFrameHealPredictionBars_Update(statusbar:GetParent());
 end
 
 function CfUnitFrameHealthBar_OnValueChanged(self, value)
-	self:OnStatusBarValueChanged(value)
-	HealthBar_OnValueChanged(self, value)
+	self:OnStatusBarValueChanged(value);
+	HealthBar_OnValueChanged(self, value);
 end
 
 function CfUnitFrameManaBar_UnregisterDefaultEvents(self)
-	self:UnregisterEvent("UNIT_POWER_UPDATE")
+	self:UnregisterEvent("UNIT_POWER_UPDATE");
 end
 
 function CfUnitFrameManaBar_RegisterDefaultEvents(self)
-	self:RegisterUnitEvent("UNIT_POWER_UPDATE", self.unit)
+	self:RegisterUnitEvent("UNIT_POWER_UPDATE", self.unit);
 end
 
 function CfUnitFrameManaBar_Initialize(unit, statusbar, statustext, frequentUpdates)
