@@ -200,33 +200,35 @@ function CfUnitFrameHealPredictionBars_Update(frame)
 	if ( not frame.myHealPredictionBar and not frame.otherHealPredictionBar and not frame.healAbsorbBar and not frame.totalAbsorbBar ) then
 		return;
 	end
-	
-	local _, maxHealth = frame.healthbar:GetMinMaxValues()
-	local health = frame.healthbar:GetValue()
+
+	local _, maxHealth = frame.healthbar:GetMinMaxValues();
+	local health = frame.healthbar:GetValue();
 	if ( maxHealth <= 0 ) then
 		return;
 	end
-	
+
 	local myIncomingHeal = UnitGetIncomingHeals(frame.unit, "player") or 0;
 	local allIncomingHeal = UnitGetIncomingHeals(frame.unit) or 0;
 	local totalAbsorb = UnitGetTotalAbsorbs(frame.unit) or 0;
-	
+
 	local myCurrentHealAbsorb = 0;
 	if ( frame.healAbsorbBar ) then
 		myCurrentHealAbsorb = UnitGetTotalHealAbsorbs(frame.unit) or 0;
+
 		if ( health < myCurrentHealAbsorb ) then
-			frame.overHealAbsorbGlow:Show()
+			frame.overHealAbsorbGlow:Show();
 			myCurrentHealAbsorb = health;
 		else
-			frame.overHealAbsorbGlow:Hide()
-		end	
+			frame.overHealAbsorbGlow:Hide();
+		end
 	end
-	
+
 	if ( health - myCurrentHealAbsorb + allIncomingHeal > maxHealth * MAX_INCOMING_HEAL_OVERFLOW ) then
 		allIncomingHeal = maxHealth * MAX_INCOMING_HEAL_OVERFLOW - health + myCurrentHealAbsorb;
 	end
-	
+
 	local otherIncomingHeal = 0;
+
 	if ( allIncomingHeal >= myIncomingHeal ) then
 		otherIncomingHeal = allIncomingHeal - myIncomingHeal;
 	else
@@ -238,71 +240,63 @@ function CfUnitFrameHealPredictionBars_Update(frame)
 		if ( totalAbsorb > 0 ) then
 			overAbsorb = true;
 		end
-		
+
 		if ( allIncomingHeal > myCurrentHealAbsorb ) then
-			totalAbsorb = max(0,maxHealth - (health - myCurrentHealAbsorb + allIncomingHeal))
+			totalAbsorb = max(0,maxHealth - (health - myCurrentHealAbsorb + allIncomingHeal));
 		else
-			totalAbsorb = max(0,maxHealth - health)
+			totalAbsorb = max(0,maxHealth - health);
 		end
 	end
-	
+
 	if ( overAbsorb ) then
-		frame.overAbsorbGlow:Show()
+		frame.overAbsorbGlow:Show();
 	else
-		frame.overAbsorbGlow:Hide()
+		frame.overAbsorbGlow:Hide();
 	end
 
-	frame.healthbar:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
-	local healthTexture = frame.healthbar:GetStatusBarTexture()
+	local healthTexture = frame.healthbar:GetStatusBarTexture();
 	local myCurrentHealAbsorbPercent = 0;
 	local healAbsorbTexture = nil;
-	
+
 	if ( frame.healAbsorbBar ) then
 		myCurrentHealAbsorbPercent = myCurrentHealAbsorb / maxHealth;
-		
+
 		if ( myCurrentHealAbsorb > allIncomingHeal ) then
 			local shownHealAbsorb = myCurrentHealAbsorb - allIncomingHeal;
 			local shownHealAbsorbPercent = shownHealAbsorb / maxHealth;
-			
-			healAbsorbTexture = CfUnitFrameUtil_UpdateFillBar(frame, healthTexture, frame.healAbsorbBar, shownHealAbsorb, -shownHealAbsorbPercent)
-			
-			if ( allIncomingHeal > 0 ) then
-				frame.healAbsorbBarLeftShadow:Hide()
-			else
-				frame.healAbsorbBarLeftShadow:SetPoint("TOPLEFT", healAbsorbTexture, "TOPLEFT", 0, 0)
-				frame.healAbsorbBarLeftShadow:SetPoint("BOTTOMLEFT", healAbsorbTexture, "BOTTOMLEFT", 0, 0)
-				frame.healAbsorbBarLeftShadow:Show()
-			end
-			
-			if ( totalAbsorb > 0 ) then
-				frame.healAbsorbBarRightShadow:SetPoint("TOPLEFT", healAbsorbTexture, "TOPRIGHT", -8, 0)
-				frame.healAbsorbBarRightShadow:SetPoint("BOTTOMLEFT", healAbsorbTexture, "BOTTOMRIGHT", -8, 0)
-				frame.healAbsorbBarRightShadow:Show()
-			else
-				frame.healAbsorbBarRightShadow:Hide()
-			end
+
+			healAbsorbTexture = CfUnitFrameUtil_UpdateFillBar(frame, healthTexture, frame.healAbsorbBar, shownHealAbsorb, -shownHealAbsorbPercent);
+
+			frame.healAbsorbBar.LeftShadow:SetShown(allIncomingHeal <= 0);
+
+			frame.healAbsorbBar.RightShadow:SetShown(totalAbsorb > 0)
 		else
-			frame.healAbsorbBar:Hide()
-			frame.healAbsorbBarLeftShadow:Hide()
-			frame.healAbsorbBarRightShadow:Hide()
+			frame.healAbsorbBar:Hide();
 		end
 	end
-	
-	local incomingHealTexture = CfUnitFrameUtil_UpdateFillBar(frame, healthTexture, frame.myHealPredictionBar, myIncomingHeal, -myCurrentHealAbsorbPercent)
-	
-	if (myIncomingHeal > 0) then
-		incomingHealTexture = CfUnitFrameUtil_UpdateFillBar(frame, incomingHealTexture, frame.otherHealPredictionBar, otherIncomingHeal)
-	else
-		incomingHealTexture = CfUnitFrameUtil_UpdateFillBar(frame, healthTexture, frame.otherHealPredictionBar, otherIncomingHeal, -myCurrentHealAbsorbPercent)
+
+	local incomingHealTexture;
+	if ( frame.myHealPredictionBar ) then
+		incomingHealTexture = CfUnitFrameUtil_UpdateFillBar(frame, healthTexture, frame.myHealPredictionBar, myIncomingHeal, -myCurrentHealAbsorbPercent);
 	end
-	
+
+	local otherHealLeftTexture = (myIncomingHeal > 0) and incomingHealTexture or healthTexture;
+	local xOffset = (myIncomingHeal > 0) and 0 or -myCurrentHealAbsorbPercent;
+
+	if ( frame.otherHealPredictionBar ) then
+		CfUnitFrameUtil_UpdateFillBar(frame, otherHealLeftTexture, frame.otherHealPredictionBar, otherIncomingHeal, xOffset);
+	end
+
 	local appendTexture = nil;
 	if ( healAbsorbTexture ) then
 		appendTexture = healAbsorbTexture;
 	else
-		appendTexture = incomingHealTexture;
+		appendTexture = incomingHealTexture or healthTexture;
 	end
-	CfUnitFrameUtil_UpdateFillBar(frame, appendTexture, frame.totalAbsorbBar, totalAbsorb)
+
+	if ( frame.totalAbsorbBar ) then
+		CfUnitFrameUtil_UpdateFillBar(frame, appendTexture, frame.totalAbsorbBar, totalAbsorb)
+	end
 end
 
 function CfUnitFrameUtil_UpdateFillBar(frame, previousTexture, bar, amount, barOffsetXPercent)
