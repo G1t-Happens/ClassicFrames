@@ -307,7 +307,7 @@ function CfUnitFrameUtil_UpdateFillBar(frame, previousTexture, bar, amount, barO
 		end
 		return previousTexture;
 	end
-	
+
 	local barOffsetX = 0;
 	if ( barOffsetXPercent ) then
 		local healthbarSizeX = frame.healthbar:GetWidth()
@@ -316,6 +316,7 @@ function CfUnitFrameUtil_UpdateFillBar(frame, previousTexture, bar, amount, barO
 
 	bar:SetPoint("TOPLEFT", previousTexture, "TOPRIGHT", barOffsetX, 0)
 	bar:SetPoint("BOTTOMLEFT", previousTexture, "BOTTOMRIGHT", barOffsetX, 0)
+	bar:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
 
 	local totalWidth, totalHeight = frame.healthbar:GetSize()
 	local _, totalMax = frame.healthbar:GetMinMaxValues()
@@ -369,6 +370,7 @@ function CfUnitFrameHealthBar_Initialize(unit, statusbar, statustext, frequentUp
 
 	statusbar.unit = unit;
 	statusbar:SetBarText(statustext);
+	statusbar:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar");
 
 	statusbar.frequentUpdates = frequentUpdates;
 	if ( frequentUpdates ) then
