@@ -131,7 +131,7 @@ function CfUnitFrame_Initialize(self, unit, name, portrait, healthbar, healthtex
 	end
 end
 
-function CfUnitFrame_SetUnit (self, unit, healthbar, manabar)
+function CfUnitFrame_SetUnit(self, unit, healthbar, manabar)
 	if ( self.unit ~= unit ) then
 		if ( self.myHealPredictionBar ) then
 			self:RegisterUnitEvent("UNIT_MAXHEALTH", unit);
@@ -368,7 +368,7 @@ function CfUnitFrameManaBar_UpdateType(manaBar)
 	manaBar:UpdateTextString()
 end
 
-function CfUnitFrameHealthBar_Initialize (unit, statusbar, statustext, frequentUpdates)
+function CfUnitFrameHealthBar_Initialize(unit, statusbar, statustext, frequentUpdates)
 	if ( not statusbar ) then
 		return;
 	end
