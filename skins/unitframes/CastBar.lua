@@ -5,17 +5,17 @@ local function AdjustPosition(self)
         if (parentFrame.buffsOnTop or parentFrame.auraRows <= 1) then
             self:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 45, -24)
         else
-            self:SetPoint("TOPLEFT", parentFrame.spellbarAnchor, "BOTTOMLEFT", 20, -15)
+            self:SetPoint("TOPLEFT", parentFrame.spellbarAnchor, "BOTTOMLEFT", 23, -15)
         end
     elseif (parentFrame.haveElite) then
         if (parentFrame.buffsOnTop or parentFrame.auraRows <= 1) then
             self:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 45, -9)
         else
-            self:SetPoint("TOPLEFT", parentFrame.spellbarAnchor, "BOTTOMLEFT", 20, -15)
+            self:SetPoint("TOPLEFT", parentFrame.spellbarAnchor, "BOTTOMLEFT", 23, -15)
         end
     else
         if ((not parentFrame.buffsOnTop) and parentFrame.auraRows > 0) then
-            self:SetPoint("TOPLEFT", parentFrame.spellbarAnchor, "BOTTOMLEFT", 20, -15)
+            self:SetPoint("TOPLEFT", parentFrame.spellbarAnchor, "BOTTOMLEFT", 23, -15)
         else
             self:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 45, 3)
         end
