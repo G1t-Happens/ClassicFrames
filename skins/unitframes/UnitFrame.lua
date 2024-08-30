@@ -68,9 +68,11 @@ function CfUnitFrame_Initialize(self, unit, name, portrait, healthbar, healthtex
 	self.healAbsorbBarRightShadow = healAbsorbBarRightShadow;
 	if ( self.myHealPredictionBar ) then
 		self.myHealPredictionBar:ClearAllPoints()
+		self.myHealPredictionBar:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
 	end
 	if ( self.otherHealPredictionBar ) then
 		self.otherHealPredictionBar:ClearAllPoints()
+		self.otherHealPredictionBar:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
 	end
 	if ( self.totalAbsorbBar ) then
 		self.totalAbsorbBar:ClearAllPoints()
@@ -299,35 +301,37 @@ function CfUnitFrameHealPredictionBars_Update(frame)
 	end
 end
 
-function CfUnitFrameUtil_UpdateFillBar(frame, previousTexture, bar, amount, barOffsetXPercent)
-	if ( amount == 0 ) then
-		bar:Hide()
+function CfUnitFrameUtil_UpdateFillBar(frame, previousTexture, bar, fillValue,  xOffsetPercent)
+	if fillValue == 0 then
+		bar:Hide();
 		if ( bar.overlay ) then
-			bar.overlay:Hide()
+			bar.overlay:Hide();
 		end
 		return previousTexture;
 	end
 
-	local barOffsetX = 0;
-	if ( barOffsetXPercent ) then
-		local healthbarSizeX = frame.healthbar:GetWidth()
-		barOffsetX = healthbarSizeX * barOffsetXPercent;
+	local barWidth, barHeight = frame.healthbar:GetSize();
+
+	local segmentOffsetX = 0;
+	if xOffsetPercent then
+		segmentOffsetX = barWidth * xOffsetPercent;
 	end
 
-	bar:SetPoint("TOPLEFT", previousTexture, "TOPRIGHT", barOffsetX, 0)
-	bar:SetPoint("BOTTOMLEFT", previousTexture, "BOTTOMRIGHT", barOffsetX, 0)
-	bar:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
+	bar:ClearAllPoints();
+	bar:SetPoint("TOPLEFT", previousTexture, "TOPRIGHT", segmentOffsetX, 0);
+	bar:SetPoint("BOTTOMLEFT", previousTexture, "BOTTOMRIGHT", segmentOffsetX, 0);
 
-	local totalWidth, totalHeight = frame.healthbar:GetSize()
-	local _, totalMax = frame.healthbar:GetMinMaxValues()
+	local maxValue = select(2, frame.healthbar:GetMinMaxValues());
 
-	local barSize = (amount / totalMax) * totalWidth;
-	bar:SetWidth(barSize)
-	bar:Show()
+	local segmentSize = (fillValue / maxValue) * barWidth;
+	bar:SetWidth(segmentSize);
+	bar:Show();
+
 	if ( bar.overlay ) then
-		bar.overlay:SetTexCoord(0, barSize / bar.overlay.tileSize, 0, totalHeight / bar.overlay.tileSize)
-		bar.overlay:Show()
+		bar.overlay:SetTexCoord(0, segmentSize / bar.overlay.tileSize, 0, barHeight / bar.overlay.tileSize);
+		bar.overlay:Show();
 	end
+
 	return bar;
 end
 
