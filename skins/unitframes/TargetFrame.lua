@@ -24,6 +24,8 @@ function CfTargetFrame_OnLoad(self, unit)
 		CfTargetFrameDeadText:SetParent(TargetFrame.TargetFrameContent.TargetFrameContentContextual)
 		CfTargetFrameUnconsciousText:SetParent(TargetFrame.TargetFrameContent.TargetFrameContentContextual)
 		CfTargetFrameOverAbsorbGlow:SetParent(TargetFrame.TargetFrameContent.TargetFrameContentContextual)
+		CfTargetFrameBackground:SetSize(119, 25)
+		CfTargetFrameBackground:SetPoint("BOTTOMLEFT", 7, 35)
 	end
 
 	if CfFocusFrame then
@@ -36,6 +38,8 @@ function CfTargetFrame_OnLoad(self, unit)
 		CfFocusFrameDeadText:SetParent(FocusFrame.TargetFrameContent.TargetFrameContentContextual)
 		CfFocusFrameUnconsciousText:SetParent(FocusFrame.TargetFrameContent.TargetFrameContentContextual)
 		CfFocusFrameOverAbsorbGlow:SetParent(FocusFrame.TargetFrameContent.TargetFrameContentContextual)
+		CfFocusFrameBackground:SetSize(119, 25)
+		CfFocusFrameBackground:SetPoint("BOTTOMLEFT", 7, 35)
 	end
 
 	self:EnableMouse(false)
@@ -159,16 +163,9 @@ local function SkinFrame(frame)
 	hooksecurefunc(frame, "CheckClassification", function(self)
 		FrameManaBar:SetAlpha(0)
 		contextual.BossIcon:Hide()
+
 		self.TargetFrameContainer.BossPortraitFrameTexture:Hide()
-
-		CfTargetFrameBackground:SetSize(119, 25)
-		CfTargetFrameBackground:SetPoint("BOTTOMLEFT", 7, 35)
-
-		CfFocusFrameBackground:SetSize(119, 25)
-		CfFocusFrameBackground:SetPoint("BOTTOMLEFT", 7, 35)
-
 		self.haveElite = nil;
-
 		self.TargetFrameContainer.FrameTexture:SetSize(232, 100)
 		self.TargetFrameContainer.FrameTexture:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-TargetingFrameNoLevel")
 		self.TargetFrameContainer.FrameTexture:SetTexCoord(0.09375, 1, 0, 0.78125)
@@ -179,7 +176,6 @@ local function SkinFrame(frame)
 		self.TargetFrameContainer.Flash:SetTexCoord(0, 0.9453125, 0, 0.181640625)
 		self.TargetFrameContainer.Flash:ClearAllPoints()
 		self.TargetFrameContainer.Flash:SetPoint("TOPLEFT", -4, -4)
-
 	end)
 
 	hooksecurefunc(frame, "CheckFaction", function(self)
