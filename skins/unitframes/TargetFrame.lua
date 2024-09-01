@@ -123,10 +123,7 @@ local function SkinFrame(frame)
 	contentMain.Name:SetJustifyH("CENTER")
 	contentMain.Name:SetFont("Fonts\\FRIZQT__.TTF", 11, "OUTLINE")
 
-	contentMain.ReputationColor:SetSize(119, 19)
-	contentMain.ReputationColor:SetTexture("Interface\\TargetingFrame\\UI-TargetingFrame-LevelBackground")
-	contentMain.ReputationColor:ClearAllPoints()
-	contentMain.ReputationColor:SetPoint("TOPRIGHT", -86, -26)
+	contentMain.ReputationColor:Hide()
 
 	local leaderIcon = contextual.LeaderIcon;
 	leaderIcon:SetSize(16, 16)
@@ -160,9 +157,7 @@ local function SkinFrame(frame)
 	end)
 
 	hooksecurefunc(frame, "CheckClassification", function(self)
-
 		FrameManaBar:SetAlpha(0)
-		contentMain.ReputationColor:Show()
 		contextual.BossIcon:Hide()
 		self.TargetFrameContainer.BossPortraitFrameTexture:Hide()
 
