@@ -259,7 +259,6 @@ SkinFrame(FocusFrame)
 
 hooksecurefunc(TargetFrame, "CheckDead", function(self)
 	if ((UnitHealth(self.unit) <= 0) and UnitIsConnected(self.unit)) then
-		CfTargetFrameBackground:SetAlpha(0.9)
 		if (UnitIsUnconscious(self.unit)) then
 			CfTargetFrameUnconsciousText:Show()
 			CfTargetFrameDeadText:Hide()
@@ -268,7 +267,6 @@ hooksecurefunc(TargetFrame, "CheckDead", function(self)
 			CfTargetFrameDeadText:Show()
 		end
 	else
-		CfTargetFrameBackground:SetAlpha(1)
 		CfTargetFrameDeadText:Hide()
 		CfTargetFrameUnconsciousText:Hide()
 	end
@@ -282,7 +280,6 @@ end)
 
 hooksecurefunc(FocusFrame, "CheckDead", function(self)
 	if ((UnitHealth(self.unit) <= 0) and UnitIsConnected(self.unit)) then
-		CfFocusFrameBackground:SetAlpha(0.9)
 		if (UnitIsUnconscious(self.unit)) then
 			CfFocusFrameUnconsciousText:Show()
 			CfFocusFrameDeadText:Hide()
@@ -291,7 +288,6 @@ hooksecurefunc(FocusFrame, "CheckDead", function(self)
 			CfFocusFrameDeadText:Show()
 		end
 	else
-		CfFocusFrameBackground:SetAlpha(1)
 		CfFocusFrameDeadText:Hide()
 		CfFocusFrameUnconsciousText:Hide()
 	end
