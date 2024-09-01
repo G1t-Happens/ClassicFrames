@@ -257,6 +257,18 @@ end
 SkinFrame(TargetFrame)
 SkinFrame(FocusFrame)
 
+hooksecurefunc(TargetFrame, "Update", function(self)
+	if (UnitExists(self.unit)) then
+		CfUnitFrame_Update(CfTargetFrame)
+	end
+end)
+
+hooksecurefunc(FocusFrame, "Update", function(self)
+	if (UnitExists(self.unit)) then
+		CfUnitFrame_Update(CfFocusFrame)
+	end
+end)
+
 hooksecurefunc(TargetFrame, "CheckDead", function(self)
 	if ((UnitHealth(self.unit) <= 0) and UnitIsConnected(self.unit)) then
 		if (UnitIsUnconscious(self.unit)) then
@@ -272,12 +284,6 @@ hooksecurefunc(TargetFrame, "CheckDead", function(self)
 	end
 end)
 
-hooksecurefunc(TargetFrame, "Update", function(self)
-	if (UnitExists(self.unit)) then
-		CfUnitFrame_Update(CfTargetFrame)
-	end
-end)
-
 hooksecurefunc(FocusFrame, "CheckDead", function(self)
 	if ((UnitHealth(self.unit) <= 0) and UnitIsConnected(self.unit)) then
 		if (UnitIsUnconscious(self.unit)) then
@@ -290,12 +296,6 @@ hooksecurefunc(FocusFrame, "CheckDead", function(self)
 	else
 		CfFocusFrameDeadText:Hide()
 		CfFocusFrameUnconsciousText:Hide()
-	end
-end)
-
-hooksecurefunc(FocusFrame, "Update", function(self)
-	if (UnitExists(self.unit)) then
-		CfUnitFrame_Update(CfFocusFrame)
 	end
 end)
 
