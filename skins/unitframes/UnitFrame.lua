@@ -339,7 +339,6 @@ function CfUnitFrameManaBar_UpdateType(manaBar)
 	if ( not manaBar ) then
 		return;
 	end
-	local unitFrame = manaBar:GetParent()
 	local powerType, powerToken, altR, altG, altB = UnitPowerType(manaBar.unit)
 	local info = CfPowerBarColor[powerToken];
 	if ( info ) then
@@ -353,7 +352,7 @@ function CfUnitFrameManaBar_UpdateType(manaBar)
 			end
 		end
 	else
-		if ( not altR) then
+		if ( not altR ) then
 			info = CfPowerBarColor[powerType] or CfPowerBarColor["MANA"];
 		else
 			if ( not manaBar.lockColor ) then
@@ -361,9 +360,11 @@ function CfUnitFrameManaBar_UpdateType(manaBar)
 			end
 		end
 	end
-	manaBar.powerType = powerType;
-	manaBar.powerToken = powerToken;
-
+	if ( manaBar.powerType ~= powerType or manaBar.powerType ~= powerType ) then
+		manaBar.powerType = powerType;
+		manaBar.powerToken = powerToken;
+		manaBar.currValue = UnitPower("player", powerType)
+	end
 	manaBar:UpdateTextString()
 end
 
@@ -484,16 +485,17 @@ function CfUnitFrameManaBar_Initialize(unit, statusbar, statustext, frequentUpda
 		return;
 	end
 	statusbar.unit = unit;
-	statusbar:SetBarText(statustext)
-	
+	statusbar.texture = statusbar:GetStatusBarTexture();
+	statusbar:SetBarText(statustext);
+
 	statusbar.frequentUpdates = frequentUpdates;
 	if ( frequentUpdates ) then
-		statusbar:RegisterEvent("VARIABLES_LOADED")
+		statusbar:RegisterEvent("VARIABLES_LOADED");
 	end
-	if ( GetCVarBool("predictedPower") and frequentUpdates ) then
-		statusbar:SetScript("OnUpdate", CfUnitFrameManaBar_OnUpdate)
+	if ( frequentUpdates ) then
+		statusbar:SetScript("OnUpdate", CfUnitFrameManaBar_OnUpdate);
 	else
-		CfUnitFrameManaBar_RegisterDefaultEvents(statusbar)
+		CfUnitFrameManaBar_RegisterDefaultEvents(statusbar);
 	end
 	statusbar:RegisterEvent("UNIT_DISPLAYPOWER")
 	statusbar:RegisterUnitEvent("UNIT_MAXPOWER", unit)
@@ -502,31 +504,36 @@ end
 
 function CfUnitFrameManaBar_OnEvent(self, event, ...)
 	if ( event == "CVAR_UPDATE" ) then
-		self:TextStatusBarOnEvent(event, ...)
+		self:TextStatusBarOnEvent(event, ...);
 	elseif ( event == "VARIABLES_LOADED" ) then
-		self:UnregisterEvent("VARIABLES_LOADED")
-		if ( GetCVarBool("predictedPower") and self.frequentUpdates ) then
-			self:SetScript("OnUpdate", CfUnitFrameManaBar_OnUpdate)
-			CfUnitFrameManaBar_UnregisterDefaultEvents(self)
+		self:UnregisterEvent("VARIABLES_LOADED");
+		if ( self.frequentUpdates ) then
+			self:SetScript("OnUpdate", CfUnitFrameManaBar_OnUpdate);
+			CfUnitFrameManaBar_UnregisterDefaultEvents(self);
 		else
-			CfUnitFrameManaBar_RegisterDefaultEvents(self)
-			self:SetScript("OnUpdate", nil)
+			CfUnitFrameManaBar_RegisterDefaultEvents(self);
+			self:SetScript("OnUpdate", nil);
 		end
+	elseif ( event == "PLAYER_ALIVE"  or event == "PLAYER_DEAD" or event == "PLAYER_UNGHOST" ) then
+		CfUnitFrameManaBar_UpdateType(self);
+	elseif ( event == "PLAYER_GAINS_VEHICLE_DATA"  or event == "PLAYER_LOSES_VEHICLE_DATA" ) then
+		CfUnitFrameManaBar_UpdateType(self);
 	else
 		if ( not self.ignoreNoUnit or UnitGUID(self.unit) ) then
-			CfUnitFrameManaBar_Update(self, ...)
+			CfUnitFrameManaBar_Update(self, ...);
 		end
 	end
 end
 
 function CfUnitFrameManaBar_OnUpdate(self)
 	if ( not self.disconnected and not self.lockValues ) then
-		local currValue = UnitPower(self.unit, self.powerType)
-		if ( currValue ~= self.currValue ) then
+		local currValue = UnitPower(self.unit, self.powerType);
+		if ( currValue ~= self.currValue or self.forceUpdate ) then
+			self.forceUpdate = nil;
 			if ( not self.ignoreNoUnit or UnitGUID(self.unit) ) then
-				self:SetValue(currValue)
+				self:SetValue(currValue);
 				self.currValue = currValue;
-				self:UpdateTextString()
+				self:UpdateTextString();
 			end
 		end
 	end
@@ -538,24 +545,25 @@ function CfUnitFrameManaBar_Update(statusbar, unit)
 	end
 
 	if ( unit == statusbar.unit ) then
-		CfUnitFrameManaBar_UpdateType(statusbar)
 
-		local maxValue = UnitPowerMax(unit, statusbar.powerType)
-		statusbar:SetMinMaxValues(0, maxValue)
-		statusbar.disconnected = not UnitIsConnected(unit)
+		CfUnitFrameManaBar_UpdateType(statusbar);
+
+		local maxValue = UnitPowerMax(unit, statusbar.powerType);
+		statusbar:SetMinMaxValues(0, maxValue);
+		statusbar.disconnected = not UnitIsConnected(unit);
 		if ( statusbar.disconnected ) then
-			statusbar:SetValue(maxValue)
+			statusbar:SetValue(maxValue);
 			statusbar.currValue = maxValue;
 			if ( not statusbar.lockColor ) then
-				statusbar:SetStatusBarColor(0.5, 0.5, 0.5)
+				statusbar:SetStatusBarColor(0.5, 0.5, 0.5);
 			end
 		else
-			local currValue = UnitPower(unit, statusbar.powerType)
-			statusbar:SetValue(currValue)
-			statusbar.currValue = currValue;
+			local currValue = UnitPower(unit, statusbar.powerType);
+			statusbar:SetValue(currValue);
+			statusbar.forceUpdate = true;
 		end
 	end
-	statusbar:UpdateTextString()
+	statusbar:UpdateTextString();
 end
 
 hooksecurefunc("UnitFrameManaBar_UpdateType", function(manaBar)
