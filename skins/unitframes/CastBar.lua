@@ -1,25 +1,16 @@
 -- Utility Functions
 local function AdjustPosition(self)
     local parentFrame = self:GetParent()
-    if (parentFrame.haveToT) then
-        if (parentFrame.buffsOnTop or parentFrame.auraRows <= 1) then
-            self:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 45, -24)
-        else
-            self:SetPoint("TOPLEFT", parentFrame.spellbarAnchor, "BOTTOMLEFT", 23, -15)
-        end
-    elseif (parentFrame.haveElite) then
-        if (parentFrame.buffsOnTop or parentFrame.auraRows <= 1) then
-            self:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 45, -9)
-        else
-            self:SetPoint("TOPLEFT", parentFrame.spellbarAnchor, "BOTTOMLEFT", 23, -15)
-        end
-    else
-        if ((not parentFrame.buffsOnTop) and parentFrame.auraRows > 0) then
-            self:SetPoint("TOPLEFT", parentFrame.spellbarAnchor, "BOTTOMLEFT", 23, -15)
-        else
-            self:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 45, 3)
-        end
+    local useSpellbarAnchor = (not parentFrame.buffsOnTop) and ((parentFrame.haveToT and parentFrame.auraRows > 2) or ((not parentFrame.haveToT) and parentFrame.auraRows > 0))
+    local relativeKey = useSpellbarAnchor and parentFrame.spellbarAnchor or parentFrame
+    local pointX = useSpellbarAnchor and 22 or  (parentFrame.smallSize and 43 or 45)
+    local pointY = useSpellbarAnchor and -15 or (parentFrame.smallSize and 3 or 5)
+
+    if ((not useSpellbarAnchor) and parentFrame.haveToT) then
+        pointY = parentFrame.smallSize and -30 or -24
     end
+
+    self:SetPoint("TOPLEFT", relativeKey, "BOTTOMLEFT", pointX, pointY)
 end
 
 local function SetLookReplacementPlayer(self, event, ...)
