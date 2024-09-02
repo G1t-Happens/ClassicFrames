@@ -122,7 +122,7 @@ function CfUnitFrame_Initialize(self, unit, name, portrait, healthbar, healthtex
 	CfUnitFrame_Update(self)
 	self:RegisterEvent("UNIT_DISPLAYPOWER")
 	if ( self.healAbsorbBar ) then
-		self:RegisterUnitEvent("UNIT_HEAL_ABSORB_AMOUNT_CHANGED")
+		self:RegisterUnitEvent("UNIT_HEAL_ABSORB_AMOUNT_CHANGED", unit)
 	end
 	if ( self.myHealPredictionBar ) then
 		self:RegisterUnitEvent("UNIT_MAXHEALTH", unit)
