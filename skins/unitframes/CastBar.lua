@@ -266,19 +266,6 @@ local function ApplyPlayerCastbarStyle(Castbar)
     Castbar:SetUnit("player", true, false)
 end
 
--- Setting up PetCastBar
-local function ApplyPetCastbarStyle(Castbar)
-    Castbar:HookScript("OnEvent", HookOnEvent)
-    hooksecurefunc(Castbar, "PlayFinishAnim", OnFinishedFlashPlayer)
-    hooksecurefunc(Castbar, "ShowSpark", ChangeSparkTexture)
-    hooksecurefunc(Castbar, "GetTypeInfo", SetLookReplacementPlayer)
-
-    if PetCastingBarFrame.AddStages then
-        hooksecurefunc(Castbar, "AddStages", ChangeEvokerBars)
-    end
-
-    OverwriteFadeAnims(Castbar)
-end
 
 local OnLogin = CreateFrame("Frame")
 OnLogin:RegisterEvent("PLAYER_LOGIN")
@@ -298,7 +285,6 @@ OnLogin:SetScript("OnEvent", function()
     ApplyPlayerCastbarStyle(Castbar)
     ApplyTargetFocusCastbarStyle(TargetFrame.spellbar)
     ApplyTargetFocusCastbarStyle(FocusFrame.spellbar)
-    ApplyPetCastbarStyle(PetCastingBarFrame)
 
     -- Editmode Styling
     local EditModeFrame = CreateFrame("Frame")
