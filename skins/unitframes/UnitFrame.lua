@@ -360,7 +360,7 @@ function CfUnitFrameManaBar_UpdateType(manaBar)
 			end
 		end
 	end
-	if ( manaBar.powerType ~= powerType or manaBar.powerType ~= powerType ) then
+	if ( manaBar.powerType ~= powerType ) then
 		manaBar.powerType = powerType;
 		manaBar.powerToken = powerToken;
 		manaBar.currValue = UnitPower("player", powerType)
