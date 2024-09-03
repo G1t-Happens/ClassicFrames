@@ -6,7 +6,6 @@
 ## Version: 2.17
 ## OptionalDeps: SexyMap
 embeds.xml
-skins\Buffs.lua
 skins\Minimap.lua
 skins\ObjectiveTracker.lua
 skins\unitframes\UnitFrame.xml
