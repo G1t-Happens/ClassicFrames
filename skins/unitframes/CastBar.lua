@@ -4,10 +4,10 @@ local function AdjustPosition(self)
     local useSpellbarAnchor = (not parentFrame.buffsOnTop) and ((parentFrame.haveToT and parentFrame.auraRows > 2) or ((not parentFrame.haveToT) and parentFrame.auraRows > 0))
     local relativeKey = useSpellbarAnchor and parentFrame.spellbarAnchor or parentFrame
     local pointX = useSpellbarAnchor and 22 or  (parentFrame.smallSize and 43 or 45)
-    local pointY = useSpellbarAnchor and -15 or (parentFrame.smallSize and 3 or 5)
+    local pointY = useSpellbarAnchor and -12 or (parentFrame.smallSize and 3 or 5)
 
     if ((not useSpellbarAnchor) and parentFrame.haveToT) then
-        pointY = parentFrame.smallSize and -30 or -24
+        pointY = parentFrame.smallSize and -33 or -31
     end
 
     self:SetPoint("TOPLEFT", relativeKey, "BOTTOMLEFT", pointX, pointY)
