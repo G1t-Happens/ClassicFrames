@@ -29,20 +29,12 @@ MinimapNorthTag:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\MiniMap\
 MinimapNorthTag:ClearAllPoints()
 MinimapNorthTag:SetPoint("CENTER", Minimap, "CENTER", 0, 80)
 MinimapNorthTag:SetDrawLayer("OVERLAY", 0)
+MinimapNorthTag:Show()
+MinimapCompassTexture:Hide()
 
 hooksecurefunc(MinimapCluster, "Layout", function(self)
 	self:SetScale(1)
 	self:SetSize(192, 192)
-end)
-
-hooksecurefunc(MinimapCluster, "SetRotateMinimap", function(self, rotateMinimap)
-	if (rotateMinimap) then
-		MinimapCompassTexture:Show()
-		MinimapNorthTag:Hide()
-	else
-		MinimapCompassTexture:Hide()
-		MinimapNorthTag:Show()
-	end
 end)
 
 MinimapCluster.Tracking:SetParent(MinimapBackdrop)
@@ -86,15 +78,6 @@ MinimapCluster.Tracking.ButtonBorder:SetTexture("Interface\\AddOns\\ClassicFrame
 MinimapCluster.Tracking.ButtonBorder:ClearAllPoints()
 MinimapCluster.Tracking.ButtonBorder:SetPoint("TOPLEFT")
 
-MinimapCluster.Tracking.Button:HookScript("OnMouseDown", function()
-	MinimapCluster.Tracking.MiniMapTrackingIcon:SetPoint("TOPLEFT", MinimapCluster.Tracking, "TOPLEFT", 8, -8)
-	MinimapCluster.Tracking.MiniMapTrackingIconOverlay:Show()
-end)
-MinimapCluster.Tracking.Button:HookScript("OnMouseUp", function()
-	MinimapCluster.Tracking.MiniMapTrackingIcon:SetPoint("TOPLEFT", MinimapCluster.Tracking, "TOPLEFT", 6, -6)
-	MinimapCluster.Tracking.MiniMapTrackingIconOverlay:Hide()
-end)
-
 MinimapCluster.IndicatorFrame.MailFrame:ClearAllPoints()
 MinimapCluster.IndicatorFrame.MailFrame:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", 24, -37)
 MinimapCluster.IndicatorFrame.MailFrame:SetSize(33, 33)
@@ -122,26 +105,11 @@ hooksecurefunc(MinimapCluster.IndicatorFrame, "Layout", function(self)
 	self.CraftingOrderFrame:SetPoint("TOPLEFT", self, "TOPLEFT", 0, 0)
 end)
 
-hooksecurefunc("MiniMapIndicatorFrame_UpdatePosition", function()
-	MinimapCluster.IndicatorFrame:ClearAllPoints()
-	MinimapCluster.IndicatorFrame:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", 24, -37)
-end)
-
 MiniMapMailIcon:SetSize(18, 18)
 MiniMapMailIcon:SetTexture("Interface\\Icons\\INV_Letter_15")
 MiniMapMailIcon:ClearAllPoints()
 MiniMapMailIcon:SetPoint("TOPLEFT", MinimapCluster.IndicatorFrame.MailFrame, "TOPLEFT", 6, -6)
 MiniMapMailIcon:SetDrawLayer("ARTWORK", 0)
-
-hooksecurefunc(MinimapCluster.IndicatorFrame.MailFrame, "ResetMailIcon", function(self)
-	self.MailIcon:SetShown(true)
-end)
-
-hooksecurefunc(MinimapCluster.IndicatorFrame.MailFrame, "TryPlayMailNotification", function(self)
-	self.NewMailAnim:SetPlaying(false)
-	self.MailReminderAnim:SetPlaying(false)
-	self.MailIcon:SetShown(true)
-end)
 
 MiniMapCraftingOrderIcon:SetSize(18, 18)
 MiniMapCraftingOrderIcon:SetTexture("Interface\\Icons\\INV_Hammer_12")
@@ -165,6 +133,7 @@ MiniMapCraftingBorder:SetDrawLayer("OVERLAY", 0)
 
 MinimapCluster.InstanceDifficulty:Hide()
 MinimapCluster.BorderTop:Hide()
+MinimapCluster.ZoneTextButton:Hide()
 MinimapZoneText:Hide()
 GameTimeFrame:Hide()
 Minimap.ZoomIn:SetAlpha(0)
@@ -201,27 +170,6 @@ Minimap:HookScript("OnEvent", function(self, event, ...)
 		TimeManagerClockTicker:SetPoint("CENTER", TimeManagerClockButton, "CENTER", 3, 1)
 	end
 end)
-
---queuestatusbutton
-local function MinimapButton_OnMouseDown(self, button)
-	if ( self.isDown ) then
-		return;
-	end
-	local button = _G[self:GetName().."Icon"];
-	local point, relativeTo, relativePoint, offsetX, offsetY = button:GetPoint()
-	button:SetPoint(point, relativeTo, relativePoint, offsetX+1, offsetY-1)
-	self.isDown = 1;
-end
-
-local function MinimapButton_OnMouseUp(self)
-	if ( not self.isDown ) then
-		return;
-	end
-	local button = _G[self:GetName().."Icon"];
-	local point, relativeTo, relativePoint, offsetX, offsetY = button:GetPoint()
-	button:SetPoint(point, relativeTo, relativePoint, offsetX-1, offsetY+1)
-	self.isDown = nil;
-end
 
 hooksecurefunc(QueueStatusButton, "UpdatePosition", function(self)
 	self:SetParent(MinimapBackdrop)
@@ -290,21 +238,8 @@ local function QueueStatusButton_OnUpdate(self)
 end
 
 QueueStatusButton:HookScript("OnUpdate", QueueStatusButton_OnUpdate)
-QueueStatusButton:HookScript("OnHide", function(self)
-	if (self.isDown) then
-		MinimapButton_OnMouseUp(self)
-	end
-end)
-QueueStatusButton:HookScript("OnMouseDown", MinimapButton_OnMouseDown)
-QueueStatusButton:HookScript("OnMouseUp", MinimapButton_OnMouseUp)
 
---queuestatusframe
-hooksecurefunc(QueueStatusFrame, "UpdatePosition", function(self)
-	self:ClearAllPoints()
-	self:SetPoint("TOPRIGHT", QueueStatusButton, "TOPLEFT")
-end)
-
-hooksecurefunc(QueueStatusFrame, "Update", function(self)
+hooksecurefunc(QueueStatusFrame, "Update", function()
 	local animateEye;
 
 	--Try each LFG type
@@ -336,7 +271,7 @@ hooksecurefunc(QueueStatusFrame, "Update", function(self)
 
 	--Try all PvP queues
 	for i=1, GetMaxBattlefieldID() do
-		local status, mapName, teamSize, registeredMatch, suspend = GetBattlefieldStatus(i)
+		local status, _, _, _, suspend = GetBattlefieldStatus(i)
 		if ( status and status ~= "none" ) then
 			if ( status == "queued" and not suspend ) then
 				animateEye = true;
@@ -346,7 +281,7 @@ hooksecurefunc(QueueStatusFrame, "Update", function(self)
 
 	--Try all World PvP queues
 	for i=1, MAX_WORLD_PVP_QUEUES do
-		local status, mapName, queueID = GetWorldPVPQueueStatus(i)
+		local status, _, _ = GetWorldPVPQueueStatus(i)
 		if ( status and status ~= "none" ) then
 			if ( status == "queued" ) then
 				animateEye = true;
