@@ -197,6 +197,9 @@ local function SkinFrame(frame)
 	end)
 
 	hooksecurefunc(frame.totFrame, "Update", function(self)
+		if UnitIsUnit(frame.unit, "player") then
+			return;
+		end
 		self.HealthBar.HealthBarMask:Hide()
 		self.ManaBar.ManaBarMask:Hide()
 		ToTHealthBarColoring(self)
