@@ -307,12 +307,9 @@ end)
 
 if C_AddOns.IsAddOnLoaded("BigDebuffs") then
 	hooksecurefunc(BigDebuffs, "UNIT_AURA", function(self, unit)
-		local Frame = self.UnitFrames[unit]
-		if not Frame then
-			return
-		end
-		if Frame.mask then
-			if Frame.unit == "player" then
+		if unit == "player" then
+			local Frame = self.UnitFrames[unit]
+			if Frame and Frame.mask then
 				Frame.mask:SetTexture("Interface/CHARACTERFRAME/TempPortraitAlphaMask", "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
 				Frame.icon:SetDrawLayer("BACKGROUND", 1)
 				Frame:SetFrameLevel(PlayerFrame.PlayerFrameContainer:GetFrameLevel())
