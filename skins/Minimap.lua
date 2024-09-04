@@ -174,14 +174,15 @@ end)
 hooksecurefunc(QueueStatusButton, "UpdatePosition", function(self)
 	self:SetParent(MinimapBackdrop)
 	self:ClearAllPoints()
-	self:SetPoint("TOPLEFT", 35, -160)
+	self:SetScale(0.6)
+	self:SetPoint("BOTTOMLEFT", 65, 110)
 	self:SetFrameLevel(6)
 end)
 
 if (QueueStatusButtonBorder == nil) then
 	QueueStatusButton:CreateTexture("QueueStatusButtonBorder", "OVERLAY")
-	QueueStatusButtonBorder:SetSize(92, 92)
+	QueueStatusButtonBorder:SetSize(100, 100)
 	QueueStatusButtonBorder:SetTexture("Interface\\AddOns\\ClassicFrames\\icons\\MiniMap-TrackingBorder")
 	QueueStatusButtonBorder:ClearAllPoints()
-	QueueStatusButtonBorder:SetPoint("TOPLEFT", QueueStatusButton, "TOPLEFT", -4, 5)
+	QueueStatusButtonBorder:SetPoint("TOPLEFT", QueueStatusButton, "TOPLEFT", -7, 7)
 end
