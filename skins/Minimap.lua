@@ -173,133 +173,15 @@ end)
 
 hooksecurefunc(QueueStatusButton, "UpdatePosition", function(self)
 	self:SetParent(MinimapBackdrop)
-	self:SetSize(33, 33)
-	self:SetScale(1.1)
 	self:ClearAllPoints()
-	self:SetPoint("TOPLEFT", 22, -100)
+	self:SetPoint("TOPLEFT", 35, -160)
 	self:SetFrameLevel(6)
 end)
 
 if (QueueStatusButtonBorder == nil) then
-	QueueStatusButton:CreateTexture("QueueStatusButtonBorder")
-	QueueStatusButtonBorder:SetSize(52, 52)
+	QueueStatusButton:CreateTexture("QueueStatusButtonBorder", "OVERLAY")
+	QueueStatusButtonBorder:SetSize(92, 92)
 	QueueStatusButtonBorder:SetTexture("Interface\\AddOns\\ClassicFrames\\icons\\MiniMap-TrackingBorder")
 	QueueStatusButtonBorder:ClearAllPoints()
-	QueueStatusButtonBorder:SetPoint("TOPLEFT", 1, -1)
+	QueueStatusButtonBorder:SetPoint("TOPLEFT", QueueStatusButton, "TOPLEFT", -4, 5)
 end
-
-local LFG_EYE_TEXTURES = { };
-LFG_EYE_TEXTURES["default"] = { file = "Interface\\LFGFrame\\LFG-Eye", width = 512, height = 256, frames = 29, iconSize = 64, delay = 0.1 };
-LFG_EYE_TEXTURES["raid"] = { file = "Interface\\LFGFrame\\LFR-Anim", width = 256, height = 256, frames = 16, iconSize = 64, delay = 0.05 };
-LFG_EYE_TEXTURES["unknown"] = { file = "Interface\\LFGFrame\\WaitAnim", width = 128, height = 128, frames = 4, iconSize = 64, delay = 0.25 };
-
-local function EyeTemplate_OnUpdate(self, elapsed)
-	local textureInfo = LFG_EYE_TEXTURES[self.queueType or "default"];
-	AnimateTexCoords(self.texture, textureInfo.width, textureInfo.height, textureInfo.iconSize, textureInfo.iconSize, textureInfo.frames, elapsed, textureInfo.delay)
-end
-
-local function EyeTemplate_StartAnimating(eye)
-	eye:SetScript("OnUpdate", EyeTemplate_OnUpdate)
-end
-
-local function EyeTemplate_StopAnimating(eye)
-	eye:SetScript("OnUpdate", nil)
-	if ( eye.texture.frame ) then
-		eye.texture.frame = 1; --To start the animation over.
-	end
-	local textureInfo = LFG_EYE_TEXTURES[eye.queueType or "default"];
-	eye.texture:SetTexCoord(0, textureInfo.iconSize / textureInfo.width, 0, textureInfo.iconSize / textureInfo.height)
-end
-
-local function QueueStatusButton_OnUpdate(self)
-	if ( self:IsShown() ) then
-		self.Eye.texture:Show()
-	else
-		self.Eye.texture:Hide()
-	end
-
-	self.Eye.texture:SetTexture("Interface\\LFGFrame\\LFG-Eye")
-	self.Eye.texture:ClearAllPoints()
-	self.Eye.texture:SetAllPoints()
-
-	self.Highlight:SetAtlas("groupfinder-eye-highlight", true)
-
-	self:SetHighlightTexture("Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight", "ADD")
-
-	self.Eye.EyeInitial:Hide()
-	self.Eye.EyeSearchingLoop:Hide()
-	self.Eye.EyeMouseOver:Hide()
-	self.Eye.EyeFoundInitial:Hide()
-	self.Eye.EyeFoundLoop:Hide()
-	self.Eye.GlowBackLoop:Hide()
-	self.Eye.EyePokeInitial:Hide()
-	self.Eye.EyePokeLoop:Hide()
-	self.Eye.EyePokeEnd:Hide()
-end
-
-QueueStatusButton:HookScript("OnUpdate", QueueStatusButton_OnUpdate)
-
-hooksecurefunc(QueueStatusFrame, "Update", function()
-	local animateEye;
-
-	--Try each LFG type
-	for i=1, NUM_LE_LFG_CATEGORYS do
-		local mode, submode = GetLFGMode(i)
-		if ( mode and submode ~= "noteleport" ) then
-			if ( mode == "queued" ) then
-				animateEye = true;
-			end
-		end
-	end
-
-	--Try LFGList entries
-	local isActive = C_LFGList.HasActiveEntryInfo()
-	if ( isActive ) then
-		animateEye = true;
-	end
-
-	--Try LFGList applications
-	local apps = C_LFGList.GetApplications()
-	for i=1, #apps do
-		local _, appStatus = C_LFGList.GetApplicationInfo(apps[i])
-		if ( appStatus == "applied" or appStatus == "invited" ) then
-			if ( appStatus == "applied" ) then
-				animateEye = true;
-			end
-		end
-	end
-
-	--Try all PvP queues
-	for i=1, GetMaxBattlefieldID() do
-		local status, _, _, _, suspend = GetBattlefieldStatus(i)
-		if ( status and status ~= "none" ) then
-			if ( status == "queued" and not suspend ) then
-				animateEye = true;
-			end
-		end
-	end
-
-	--Try all World PvP queues
-	for i=1, MAX_WORLD_PVP_QUEUES do
-		local status, _, _ = GetWorldPVPQueueStatus(i)
-		if ( status and status ~= "none" ) then
-			if ( status == "queued" ) then
-				animateEye = true;
-			end
-		end
-	end
-
-	--Pet Battle PvP Queue
-	local pbStatus = C_PetBattles.GetPVPMatchmakingInfo()
-	if ( pbStatus ) then
-		if ( pbStatus == "queued" ) then
-			animateEye = true;
-		end
-	end
-
-	if ( animateEye ) then
-		EyeTemplate_StartAnimating(QueueStatusButton.Eye)
-	else
-		EyeTemplate_StopAnimating(QueueStatusButton.Eye)
-	end
-end)

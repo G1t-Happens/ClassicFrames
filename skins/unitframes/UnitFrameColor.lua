@@ -43,7 +43,7 @@ end
 
 local Frame = CreateFrame("Frame")
 Frame:RegisterEvent("PLAYER_ENTERING_WORLD")
-Frame:SetScript("OnEvent", function(self, event, ...)
+Frame:SetScript("OnEvent", function(_, event, ...)
     if event == "PLAYER_ENTERING_WORLD" then
         ColorFrames()
     end
