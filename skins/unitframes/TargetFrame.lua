@@ -100,7 +100,6 @@ end
 local function SkinFrame(frame)
 	local contextual = frame.TargetFrameContent.TargetFrameContentContextual;
 	local contentMain = frame.TargetFrameContent.TargetFrameContentMain;
-	local FrameManaBar = contentMain.ManaBar;
 
 	contextual:SetFrameStrata("MEDIUM")
 	frame.TargetFrameContainer:SetFrameStrata("MEDIUM")
@@ -111,8 +110,7 @@ local function SkinFrame(frame)
 	frame.TargetFrameContainer.Portrait:ClearAllPoints()
 	frame.TargetFrameContainer.Portrait:SetPoint("TOPRIGHT", -22, -16)
 
-	contentMain.HealthBarsContainer:Hide()
-	FrameManaBar:EnableMouse(false)
+	contentMain:Hide()
 
 	contextual.NumericalThreat:ClearAllPoints()
 	contextual.NumericalThreat:SetPoint("BOTTOM", frame, "TOP", -30, -26)
@@ -161,7 +159,6 @@ local function SkinFrame(frame)
 	end)
 
 	hooksecurefunc(frame, "CheckClassification", function(self)
-		FrameManaBar:SetAlpha(0)
 		contextual.BossIcon:Hide()
 
 		self.TargetFrameContainer.BossPortraitFrameTexture:Hide()
