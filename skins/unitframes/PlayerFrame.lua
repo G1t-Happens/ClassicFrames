@@ -29,8 +29,8 @@ function CfPlayerFrame_OnEvent(self, event, ...)
 	CfUnitFrame_OnEvent(self, event, ...)
 end
 
-PlayerFrame.PlayerFrameContainer:SetFrameLevel(4)
-PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual:SetFrameLevel(5)
+PlayerFrame.PlayerFrameContainer:SetFrameStrata("MEDIUM")
+PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual:SetFrameStrata("MEDIUM")
 PlayerFrame.PlayerFrameContainer.PlayerPortrait:SetSize(64, 64)
 PlayerFrame.PlayerFrameContainer.PlayerPortrait:ClearAllPoints()
 PlayerFrame.PlayerFrameContainer.PlayerPortrait:SetPoint("TOPLEFT", 23, -16)
@@ -196,6 +196,7 @@ hooksecurefunc("PlayerFrame_ToPlayerArt", function(self)
 	self.PlayerFrameContainer.AlternatePowerFrameTexture:SetTexCoord(1, 0.09375, 0, 0.78125)
 	self.PlayerFrameContainer.AlternatePowerFrameTexture:ClearAllPoints()
 	self.PlayerFrameContainer.AlternatePowerFrameTexture:SetPoint("TOPLEFT", -19, -4)
+	self.PlayerFrameContainer.AlternatePowerFrameTexture:SetDrawLayer("BORDER")
 
 	local FrameFlash = self.PlayerFrameContainer.FrameFlash
 	FrameFlash:SetParent(self)
