@@ -305,19 +305,6 @@ hooksecurefunc("PlayerFrame_UpdatePartyLeader", function()
 	guideIcon:SetPoint("TOPLEFT", 21, -16)
 end)
 
-if C_AddOns.IsAddOnLoaded("BigDebuffs") then
-	hooksecurefunc(BigDebuffs, "UNIT_AURA", function(self, unit)
-		if unit == "player" then
-			local Frame = self.UnitFrames[unit]
-			if Frame and Frame.mask then
-				Frame.mask:SetTexture("Interface/CHARACTERFRAME/TempPortraitAlphaMask", "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
-				Frame.icon:SetDrawLayer("BACKGROUND", 1)
-				Frame:SetFrameLevel(PlayerFrame.PlayerFrameContainer:GetFrameLevel())
-			end
-		end
-	end)
-end
-
 hooksecurefunc("PlayerFrame_UpdatePlayerNameTextAnchor", function()
 	PlayerName:SetWidth(100)
 	PlayerName:ClearAllPoints()
