@@ -31,7 +31,11 @@ local function ColorFrames()
         MiniMapMailBorder,
         MiniMapCraftingBorder,
         QueueStatusButtonBorder,
-        TimeManagerClockButtonBackground
+        TimeManagerClockButtonBackground,
+
+        PlayerFrameGroupIndicatorRight,
+        PlayerFrameGroupIndicatorMiddle,
+        PlayerFrameGroupIndicatorLeft
     }
 
     -- Frames + MiniMap
