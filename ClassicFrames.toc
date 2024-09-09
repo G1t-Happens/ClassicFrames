@@ -8,6 +8,7 @@
 embeds.xml
 skins\Minimap.lua
 skins\ObjectiveTracker.lua
+skins\TotemFrame.lua
 skins\unitframes\UnitFrame.xml
 skins\unitframes\PlayerFrame.xml
 skins\unitframes\TargetFrame.xml
