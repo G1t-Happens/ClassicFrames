@@ -12,11 +12,11 @@ This Retail AddOn restores the Pre-10.0 UI frames with a focus on PvP, minimalis
 1. Download the ClassicFrames.zip from the [Releases page](https://github.com/G1t-Happens/ClassicFrames/releases) - two different versions available
 2. Extract the ClassicFrames into the `C:\Program Files (x86)\World of Warcraft\_retail_\Interface\AddOns` Folder
 3. After you've installed ClassicFrames in the AddOns folder, go into your **OPTIONAL** folder
-<br>inside your ClassicFrames and transfer the **RaidFrame** und **TargetingFrame** folder to your interface folder.
+<br>inside your ClassicFrames and transfer the **RaidFrame**, **TargetingFrame** folder and so on to your interface folder.
 The default path for your interface folder is `C:\Program Files (x86)\World of Warcraft\_retail_\Interface`
 > [!NOTE]  
-> The textures you transfer from the OPTIONAL folder to the Interface folder are meant to align the **RaidFrames** and 
-> **Nameplates** with the textures of the Unitframes. If you have no interest or need for this, you can skip step 3.
+> The textures you transfer from the OPTIONAL folder to the Interface folder are meant to align the **RaidFrames**, 
+> **Nameplates** and so on with the textures of the Unitframes. If you have no interest or need for this, you can skip step 3.
 
 > [!NOTE]  
 > If you downloaded the ClassicFrames directly from the front page instead of the [Releases page](https://github.com/G1t-Happens/ClassicFrames/releases),
