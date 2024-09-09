@@ -34,10 +34,16 @@ local function ColorFrames()
         TimeManagerClockButtonBackground
     }
 
+    -- Frames + MiniMap
     for _, v in pairs(frames) do
         if v then
             v:SetVertexColor(0.6, 0.6, 0.6)
         end
+    end
+
+    -- Totems
+    for child in TotemFrame.totemPool:EnumerateActive() do
+        child.Border:SetVertexColor(0.6, 0.6, 0.6)
     end
 end
 
