@@ -104,7 +104,7 @@ local function SkinFrame(frame)
 	contextual:SetFrameStrata("MEDIUM")
 	frame.TargetFrameContainer:SetFrameStrata("MEDIUM")
 
-	frame.TargetFrameContainer.Flash:SetDrawLayer("BACKGROUND")
+	frame.TargetFrameContainer.Flash:SetParent(frame)
 
 	frame.TargetFrameContainer.Portrait:SetSize(64, 64)
 	frame.TargetFrameContainer.Portrait:ClearAllPoints()
