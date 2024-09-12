@@ -104,7 +104,7 @@ local function SkinFrame(frame)
 	contextual:SetFrameStrata("MEDIUM")
 	frame.TargetFrameContainer:SetFrameStrata("MEDIUM")
 
-	frame.TargetFrameContainer.Flash:SetParent(frame)
+	frame.TargetFrameContainer.Flash:Hide()
 
 	frame.TargetFrameContainer.Portrait:SetSize(64, 64)
 	frame.TargetFrameContainer.Portrait:ClearAllPoints()
@@ -153,26 +153,18 @@ local function SkinFrame(frame)
 
 	hooksecurefunc(frame, "CheckBattlePet", function(self)
 		local petBattle = contextual.PetBattleIcon;
-
 		petBattle:ClearAllPoints()
 		petBattle:SetPoint("CENTER", self.TargetFrameContainer.FrameTexture, "RIGHT", -44, 10)
 	end)
 
 	hooksecurefunc(frame, "CheckClassification", function(self)
 		contextual.BossIcon:Hide()
-
 		self.TargetFrameContainer.BossPortraitFrameTexture:Hide()
-		self.haveElite = nil;
 		self.TargetFrameContainer.FrameTexture:SetSize(232, 100)
 		self.TargetFrameContainer.FrameTexture:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-TargetingFrameNoLevel")
 		self.TargetFrameContainer.FrameTexture:SetTexCoord(0.09375, 1, 0, 0.78125)
 		self.TargetFrameContainer.FrameTexture:ClearAllPoints()
 		self.TargetFrameContainer.FrameTexture:SetPoint("TOPLEFT", 20, -4)
-		self.TargetFrameContainer.Flash:SetSize(242, 93)
-		self.TargetFrameContainer.Flash:SetTexture("Interface\\TargetingFrame\\UI-TargetingFrame-Flash")
-		self.TargetFrameContainer.Flash:SetTexCoord(0, 0.9453125, 0, 0.181640625)
-		self.TargetFrameContainer.Flash:ClearAllPoints()
-		self.TargetFrameContainer.Flash:SetPoint("TOPLEFT", -4, -4)
 	end)
 
 	hooksecurefunc(frame, "CheckFaction", function(self)
@@ -186,18 +178,14 @@ local function SkinFrame(frame)
 	end)
 
 	hooksecurefunc(frame, "CheckLevel", function(self)
-		local levelText = self.TargetFrameContent.TargetFrameContentMain.LevelText;
-		local highLevelTexture = contextual.HighLevelTexture;
-		levelText:Hide()
-		highLevelTexture:Hide()
+		contentMain.LevelText:Hide()
+		contextual.HighLevelTexture:Hide()
 	end)
 
 	hooksecurefunc(frame.totFrame, "Update", function(self)
 		if UnitIsUnit(frame.unit, "player") or (not CVarCallbackRegistry:GetCVarValueBool("showTargetOfTarget")) then
 			return;
 		end
-		self.HealthBar.HealthBarMask:Hide()
-		self.ManaBar.ManaBarMask:Hide()
 		ToTHealthBarColoring(self)
 	end)
 
