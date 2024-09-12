@@ -176,10 +176,9 @@ local function SkinFrame(frame)
 	end)
 
 	hooksecurefunc(frame, "CheckFaction", function(self)
-		if self == TargetFrame or self == FocusFrame then
-			NameBackgroundColoring(self)
-		end
-		if (self.showPVP) then
+		NameBackgroundColoring(self)
+		local unitFramePvPContextualDisabled = C_GameRules.IsGameRuleActive(Enum.GameRule.UnitFramePvPContextualDisabled)
+		if (self.showPVP and (not unitFramePvPContextualDisabled)) then
 			contextual.PvpIcon:Hide()
 			contextual.PrestigePortrait:Hide()
 			contextual.PrestigeBadge:Hide()
@@ -194,7 +193,7 @@ local function SkinFrame(frame)
 	end)
 
 	hooksecurefunc(frame.totFrame, "Update", function(self)
-		if UnitIsUnit(frame.unit, "player") then
+		if UnitIsUnit(frame.unit, "player") or (not CVarCallbackRegistry:GetCVarValueBool("showTargetOfTarget")) then
 			return;
 		end
 		self.HealthBar.HealthBarMask:Hide()
