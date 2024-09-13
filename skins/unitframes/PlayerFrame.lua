@@ -311,17 +311,22 @@ hooksecurefunc("PlayerFrame_UpdateStatus", function()
 	PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.StatusTexture:Hide()
 end)
 
-PlayerFrame:HookScript("OnEvent", function(self)
-	local classPowerBar = self.classPowerBar
-	if (classPowerBar) then
-		classPowerBar:UnregisterAllEvents()
-		classPowerBar:Hide()
-	end
-	if (RuneFrame) then
-		RuneFrame:UnregisterAllEvents()
-		RuneFrame:Hide()
-	end
-end)
+if RuneFrame then
+	RuneFrame:UnregisterAllEvents()
+	RuneFrame:SetScript("OnShow", function(self)
+		self:Hide()
+	end)
+	RuneFrame:Hide()
+end
+
+if PlayerFrame.classPowerBar then
+	local classPowerBar = PlayerFrame.classPowerBar
+	classPowerBar:UnregisterAllEvents()
+	classPowerBar:SetScript("OnShow", function(self)
+		self:Hide()
+	end)
+	classPowerBar:Hide()
+end
 
 --Cvars & other
 C_CVar.SetCVar("threatWarning", 0)
