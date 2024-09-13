@@ -208,7 +208,6 @@ hooksecurefunc("PlayerFrame_ToPlayerArt", function(self)
 	CfPlayerFrameManaBar:SetPoint("TOPLEFT",106,-52)
 	CfPlayerFrameBackground:SetSize(119, 41)
 	PlayerFrame.nameBackground:Show()
-	PlayerLevelText:Hide()
 
 	CfUnitFrame_SetUnit(CfPlayerFrame, "player", CfPlayerFrameHealthBar, CfPlayerFrameManaBar)
 
@@ -256,10 +255,6 @@ hooksecurefunc("PlayerFrame_ToVehicleArt", function(self)
 		CfRuneFrame:Hide()
 	end
 	ComboPointPlayerFrame:Setup()
-end)
-
-hooksecurefunc("PlayerFrame_UpdateLevel", function()
-	PlayerLevelText:Hide()
 end)
 
 hooksecurefunc("PlayerFrame_UpdatePartyLeader", function()
