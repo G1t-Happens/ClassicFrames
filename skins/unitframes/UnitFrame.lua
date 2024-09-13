@@ -360,6 +360,9 @@ function CfUnitFrameManaBar_UpdateType(manaBar)
 					manaBar:SetStatusBarColor(info.r, info.g, info.b);
 				end
 			end
+			if ( manaBar.Spark ) then
+				manaBar.Spark:SetAlpha(0)
+			end
 		end
 	else
 		if ( not altR ) then
@@ -597,6 +600,9 @@ hooksecurefunc("UnitFrameManaBar_UpdateType", function(manaBar)
 			else
 				manaBar:SetStatusBarColor(info.r, info.g, info.b);
 			end
+		end
+		if ( manaBar.Spark ) then
+			manaBar.Spark:SetAlpha(0)
 		end
 	else
 		if ( not altR ) then
