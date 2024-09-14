@@ -58,5 +58,3 @@ Frame:SetScript("OnEvent", function(_, event, ...)
         ColorFrames()
     end
 end)
-
-
