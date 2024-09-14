@@ -151,12 +151,6 @@ local function SkinFrame(frame)
 		ComboFrame:SetPoint("TOPRIGHT", TargetFrame, "TOPRIGHT", -24, -13)
 	end
 
-	hooksecurefunc(frame, "CheckBattlePet", function(self)
-		local petBattle = contextual.PetBattleIcon;
-		petBattle:ClearAllPoints()
-		petBattle:SetPoint("CENTER", self.TargetFrameContainer.FrameTexture, "RIGHT", -44, 10)
-	end)
-
 	hooksecurefunc(frame, "CheckClassification", function(self)
 		contextual.BossIcon:Hide()
 		self.TargetFrameContainer.BossPortraitFrameTexture:Hide()
@@ -177,7 +171,7 @@ local function SkinFrame(frame)
 		end
 	end)
 
-	hooksecurefunc(frame, "CheckLevel", function(self)
+	hooksecurefunc(frame, "CheckLevel", function()
 		contentMain.LevelText:Hide()
 		contextual.HighLevelTexture:Hide()
 	end)
@@ -286,7 +280,7 @@ hooksecurefunc(FocusFrame, "CheckDead", function(self)
 	end
 end)
 
-hooksecurefunc('TargetFrame_UpdateBuffAnchor', function(frame, buff, index, numDebuffs, anchorBuff, anchorIndex, size, offsetX, offsetY, mirrorVertically)
+hooksecurefunc('TargetFrame_UpdateBuffAnchor', function(frame, buff, index, numDebuffs, anchorBuff, anchorIndex, _, offsetX, offsetY, mirrorVertically)
 	--For mirroring vertically
 	local point, relativePoint;
 	local startY, auraOffsetY;
@@ -326,7 +320,7 @@ hooksecurefunc('TargetFrame_UpdateBuffAnchor', function(frame, buff, index, numD
 	buff:SetHeight(18)
 end)
 
-hooksecurefunc('TargetFrame_UpdateDebuffAnchor', function(frame, buff, index, numBuffs, anchorBuff, anchorIndex, size, offsetX, offsetY, mirrorVertically)
+hooksecurefunc('TargetFrame_UpdateDebuffAnchor', function(frame, buff, index, numBuffs, anchorBuff, anchorIndex, _, offsetX, offsetY, mirrorVertically)
 	local isFriend = UnitIsFriend("player", frame.unit);
 
 	--For mirroring vertically

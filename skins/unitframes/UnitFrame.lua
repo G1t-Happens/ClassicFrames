@@ -161,7 +161,7 @@ function CfUnitFrame_SetUnit(self, unit, healthbar, manabar)
 	securecall("CfUnitFrame_Update", self);
 end
 
-function CfUnitFrame_Update(self, isParty)
+function CfUnitFrame_Update(self)
 	CfUnitFrameHealthBar_Update(self.healthbar, self.unit);
 	CfUnitFrameManaBar_Update(self.manabar, self.unit);
 	CfUnitFrameHealPredictionBars_UpdateMax(self);

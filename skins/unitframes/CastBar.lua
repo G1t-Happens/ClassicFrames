@@ -13,7 +13,7 @@ local function AdjustPosition(self)
     self:SetPoint("TOPLEFT", relativeKey, "BOTTOMLEFT", pointX, pointY)
 end
 
-local function SetLookReplacementPlayer(self, event, ...)
+local function SetLookReplacementPlayer(self)
     if (PlayerCastingBarFrame.attachedToPlayerFrame) then
         self:SetSize(150, 10)
         self.Background:SetColorTexture(0, 0, 0, 0.5)
@@ -85,7 +85,7 @@ local function SetLookReplacementTargetFocus(self)
     self.Icon:SetSize(19, 19)
 end
 
-local function OnFinishedFlashPlayer(self, event, ...)
+local function OnFinishedFlashPlayer(self)
     self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
     self.Flash:SetVertexColor(self:GetStatusBarColor())
     if (PlayerCastingBarFrame.attachedToPlayerFrame) then
@@ -104,7 +104,7 @@ local function OnFinishedFlashPlayer(self, event, ...)
     end
 end
 
-local function OnFinishedFlashTarget(self, event, ...)
+local function OnFinishedFlashTarget(self)
     self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
     self.Flash:SetVertexColor(self:GetStatusBarColor())
     self.Flash:SetSize(0, 49)
@@ -152,7 +152,7 @@ local function HookOnEvent(self, event, ...)
     end
 end
 
-local function ChangeSparkTexture(self, event, ...)
+local function ChangeSparkTexture(self)
     if (self.Spark) then
         self.Spark:Show()
     end
@@ -296,7 +296,7 @@ OnLogin:SetScript("OnEvent", function()
             Castbar:Show()
         end
 
-        EditModeFrame:SetScript("OnUpdate", function(self, elapsed)
+        EditModeFrame:SetScript("OnUpdate", function()
             SetLookReplacementPlayer(Castbar)
             OnFinishedFlashPlayer(Castbar)
             Castbar:SetScale(PlayerCastingBarFrame:GetScale())
