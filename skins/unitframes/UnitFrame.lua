@@ -347,18 +347,11 @@ function CfUnitFrameManaBar_UpdateType(manaBar)
 
 	if ( info ) then
 		if ( not manaBar.lockColor ) then
-			local playerDeadOrGhost = (manaBar.unit == "player" and (UnitIsDead("player") or UnitIsGhost("player")));
 			if ( info.atlas ) then
 				manaBar:SetStatusBarTexture(info.atlas);
 				manaBar:SetStatusBarColor(1, 1, 1);
-				manaBar:GetStatusBarTexture():SetDesaturated(playerDeadOrGhost);
-				manaBar:GetStatusBarTexture():SetAlpha(playerDeadOrGhost and 0.5 or 1);
 			else
-				if ( playerDeadOrGhost ) then
-					manaBar:SetStatusBarColor(0.6, 0.6, 0.6, 0.5);
-				else
-					manaBar:SetStatusBarColor(info.r, info.g, info.b);
-				end
+				manaBar:SetStatusBarColor(info.r, info.g, info.b);
 			end
 			if ( manaBar.Spark ) then
 				manaBar.Spark:SetAlpha(0)
@@ -578,45 +571,37 @@ function CfUnitFrameManaBar_Update(statusbar, unit)
 end
 
 hooksecurefunc("UnitFrameManaBar_UpdateType", function(manaBar)
-	if not manaBar or (manaBar.unit ~= "targettarget" and manaBar.unit ~= "focustarget") then
-		return;
-	end
+	if manaBar and (manaBar.unit == "targettarget" or manaBar.unit == "focustarget") then
 
-	local powerType, powerToken, altR, altG, altB = UnitPowerType(manaBar.unit);
-	local info = CfPowerBarColor[powerToken];
+		local powerType, powerToken, altR, altG, altB = UnitPowerType(manaBar.unit);
+		local info = CfPowerBarColor[powerToken];
 
-	manaBar:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar");
+		manaBar:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar");
 
-	if ( info ) then
-		local playerDeadOrGhost = (manaBar.unit == "player" and (UnitIsDead("player") or UnitIsGhost("player")));
-		if ( info.atlas ) then
-			manaBar:SetStatusBarTexture(info.atlas);
-			manaBar:SetStatusBarColor(1, 1, 1);
-			manaBar:GetStatusBarTexture():SetDesaturated(playerDeadOrGhost);
-			manaBar:GetStatusBarTexture():SetAlpha(playerDeadOrGhost and 0.5 or 1);
-		else
-			if ( playerDeadOrGhost ) then
-				manaBar:SetStatusBarColor(0.6, 0.6, 0.6, 0.5);
+		if ( info ) then
+			if ( info.atlas ) then
+				manaBar:SetStatusBarTexture(info.atlas);
+				manaBar:SetStatusBarColor(1, 1, 1);
 			else
 				manaBar:SetStatusBarColor(info.r, info.g, info.b);
 			end
-		end
-		if ( manaBar.Spark ) then
-			manaBar.Spark:SetAlpha(0)
-		end
-	else
-		if ( not altR ) then
-			info = CfPowerBarColor[powerType] or CfPowerBarColor["MANA"];
+			if ( manaBar.Spark ) then
+				manaBar.Spark:SetAlpha(0)
+			end
 		else
-			manaBar:SetStatusBarColor(altR, altG, altB);
+			if ( not altR ) then
+				info = CfPowerBarColor[powerType] or CfPowerBarColor["MANA"];
+			else
+				manaBar:SetStatusBarColor(altR, altG, altB);
+			end
 		end
-	end
 
-	if ( manaBar.powerType ~= powerType ) then
-		manaBar.powerType = powerType;
-		manaBar.powerToken = powerToken;
-		manaBar.currValue = UnitPower("player", powerType);
-	end
+		if ( manaBar.powerType ~= powerType ) then
+			manaBar.powerType = powerType;
+			manaBar.powerToken = powerToken;
+			manaBar.currValue = UnitPower("player", powerType);
+		end
 
-	manaBar:UpdateTextString();
+		manaBar:UpdateTextString();
+	end
 end)
