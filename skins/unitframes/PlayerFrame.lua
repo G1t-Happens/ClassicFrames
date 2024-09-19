@@ -306,14 +306,7 @@ hooksecurefunc("PlayerFrame_UpdateStatus", function()
 	PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.StatusTexture:Hide()
 end)
 
-if RuneFrame then
-	RuneFrame:UnregisterAllEvents()
-	RuneFrame:SetScript("OnShow", function(self)
-		self:Hide()
-	end)
-	RuneFrame:Hide()
-end
-
+-- Hide classbars
 if PlayerFrame.classPowerBar then
 	local classPowerBar = PlayerFrame.classPowerBar
 	classPowerBar:UnregisterAllEvents()
@@ -323,12 +316,28 @@ if PlayerFrame.classPowerBar then
 	classPowerBar:Hide()
 end
 
+if RuneFrame then
+	RuneFrame:UnregisterAllEvents()
+	RuneFrame:SetScript("OnShow", function(self)
+		self:Hide()
+	end)
+	RuneFrame:Hide()
+end
+
 if InsanityBarFrame then
 	InsanityBarFrame:UnregisterAllEvents()
 	InsanityBarFrame:SetScript("OnShow", function(self)
 		self:Hide()
 	end)
 	InsanityBarFrame:Hide()
+end
+
+if MonkHarmonyBarFrame then
+	MonkHarmonyBarFrame:UnregisterAllEvents()
+	MonkHarmonyBarFrame:SetScript("OnShow", function(self)
+		self:Hide()
+	end)
+	MonkHarmonyBarFrame:Hide()
 end
 
 --Cvars & other
