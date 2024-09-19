@@ -323,6 +323,14 @@ if PlayerFrame.classPowerBar then
 	classPowerBar:Hide()
 end
 
+if InsanityBarFrame then
+	InsanityBarFrame:UnregisterAllEvents()
+	InsanityBarFrame:SetScript("OnShow", function(self)
+		self:Hide()
+	end)
+	InsanityBarFrame:Hide()
+end
+
 --Cvars & other
 C_CVar.SetCVar("threatWarning", 0)
 UIErrorsFrame:SetAlpha(0)
