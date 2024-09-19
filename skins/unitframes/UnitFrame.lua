@@ -1,13 +1,3 @@
-local ManaBarFrequentUpdateUnitTypes = {
-	"player",
-	"pet",
-	"vehicle",
-	"target",
-	"focus",
-	"targettarget",
-	"focustarget"
-};
-
 CfPowerBarColor = {};
 CfPowerBarColor["MANA"] = { r = 0.00, g = 0.00, b = 1.00 };
 CfPowerBarColor["RAGE"] = { r = 1.00, g = 0.00, b = 0.00 };
@@ -48,8 +38,8 @@ CfPowerBarColor[17] = CfPowerBarColor["FURY"];
 CfPowerBarColor[18] = CfPowerBarColor["PAIN"];
 
 function CfUnitFrame_Initialize(self, unit, name, portrait, healthbar, healthtext, manabar, manatext, threatIndicator, threatFeedbackUnit, threatNumericIndicator,
-		myHealPredictionBar, otherHealPredictionBar, totalAbsorbBar, totalAbsorbBarOverlay, overAbsorbGlow, overHealAbsorbGlow, healAbsorbBar, healAbsorbBarLeftShadow,
-		healAbsorbBarRightShadow)
+								myHealPredictionBar, otherHealPredictionBar, totalAbsorbBar, totalAbsorbBarOverlay, overAbsorbGlow, overHealAbsorbGlow, healAbsorbBar, healAbsorbBarLeftShadow,
+								healAbsorbBarRightShadow)
 	self.unit = unit;
 	self.name = name;
 	self.portrait = portrait;
@@ -109,16 +99,7 @@ function CfUnitFrame_Initialize(self, unit, name, portrait, healthbar, healthtex
 		self.manabar.capNumericDisplay = true;
 	end
 	CfUnitFrameHealthBar_Initialize(unit, healthbar, healthtext, true)
-
-	local manaBarFrequentUpdates = false;
-	for _, unitType in ipairs(ManaBarFrequentUpdateUnitTypes) do
-		if (unit == unitType) then
-			manaBarFrequentUpdates = true;
-			break;
-		end
-	end
-
-	CfUnitFrameManaBar_Initialize(unit, manabar, manatext, manaBarFrequentUpdates)
+	CfUnitFrameManaBar_Initialize(unit, manabar, manatext, (unit == "player" or unit == "target" or unit == "focus" or unit == "pet"))
 	CfUnitFrame_Update(self)
 	self:RegisterEvent("UNIT_DISPLAYPOWER")
 	if ( self.healAbsorbBar ) then
