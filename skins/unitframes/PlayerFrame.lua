@@ -340,6 +340,14 @@ if MonkHarmonyBarFrame then
 	MonkHarmonyBarFrame:Hide()
 end
 
+if MageArcaneChargesFrame then
+	MageArcaneChargesFrame:UnregisterAllEvents()
+	MageArcaneChargesFrame:SetScript("OnShow", function(self)
+		self:Hide()
+	end)
+	MageArcaneChargesFrame:Hide()
+end
+
 --Cvars & other
 C_CVar.SetCVar("threatWarning", 0)
 UIErrorsFrame:SetAlpha(0)
