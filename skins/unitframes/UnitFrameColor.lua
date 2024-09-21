@@ -35,7 +35,11 @@ local function ColorFrames()
 
         PlayerFrameGroupIndicatorRight,
         PlayerFrameGroupIndicatorMiddle,
-        PlayerFrameGroupIndicatorLeft
+        PlayerFrameGroupIndicatorLeft,
+
+        EvokerEbonMightBar.RightBorder,
+        EvokerEbonMightBar.Border,
+        EvokerEbonMightBar.LeftBorder
     }
 
     -- Frames + MiniMap
