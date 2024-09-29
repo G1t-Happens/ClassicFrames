@@ -163,8 +163,7 @@ local function SkinFrame(frame)
 
 	hooksecurefunc(frame, "CheckFaction", function(self)
 		NameBackgroundColoring(self)
-		local unitFramePvPContextualDisabled = C_GameRules.IsGameRuleActive(Enum.GameRule.UnitFramePvPContextualDisabled)
-		if (self.showPVP and (not unitFramePvPContextualDisabled)) then
+		if self.showPVP then
 			contextual.PvpIcon:Hide()
 			contextual.PrestigePortrait:Hide()
 			contextual.PrestigeBadge:Hide()
