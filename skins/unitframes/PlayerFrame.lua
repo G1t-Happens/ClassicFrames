@@ -306,15 +306,18 @@ hooksecurefunc("PlayerFrame_UpdateStatus", function()
 	PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.StatusTexture:Hide()
 end)
 
--- Hide classbars
-if PlayerFrame.classPowerBar then
+-- Hide classPowerBars
+local f = CreateFrame("Frame")
+f:RegisterEvent("PLAYER_LOGIN")
+f:SetScript("OnEvent", function(self)
+	self:UnregisterEvent("PLAYER_LOGIN")
 	local classPowerBar = PlayerFrame.classPowerBar
-	classPowerBar:UnregisterAllEvents()
-	classPowerBar:SetScript("OnShow", function(self)
-		self:Hide()
-	end)
-	classPowerBar:Hide()
-end
+	if classPowerBar then
+		classPowerBar:UnregisterAllEvents()
+		classPowerBar:SetScript("OnShow", classPowerBar.Hide)
+		classPowerBar:Hide()
+	end
+end)
 
 if RuneFrame then
 	RuneFrame:UnregisterAllEvents()
@@ -322,30 +325,6 @@ if RuneFrame then
 		self:Hide()
 	end)
 	RuneFrame:Hide()
-end
-
-if InsanityBarFrame then
-	InsanityBarFrame:UnregisterAllEvents()
-	InsanityBarFrame:SetScript("OnShow", function(self)
-		self:Hide()
-	end)
-	InsanityBarFrame:Hide()
-end
-
-if MonkHarmonyBarFrame then
-	MonkHarmonyBarFrame:UnregisterAllEvents()
-	MonkHarmonyBarFrame:SetScript("OnShow", function(self)
-		self:Hide()
-	end)
-	MonkHarmonyBarFrame:Hide()
-end
-
-if MageArcaneChargesFrame then
-	MageArcaneChargesFrame:UnregisterAllEvents()
-	MageArcaneChargesFrame:SetScript("OnShow", function(self)
-		self:Hide()
-	end)
-	MageArcaneChargesFrame:Hide()
 end
 
 --Cvars & other
