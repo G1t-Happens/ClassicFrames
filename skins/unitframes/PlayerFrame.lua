@@ -210,15 +210,6 @@ hooksecurefunc("PlayerFrame_ToPlayerArt", function(self)
 	PlayerFrame.nameBackground:Show()
 
 	CfUnitFrame_SetUnit(CfPlayerFrame, "player", CfPlayerFrameHealthBar, CfPlayerFrameManaBar)
-
-	local _, class = UnitClass("player")
-	if ( CfPlayerFrame.CfClassPowerBar ) then
-		CfPlayerFrame.CfClassPowerBar:Setup()
-	elseif ( class == "DEATHKNIGHT" ) then
-		CfRuneFrame:Show()
-	end
-
-	ComboPointPlayerFrame:Setup()
 end)
 
 hooksecurefunc("PlayerFrame_ToVehicleArt", function(self)
@@ -247,14 +238,6 @@ hooksecurefunc("PlayerFrame_ToVehicleArt", function(self)
 	PlayerLevelText:Hide()
 
 	CfUnitFrame_SetUnit(CfPlayerFrame, "vehicle", CfPlayerFrameHealthBar, CfPlayerFrameManaBar)
-
-	local _, class = UnitClass("player")
-	if ( CfPlayerFrame.CfClassPowerBar ) then
-		CfPlayerFrame.CfClassPowerBar:Hide()
-	elseif ( class == "DEATHKNIGHT" ) then
-		CfRuneFrame:Hide()
-	end
-	ComboPointPlayerFrame:Setup()
 end)
 
 hooksecurefunc("PlayerFrame_UpdatePartyLeader", function()
@@ -305,27 +288,6 @@ hooksecurefunc("PlayerFrame_UpdateStatus", function()
 	PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.PlayerPortraitCornerIcon:Hide()
 	PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.StatusTexture:Hide()
 end)
-
--- Hide classPowerBars
-local f = CreateFrame("Frame")
-f:RegisterEvent("PLAYER_LOGIN")
-f:SetScript("OnEvent", function(self)
-	self:UnregisterEvent("PLAYER_LOGIN")
-	local classPowerBar = PlayerFrame.classPowerBar
-	if classPowerBar then
-		classPowerBar:UnregisterAllEvents()
-		classPowerBar:SetScript("OnShow", classPowerBar.Hide)
-		classPowerBar:Hide()
-	end
-end)
-
-if RuneFrame then
-	RuneFrame:UnregisterAllEvents()
-	RuneFrame:SetScript("OnShow", function(self)
-		self:Hide()
-	end)
-	RuneFrame:Hide()
-end
 
 --Cvars & other
 C_CVar.SetCVar("threatWarning", 0)
