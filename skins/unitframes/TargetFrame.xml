@@ -30,16 +30,6 @@
 								<Texture name="$parentHealAbsorbBar" inherits="CfHealAbsorbBarTemplate"/>
 								<Texture name="$parentHealAbsorbBarLeftShadow" inherits="CfHealAbsorbBarLeftShadowTemplate"/>
 								<Texture name="$parentHealAbsorbBarRightShadow" inherits="CfHealAbsorbBarRightShadowTemplate"/>
-								<FontString name="$parentDeadText" inherits="GameFontNormalSmall" text="DEAD">
-									<Anchors>
-										<Anchor point="CENTER" x="-50" y="3"/>
-									</Anchors>
-								</FontString>
-								<FontString name="$parentUnconsciousText" inherits="GameFontNormalSmall" text="UNCONSCIOUS">
-									<Anchors>
-										<Anchor point="CENTER" x="-50" y="3"/>
-									</Anchors>
-								</FontString>
 								<FontString name="$parentHealthBarText" inherits="TextStatusBarText">
 									<Anchors>
 										<Anchor point="CENTER" x="-50" y="3"/>

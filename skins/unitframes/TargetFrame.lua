@@ -21,8 +21,6 @@ function CfTargetFrame_OnLoad(self, unit)
 		CfTargetFrameManaBarText:SetParent(TargetFrame.TargetFrameContent.TargetFrameContentContextual)
 		CfTargetFrameManaBarTextLeft:SetParent(TargetFrame.TargetFrameContent.TargetFrameContentContextual)
 		CfTargetFrameManaBarTextRight:SetParent(TargetFrame.TargetFrameContent.TargetFrameContentContextual)
-		CfTargetFrameDeadText:SetParent(TargetFrame.TargetFrameContent.TargetFrameContentContextual)
-		CfTargetFrameUnconsciousText:SetParent(TargetFrame.TargetFrameContent.TargetFrameContentContextual)
 		CfTargetFrameOverAbsorbGlow:SetParent(TargetFrame.TargetFrameContent.TargetFrameContentContextual)
 		CfTargetFrameBackground:SetSize(119, 25)
 		CfTargetFrameBackground:SetPoint("BOTTOMLEFT", 7, 35)
@@ -35,8 +33,6 @@ function CfTargetFrame_OnLoad(self, unit)
 		CfFocusFrameManaBarText:SetParent(FocusFrame.TargetFrameContent.TargetFrameContentContextual)
 		CfFocusFrameManaBarTextLeft:SetParent(FocusFrame.TargetFrameContent.TargetFrameContentContextual)
 		CfFocusFrameManaBarTextRight:SetParent(FocusFrame.TargetFrameContent.TargetFrameContentContextual)
-		CfFocusFrameDeadText:SetParent(FocusFrame.TargetFrameContent.TargetFrameContentContextual)
-		CfFocusFrameUnconsciousText:SetParent(FocusFrame.TargetFrameContent.TargetFrameContentContextual)
 		CfFocusFrameOverAbsorbGlow:SetParent(FocusFrame.TargetFrameContent.TargetFrameContentContextual)
 		CfFocusFrameBackground:SetSize(119, 25)
 		CfFocusFrameBackground:SetPoint("BOTTOMLEFT", 7, 35)
@@ -246,36 +242,6 @@ end)
 hooksecurefunc(FocusFrame, "Update", function(self)
 	if (UnitExists(self.unit)) then
 		CfUnitFrame_Update(CfFocusFrame)
-	end
-end)
-
-hooksecurefunc(TargetFrame, "CheckDead", function(self)
-	if ((UnitHealth(self.unit) <= 0) and UnitIsConnected(self.unit)) then
-		if (UnitIsUnconscious(self.unit)) then
-			CfTargetFrameUnconsciousText:Show()
-			CfTargetFrameDeadText:Hide()
-		else
-			CfTargetFrameUnconsciousText:Hide()
-			CfTargetFrameDeadText:Show()
-		end
-	else
-		CfTargetFrameDeadText:Hide()
-		CfTargetFrameUnconsciousText:Hide()
-	end
-end)
-
-hooksecurefunc(FocusFrame, "CheckDead", function(self)
-	if ((UnitHealth(self.unit) <= 0) and UnitIsConnected(self.unit)) then
-		if (UnitIsUnconscious(self.unit)) then
-			CfFocusFrameUnconsciousText:Show()
-			CfFocusFrameDeadText:Hide()
-		else
-			CfFocusFrameUnconsciousText:Hide()
-			CfFocusFrameDeadText:Show()
-		end
-	else
-		CfFocusFrameDeadText:Hide()
-		CfFocusFrameUnconsciousText:Hide()
 	end
 end)
 
