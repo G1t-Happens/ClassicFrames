@@ -289,10 +289,6 @@ hooksecurefunc("PlayerFrame_UpdateStatus", function()
 	PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.StatusTexture:Hide()
 end)
 
-hooksecurefunc(PlayerFrameBottomManagedFramesContainer, "Layout", function(self)
-	self:SetPoint("TOP", PlayerFrame, "BOTTOM", 30, 35)
-end)
-
 --Cvars & other
 C_CVar.SetCVar("threatWarning", 0)
 UIErrorsFrame:SetAlpha(0)
