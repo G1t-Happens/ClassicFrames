@@ -99,7 +99,7 @@ function CfUnitFrame_Initialize(self, unit, name, portrait, healthbar, healthtex
 		self.manabar.capNumericDisplay = true;
 	end
 	CfUnitFrameHealthBar_Initialize(unit, healthbar, healthtext, true)
-	CfUnitFrameManaBar_Initialize(unit, manabar, manatext, (unit == "player" or unit == "target" or unit == "focus" or unit == "pet"))
+	CfUnitFrameManaBar_Initialize(unit, manabar, manatext, (unit == "player" or unit == "target" or unit == "focus"))
 	CfUnitFrame_Update(self)
 	self:RegisterEvent("UNIT_DISPLAYPOWER")
 	if ( self.healAbsorbBar ) then
@@ -488,6 +488,8 @@ function CfUnitFrameManaBar_Initialize(unit, statusbar, statustext, frequentUpda
 	end
 	statusbar:RegisterEvent("UNIT_DISPLAYPOWER")
 	statusbar:RegisterUnitEvent("UNIT_MAXPOWER", unit)
+	statusbar:RegisterUnitEvent("PLAYER_GAINS_VEHICLE_DATA", unit)
+	statusbar:RegisterUnitEvent("PLAYER_LOSES_VEHICLE_DATA", unit)
 	statusbar:SetScript("OnEvent", CfUnitFrameManaBar_OnEvent)
 end
 
@@ -503,6 +505,10 @@ function CfUnitFrameManaBar_OnEvent(self, event, ...)
 			CfUnitFrameManaBar_RegisterDefaultEvents(self);
 			self:SetScript("OnUpdate", nil);
 		end
+	elseif ( event == "PLAYER_ALIVE"  or event == "PLAYER_DEAD" or event == "PLAYER_UNGHOST" ) then
+		CfUnitFrameManaBar_UpdateType(self);
+	elseif ( event == "PLAYER_GAINS_VEHICLE_DATA"  or event == "PLAYER_LOSES_VEHICLE_DATA" ) then
+		CfUnitFrameManaBar_UpdateType(self);
 	else
 		if ( not self.ignoreNoUnit or UnitGUID(self.unit) ) then
 			CfUnitFrameManaBar_Update(self, ...);
