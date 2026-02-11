@@ -280,6 +280,7 @@ OnLogin:SetScript("OnEvent", function()
     OverlayPlayerCastingBarFrame:UnregisterAllEvents()
     OverlayPlayerCastingBarFrame:Hide()
     OverlayPlayerCastingBarFrame:SetAlpha(0)
+    Castbar.Icon:SetAlpha(0)
 
     -- Style all Castbars
     ApplyPlayerCastbarStyle(Castbar)

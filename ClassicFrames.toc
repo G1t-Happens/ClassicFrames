@@ -1,15 +1,15 @@
-## Interface: 110205
+## Interface: 120001
 ## IconTexture: Interface/Icons/INV_Sword_2H_AshbringerCorrupt
 ## Title: Classic Frames
-## Notes: Restores the Pre-10.0 UI frames with a focus on PvP, minimalism, and performance.
-## Author: I made some changes to his addon, but most of the credit should go to luckfore(https://legacy.curseforge.com/members/luckfore)
-## Version: 2.25
+## Notes: Restores the classic UI and Unit Frames
+## Author: luckfore
+## Version: 2.93
 ## OptionalDeps: SexyMap
 embeds.xml
 skins\Minimap.lua
 skins\ObjectiveTracker.lua
 skins\TotemFrame.lua
-skins\unitframes\UnitFrame.xml
+skins\unitframes\UnitFrame.lua
 skins\unitframes\PlayerFrame.xml
 skins\unitframes\TargetFrame.xml
 skins\unitframes\CastBar.lua

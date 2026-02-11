@@ -1,5 +1,5 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
-..\Blizzard_SharedXML\UI.xsd">
+..\..\Blizzard_SharedXML\UI.xsd">
 	<Script file="PlayerFrame.lua"/>
 	<Button name="CfPlayerFrameTemplate" virtual="true">
 		<Size x="232" y="100"/>
@@ -12,111 +12,14 @@
 					<Color r="0" g="0" b="0" a="0.5"/>
 				</Texture>
 			</Layer>
-			<Layer level="ARTWORK">
-				<Texture name="$parentTotalAbsorbBar" inherits="CfTotalAbsorbBarTemplate"/>
-			</Layer>
-			<Layer level="ARTWORK" textureSubLevel="1">
-				<Texture name="$parentTotalAbsorbBarOverlay" inherits="CfTotalAbsorbBarOverlayTemplate"/>
-			</Layer>
 		</Layers>
-		<Frames>
-			<Frame setAllPoints="true">
-				<Frames>
-					<Frame setAllPoints="true">
-						<Layers>
-							<Layer level="BACKGROUND">
-								<Texture name="$parentMyHealPredictionBar" inherits="CfMyHealPredictionBarTemplate"/>
-								<Texture name="$parentOtherHealPredictionBar" inherits="CfOtherHealPredictionBarTemplate"/>
-								<Texture name="$parentHealAbsorbBar" inherits="CfHealAbsorbBarTemplate"/>
-								<Texture name="$parentHealAbsorbBarLeftShadow" inherits="CfHealAbsorbBarLeftShadowTemplate"/>
-								<Texture name="$parentHealAbsorbBarRightShadow" inherits="CfHealAbsorbBarRightShadowTemplate"/>
-							</Layer>
-							<Layer level="BORDER">
-								<FontString name="$parentHealthBarText" inherits="TextStatusBarText">
-									<Anchors>
-										<Anchor point="CENTER" x="50" y="3"/>
-									</Anchors>
-								</FontString>
-								<FontString name="$parentHealthBarTextLeft" inherits="TextStatusBarText">
-									<Anchors>
-										<Anchor point="LEFT" x="110" y="3"/>
-									</Anchors>
-								</FontString>
-								<FontString name="$parentHealthBarTextRight" inherits="TextStatusBarText">
-									<Anchors>
-										<Anchor point="RIGHT" x="-8" y="3"/>
-									</Anchors>
-								</FontString>
-								<FontString name="$parentManaBarText" inherits="TextStatusBarText">
-									<Anchors>
-										<Anchor point="CENTER" x="50" y="-8"/>
-									</Anchors>
-								</FontString>
-								<FontString name="$parentManaBarTextLeft" inherits="TextStatusBarText">
-									<Anchors>
-										<Anchor point="LEFT" x="110" y="-8"/>
-									</Anchors>
-								</FontString>
-								<FontString name="$parentManaBarTextRight" inherits="TextStatusBarText">
-									<Anchors>
-										<Anchor point="RIGHT" x="-8" y="-8"/>
-									</Anchors>
-								</FontString>
-							</Layer>
-							<Layer level="ARTWORK" textureSubLevel="1">
-								<Texture name="$parentOverAbsorbGlow" inherits="CfOverAbsorbGlowTemplate"/>
-								<Texture name="$parentOverHealAbsorbGlow" inherits="CfOverHealAbsorbGlowTemplate"/>
-							</Layer>
-						</Layers>
-					</Frame>
-				</Frames>
-			</Frame>
-			<StatusBar name="$parentHealthBar" inherits="TextStatusBar">
-				<Size x="119" y="12"/>
-				<Anchors>
-					<Anchor point="TOPLEFT" x="106" y="-41"/>
-				</Anchors>
-				<Scripts>
-					<OnLoad>
-						self:InitializeTextStatusBar()
-						self.textLockable = 1;
-						self.cvar = "statusText";
-						self.cvarLabel = "STATUS_TEXT_PLAYER";
-						self:SetMouseClickEnabled(false)
-					</OnLoad>
-					<OnValueChanged function="CfUnitFrameHealthBar_OnValueChanged"/>
-					<OnSizeChanged>
-						CfUnitFrameHealPredictionBars_UpdateSize(self:GetParent())
-					</OnSizeChanged>
-				</Scripts>
-				<BarTexture file="Interface\TargetingFrame\UI-StatusBar"/>
-			</StatusBar>
-			<StatusBar name="$parentManaBar" inherits="TextStatusBar">
-				<Size x="119" y="12"/>
-				<Anchors>
-					<Anchor point="TOPLEFT" x="106" y="-52"/>
-				</Anchors>
-				<Scripts>
-					<OnLoad>
-						self:InitializeTextStatusBar()
-						self.textLockable = 1;
-						self.cvar = "statusText";
-						self.cvarLabel = "STATUS_TEXT_PLAYER";
-						self:SetMouseClickEnabled(false)
-					</OnLoad>
-				</Scripts>
-				<BarTexture file="Interface\TargetingFrame\UI-StatusBar"/>
-				<BarColor r="0" g="0" b="1.0"/>
-			</StatusBar>
-		</Frames>
 	</Button>
 	<Button name="CfPlayerFrame" inherits="CfPlayerFrameTemplate" parent="PlayerFrame">
 		<Anchors>
-			<Anchor point="TOPLEFT" x="-19" y="-4"/>
+			<Anchor point="TOPLEFT" x="-19" y="-8"/>
 		</Anchors>
 		<Scripts>
 			<OnLoad function="CfPlayerFrame_OnLoad"/>
-			<OnEvent function="CfPlayerFrame_OnEvent"/>
 		</Scripts>
 	</Button>
 </Ui>
