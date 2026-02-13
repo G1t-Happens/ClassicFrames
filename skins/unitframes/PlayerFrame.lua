@@ -204,6 +204,43 @@ if (_G.EvokerEbonMightBar) then
 	end)
 end
 
+if (_G.DemonHunterSoulFragmentsBar) then
+	DemonHunterSoulFragmentsBar:SetSize(104, 12)
+	DemonHunterSoulFragmentsBar:ClearAllPoints()
+	DemonHunterSoulFragmentsBar:SetPoint("BOTTOMLEFT", 95, 15)
+
+	if (DemonHunterSoulFragmentsBar.Background == nil) then
+		DemonHunterSoulFragmentsBar.Background = DemonHunterSoulFragmentsBar:CreateTexture(nil, "BACKGROUND")
+		DemonHunterSoulFragmentsBar.Background:SetAllPoints()
+		DemonHunterSoulFragmentsBar.Background:SetColorTexture(0, 0, 0, 0.5)
+	end
+
+	if (DemonHunterSoulFragmentsBar.Border == nil) then
+		DemonHunterSoulFragmentsBar.Border = DemonHunterSoulFragmentsBar:CreateTexture(nil, "OVERLAY")
+		DemonHunterSoulFragmentsBar.Border:SetSize(0, 16)
+		DemonHunterSoulFragmentsBar.Border:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-CharacterFrame-GroupIndicator")
+		DemonHunterSoulFragmentsBar.Border:SetTexCoord(0.125, 0.250, 1, 0)
+		DemonHunterSoulFragmentsBar.Border:SetPoint("TOPLEFT", 4, 0)
+		DemonHunterSoulFragmentsBar.Border:SetPoint("TOPRIGHT", -4, 0)
+	end
+
+	if (DemonHunterSoulFragmentsBar.LeftBorder == nil) then
+		DemonHunterSoulFragmentsBar.LeftBorder = DemonHunterSoulFragmentsBar:CreateTexture(nil, "OVERLAY")
+		DemonHunterSoulFragmentsBar.LeftBorder:SetSize(16, 16)
+		DemonHunterSoulFragmentsBar.LeftBorder:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-CharacterFrame-GroupIndicator")
+		DemonHunterSoulFragmentsBar.LeftBorder:SetTexCoord(0, 0.125, 1, 0)
+		DemonHunterSoulFragmentsBar.LeftBorder:SetPoint("RIGHT", DemonHunterSoulFragmentsBar.Border, "LEFT")
+	end
+
+	if (DemonHunterSoulFragmentsBar.RightBorder == nil) then
+		DemonHunterSoulFragmentsBar.RightBorder = DemonHunterSoulFragmentsBar:CreateTexture(nil, "OVERLAY")
+		DemonHunterSoulFragmentsBar.RightBorder:SetSize(16, 16)
+		DemonHunterSoulFragmentsBar.RightBorder:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-CharacterFrame-GroupIndicator")
+		DemonHunterSoulFragmentsBar.RightBorder:SetTexCoord(0.125, 0, 1, 0)
+		DemonHunterSoulFragmentsBar.RightBorder:SetPoint("LEFT", DemonHunterSoulFragmentsBar.Border, "RIGHT")
+	end
+end
+
 hooksecurefunc("PlayerFrame_ToPlayerArt", function(self)
 	self.PlayerFrameContainer.FrameTexture:SetSize(235, 100)
 	self.PlayerFrameContainer.FrameTexture:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-TargetingFrameNoLevel")
