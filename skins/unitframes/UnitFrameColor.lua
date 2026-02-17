@@ -5,10 +5,10 @@ local function ColorFrames()
         AlternatePowerBar.Border,
         AlternatePowerBar.RightBorder,
         AlternatePowerBar.LeftBorder,
-        CastingBarFrame.Background,
-        CastingBarFrame.Border,
-        CastingBarFrame.BorderShield,
-        CastingBarFrame.TextBorder,
+        PlayerCastingBarFrame.Background,
+        PlayerCastingBarFrame.Border,
+        PlayerCastingBarFrame.BorderShield,
+        PlayerCastingBarFrame.TextBorder,
 
         PetFrameTexture,
 
