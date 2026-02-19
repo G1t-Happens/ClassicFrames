@@ -359,37 +359,6 @@ hooksecurefunc("PlayerFrame_UpdateStatus", function()
 	PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.StatusTexture:Hide()
 end)
 
-hooksecurefunc(PlayerFrameBottomManagedFramesContainer, "Layout", function()
-	if (DruidComboPointBarFrame) then
-		DruidComboPointBarFrame:UnregisterAllEvents()
-		DruidComboPointBarFrame:Hide()
-	end
-	if (MageArcaneChargesFrame) then
-		MageArcaneChargesFrame:UnregisterAllEvents()
-		MageArcaneChargesFrame:Hide()
-	end
-	if (MonkHarmonyBarFrame) then
-		MonkHarmonyBarFrame:UnregisterAllEvents()
-		MonkHarmonyBarFrame:Hide()
-	end
-	if (PaladinPowerBarFrame) then
-		PaladinPowerBarFrame:UnregisterAllEvents()
-		PaladinPowerBarFrame:Hide()
-	end
-	if (RogueComboPointBarFrame) then
-		RogueComboPointBarFrame:UnregisterAllEvents()
-		RogueComboPointBarFrame:Hide()
-	end
-	if (RuneFrame) then
-		RuneFrame:UnregisterAllEvents()
-		RuneFrame:Hide()
-	end
-	if (WarlockPowerFrame) then
-		WarlockPowerFrame:UnregisterAllEvents()
-		WarlockPowerFrame:Hide()
-	end
-end)
-
 --Cvars & other
 C_CVar.SetCVar("threatWarning", 0)
 UIErrorsFrame:SetAlpha(0)
