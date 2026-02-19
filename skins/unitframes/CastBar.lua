@@ -1,3 +1,10 @@
+castbarColors = {}
+castbarColors.Standard = CreateColor(1.0, 0.7, 0.0, 1)
+castbarColors.Channel = CreateColor(0.0, 1.0, 0.0, 1)
+castbarColors.Uninterruptable = CreateColor(0.7, 0.7, 0.7, 1)
+castbarColors.Interrupted = CreateColor(1, 0, 0, 1)
+
+
 -- Player Castbar
 local function SetLookReplacementPlayer(self)
     self:SetSize(190, 10)
@@ -35,11 +42,9 @@ local function SkinPlayerCastbar(self)
         self.Text:ClearAllPoints()
         self.Text:SetPoint("CENTER", self, "CENTER", 0, 1)
         self.Text:SetFont("Fonts\\FRIZQT__.TTF", 10, "OUTLINE")
-    end)
-
-    hooksecurefunc(self, 'PlayInterruptAnims', function()
-        self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
-        self.Spark:Hide()
+        if self.channeling then
+            self.Spark:Hide()
+        end
     end)
 
     hooksecurefunc(self, 'PlayFinishAnim', function()
@@ -50,20 +55,25 @@ local function SkinPlayerCastbar(self)
         self.Flash:ClearAllPoints()
         self.Flash:SetPoint("TOP", 0, 30.5)
         self.Flash:SetBlendMode("ADD")
+        self.EnergyGlow:Hide()
+        self.Flakes01:Hide()
+        self.Flakes02:Hide()
+    end)
+
+    hooksecurefunc(self, 'PlayInterruptAnims', function()
+        self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
+        self:SetStatusBarColor(castbarColors.Interrupted:GetRGBA())
+        self:SetValue(self.maxValue)
+        self.Spark:Hide()
     end)
 
     hooksecurefunc(self, 'GetTypeInfo', function()
-        print(self.barType)
-        if issecretvalue(self.barType) then return end
-        if self.barType == CastingBarType.Interrupted then
-            self:SetValue(100)
-            self:SetStatusBarColor(1, 0, 0)
-        elseif self.barType == CastingBarType.Channel then
-            self:SetStatusBarColor(0, 1, 0)
-        elseif self.barType == CastingBarType.Uninterruptable then
-            self:SetStatusBarColor(0.7, 0.7, 0.7)
-        else
-            self:SetStatusBarColor(1, 0.7, 0)
+        if UnitCastingInfo(self.unit) then
+            local _, _, _, _, _, _, _, notInterruptible = UnitCastingInfo(self.unit)
+            self:GetStatusBarTexture():SetVertexColorFromBoolean(notInterruptible, castbarColors.Uninterruptable, castbarColors.Standard)
+        elseif UnitChannelInfo(self.unit) then
+            local _, _, _, _, _, _, notInterruptible = UnitChannelInfo(self.unit)
+            self:GetStatusBarTexture():SetVertexColorFromBoolean(notInterruptible, castbarColors.Uninterruptable, castbarColors.Channel)
         end
     end)
 end
@@ -128,10 +138,10 @@ local function SkinTargetCastbar(self)
         if (self.Spark) then
             self.Spark:Show()
         end
-            self.Spark:SetTexture("Interface\\CastingBar\\UI-CastingBar-Spark")
-            self.Spark:SetBlendMode("ADD")
-            self.Spark:SetSize(32, 32)
-            self.Spark.offsetY = 0
+        self.Spark:SetTexture("Interface\\CastingBar\\UI-CastingBar-Spark")
+        self.Spark:SetBlendMode("ADD")
+        self.Spark:SetSize(32, 32)
+        self.Spark.offsetY = 0
     end)
 
     hooksecurefunc(self, 'UpdateShownState', function()
@@ -139,11 +149,6 @@ local function SkinTargetCastbar(self)
         if self.channeling then
             self.Spark:Hide()
         end
-    end)
-
-    hooksecurefunc(self, 'PlayInterruptAnims', function()
-        self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
-        self.Spark:Hide()
     end)
 
     hooksecurefunc(self, 'PlayFinishAnim', function()
@@ -168,17 +173,20 @@ local function SkinTargetCastbar(self)
         self.NewFlash:SetVertexColor(self:GetStatusBarColor())
     end)
 
+    hooksecurefunc(self, 'PlayInterruptAnims', function()
+        self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
+        self:SetStatusBarColor(castbarColors.Interrupted:GetRGBA())
+        self:SetValue(self.maxValue)
+        self.Spark:Hide()
+    end)
+
     hooksecurefunc(self, 'GetTypeInfo', function()
-        if issecretvalue(self.barType) then return end
-        if self.barType == CastingBarType.Interrupted then
-            self:SetValue(100)
-            self:SetStatusBarColor(1, 0, 0)
-        elseif self.barType == CastingBarType.Channel then
-            self:SetStatusBarColor(0, 1, 0)
-        elseif self.barType == CastingBarType.Uninterruptable then
-            self:SetStatusBarColor(0.7, 0.7, 0.7)
-        else
-            self:SetStatusBarColor(1, 0.7, 0)
+        if UnitCastingInfo(self.unit) then
+            local _, _, _, _, _, _, _, notInterruptible = UnitCastingInfo(self.unit)
+            self:GetStatusBarTexture():SetVertexColorFromBoolean(notInterruptible, castbarColors.Uninterruptable, castbarColors.Standard)
+        elseif UnitChannelInfo(self.unit) then
+            local _, _, _, _, _, _, notInterruptible = UnitChannelInfo(self.unit)
+            self:GetStatusBarTexture():SetVertexColorFromBoolean(notInterruptible, castbarColors.Uninterruptable, castbarColors.Channel)
         end
     end)
 end
@@ -187,6 +195,11 @@ local OnLogin = CreateFrame("Frame")
 OnLogin:RegisterEvent("PLAYER_LOGIN")
 OnLogin:SetScript("OnEvent", function()
     if PlayerCastingBarFrame then
+        PlayerCastingBarFrame.BaseGlow:Hide()
+        PlayerCastingBarFrame.WispGlow:Hide()
+        PlayerCastingBarFrame.EnergyGlow:Hide()
+        PlayerCastingBarFrame.Sparkles01:Hide()
+        PlayerCastingBarFrame.Sparkles02:Hide()
         SkinPlayerCastbar(PlayerCastingBarFrame)
     end
     if TargetFrame.spellbar then
