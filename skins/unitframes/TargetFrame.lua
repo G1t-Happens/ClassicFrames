@@ -96,6 +96,8 @@ local function SkinFrame(frame)
 	FrameHealthBarContainer.DeadText:SetParent(frame.TargetFrameContainer)
 	FrameHealthBarContainer.UnconsciousText:SetParent(frame.TargetFrameContainer)
 
+    FrameManaBar:SetWidth(121)
+    FrameManaBar:SetPoint("TOPRIGHT", FrameHealthBarContainer, "BOTTOMRIGHT", -2, -1)
 	FrameManaBar.TextString:SetParent(frame.TargetFrameContainer)
 	FrameManaBar.RightText:SetParent(frame.TargetFrameContainer)
 	FrameManaBar.LeftText:SetParent(frame.TargetFrameContainer)
