@@ -124,13 +124,9 @@ end
 if (_G.MonkStaggerBar) then
 	MonkStaggerBar:SetSize(94, 12)
 	MonkStaggerBar:ClearAllPoints()
-	MonkStaggerBar:SetPoint("TOPLEFT", PlayerFrameAlternatePowerBarArea, "TOPLEFT", 98, -70)
+	MonkStaggerBar:SetPoint("TOPLEFT", PlayerFrameAlternatePowerBarArea, "TOPLEFT", 100, -73)
 
 	MonkStaggerBar.PowerBarMask:Hide()
-
-	MonkStaggerBarText:SetPoint("CENTER", 0, -1)
-	MonkStaggerBar.LeftText:SetPoint("LEFT", 0, -1)
-	MonkStaggerBar.RightText:SetPoint("RIGHT", 0, -1)
 
 	if (MonkStaggerBar.Background == nil) then
 		MonkStaggerBar.Background = MonkStaggerBar:CreateTexture(nil, "BACKGROUND")
