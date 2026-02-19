@@ -2,7 +2,6 @@ castbarColors = {}
 castbarColors.Standard = CreateColor(1.0, 0.7, 0.0, 1)
 castbarColors.Channel = CreateColor(0.0, 1.0, 0.0, 1)
 castbarColors.Uninterruptable = CreateColor(0.7, 0.7, 0.7, 1)
-castbarColors.Interrupted = CreateColor(1, 0, 0, 1)
 
 
 -- Player Castbar
@@ -62,9 +61,9 @@ local function SkinPlayerCastbar(self)
 
     hooksecurefunc(self, 'PlayInterruptAnims', function()
         self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
-        self:SetStatusBarColor(castbarColors.Interrupted:GetRGBA())
+        self:SetStatusBarColor(1, 0, 0, 1)
         self:SetValue(self.maxValue)
-        self.Spark:Hide()
+        if self.Spark then self.Spark:Hide() end
     end)
 
     hooksecurefunc(self, 'GetTypeInfo', function()
@@ -175,9 +174,9 @@ local function SkinTargetCastbar(self)
 
     hooksecurefunc(self, 'PlayInterruptAnims', function()
         self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
-        self:SetStatusBarColor(castbarColors.Interrupted:GetRGBA())
+        self:SetStatusBarColor(1, 0, 0, 1)
         self:SetValue(self.maxValue)
-        self.Spark:Hide()
+        if self.Spark then self.Spark:Hide() end
     end)
 
     hooksecurefunc(self, 'GetTypeInfo', function()
