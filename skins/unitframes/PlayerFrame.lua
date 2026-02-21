@@ -296,9 +296,9 @@ hooksecurefunc("PlayerFrame_ToVehicleArt", function(self)
 	healthBar.LeftText:SetPoint("LEFT", healthBar, "LEFT", 0, -6)
 	healthBar.RightText:SetPoint("RIGHT", healthBar, "RIGHT", -9, -6)
 
-    manaBar:SetWidth(110)
+    manaBar:SetWidth(100)
     manaBar:SetHeight(10)
-    manaBar:SetPoint("TOPLEFT", 91, -61)
+    manaBar:SetPoint("TOPLEFT", 100, -61)
 
 	self.PlayerFrameContent.PlayerFrameContentContextual.GroupIndicator:ClearAllPoints()
 	self.PlayerFrameContent.PlayerFrameContentContextual.GroupIndicator:SetPoint("BOTTOMLEFT", CfPlayerFrame, "TOPLEFT", 97, -17)
