@@ -125,7 +125,6 @@ local function SkinTargetCastbar(self)
 
     hooksecurefunc(self, 'UpdateShownState', function()
         self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
-        --self.Spark:Hide()
         if self.channeling then
             self.Spark:Hide()
         end
