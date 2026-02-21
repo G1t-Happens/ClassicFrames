@@ -26,13 +26,6 @@ local function SkinPlayerCastbar(self)
         if s.StandardGlow then s.StandardGlow:Hide() end
         if s.CraftingGlow then s.CraftingGlow:Hide() end
         if s.ChannelShadow then s.ChannelShadow:Hide() end
-        if (self.Spark) then
-            self.Spark:Show()
-        end
-            self.Spark:SetTexture("Interface\\CastingBar\\UI-CastingBar-Spark")
-            self.Spark:SetBlendMode("ADD")
-            self.Spark:SetSize(32, 32)
-            self.Spark.offsetY = 0
     end)
 
     hooksecurefunc(self, 'UpdateShownState', function()
@@ -130,21 +123,9 @@ end
 local function SkinTargetCastbar(self)
     SetLook(self)
 
-    hooksecurefunc(self, "ShowSpark", function(s)
-        if s.StandardGlow then s.StandardGlow:Hide() end
-        if s.CraftingGlow then s.CraftingGlow:Hide() end
-        if s.ChannelShadow then s.ChannelShadow:Hide() end
-        if (self.Spark) then
-            self.Spark:Show()
-        end
-        self.Spark:SetTexture("Interface\\CastingBar\\UI-CastingBar-Spark")
-        self.Spark:SetBlendMode("ADD")
-        self.Spark:SetSize(32, 32)
-        self.Spark.offsetY = 0
-    end)
-
     hooksecurefunc(self, 'UpdateShownState', function()
         self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
+        --self.Spark:Hide()
         if self.channeling then
             self.Spark:Hide()
         end
