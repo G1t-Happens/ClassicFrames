@@ -1,43 +1,4 @@
-function CfTargetFrame_OnLoad(self, unit)
-	local thisName = self:GetName()
-	_G[thisName.."HealthBar"].LeftText = _G[thisName.."HealthBarTextLeft"];
-	_G[thisName.."HealthBar"].RightText = _G[thisName.."HealthBarTextRight"];
-	_G[thisName.."ManaBar"].LeftText = _G[thisName.."ManaBarTextLeft"];
-	_G[thisName.."ManaBar"].RightText = _G[thisName.."ManaBarTextRight"];
-
-	CfUnitFrame_Initialize(self, unit, nil, nil,
-		_G[thisName.."HealthBar"], _G[thisName.."HealthBarText"],
-		_G[thisName.."ManaBar"], _G[thisName.."ManaBarText"],
-		nil, nil, nil,
-		_G[thisName.."MyHealPredictionBar"], _G[thisName.."OtherHealPredictionBar"],
-		_G[thisName.."TotalAbsorbBar"], _G[thisName.."TotalAbsorbBarOverlay"], _G[thisName.."OverAbsorbGlow"],
-		_G[thisName.."OverHealAbsorbGlow"], _G[thisName.."HealAbsorbBar"],
-		_G[thisName.."HealAbsorbBarLeftShadow"], _G[thisName.."HealAbsorbBarRightShadow"])
-
-	if CfTargetFrame then
-		CfTargetFrameHealthBarText:SetParent(TargetFrame.TargetFrameContent.TargetFrameContentContextual)
-		CfTargetFrameHealthBarTextLeft:SetParent(TargetFrame.TargetFrameContent.TargetFrameContentContextual)
-		CfTargetFrameHealthBarTextRight:SetParent(TargetFrame.TargetFrameContent.TargetFrameContentContextual)
-		CfTargetFrameManaBarText:SetParent(TargetFrame.TargetFrameContent.TargetFrameContentContextual)
-		CfTargetFrameManaBarTextLeft:SetParent(TargetFrame.TargetFrameContent.TargetFrameContentContextual)
-		CfTargetFrameManaBarTextRight:SetParent(TargetFrame.TargetFrameContent.TargetFrameContentContextual)
-		CfTargetFrameOverAbsorbGlow:SetParent(TargetFrame.TargetFrameContent.TargetFrameContentContextual)
-		CfTargetFrameBackground:SetSize(119, 25)
-		CfTargetFrameBackground:SetPoint("BOTTOMLEFT", 7, 35)
-	end
-
-	if CfFocusFrame then
-		CfFocusFrameHealthBarText:SetParent(FocusFrame.TargetFrameContent.TargetFrameContentContextual)
-		CfFocusFrameHealthBarTextLeft:SetParent(FocusFrame.TargetFrameContent.TargetFrameContentContextual)
-		CfFocusFrameHealthBarTextRight:SetParent(FocusFrame.TargetFrameContent.TargetFrameContentContextual)
-		CfFocusFrameManaBarText:SetParent(FocusFrame.TargetFrameContent.TargetFrameContentContextual)
-		CfFocusFrameManaBarTextLeft:SetParent(FocusFrame.TargetFrameContent.TargetFrameContentContextual)
-		CfFocusFrameManaBarTextRight:SetParent(FocusFrame.TargetFrameContent.TargetFrameContentContextual)
-		CfFocusFrameOverAbsorbGlow:SetParent(FocusFrame.TargetFrameContent.TargetFrameContentContextual)
-		CfFocusFrameBackground:SetSize(119, 25)
-		CfFocusFrameBackground:SetPoint("BOTTOMLEFT", 7, 35)
-	end
-
+function CfTargetFrame_OnLoad(self)
 	self:EnableMouse(false)
 end
 
@@ -67,9 +28,9 @@ local function NameBackgroundColoring(frame)
 		frame.nameBackground = frame.TargetFrameContainer:CreateTexture(nil, "BORDER")
 	end
 
-	frame.nameBackground:SetSize(118, 19)
+	frame.nameBackground:SetSize(120, 19)
 	frame.nameBackground:ClearAllPoints()
-	frame.nameBackground:SetPoint("TOPRIGHT", frame.TargetFrameContent.TargetFrameContentMain, "TOPRIGHT", -88, -27)
+	frame.nameBackground:SetPoint("TOPRIGHT", frame.TargetFrameContent.TargetFrameContentMain, "TOPRIGHT", -87, -31)
 	frame.nameBackground:SetDrawLayer("BACKGROUND", 0)
 	frame.nameBackground:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
 
@@ -94,8 +55,11 @@ local function NameBackgroundColoring(frame)
 end
 
 local function SkinFrame(frame)
-	local contextual = frame.TargetFrameContent.TargetFrameContentContextual;
-	local contentMain = frame.TargetFrameContent.TargetFrameContentMain;
+	local contextual = frame.TargetFrameContent.TargetFrameContentContextual
+	local contentMain = frame.TargetFrameContent.TargetFrameContentMain
+	local FrameHealthBarContainer = contentMain.HealthBarsContainer
+	local FrameHealthBar = contentMain.HealthBarsContainer.HealthBar
+	local FrameManaBar = contentMain.ManaBar
 
 	contextual:SetFrameStrata("MEDIUM")
 	frame.TargetFrameContainer:SetFrameStrata("MEDIUM")
@@ -104,120 +68,151 @@ local function SkinFrame(frame)
 
 	frame.TargetFrameContainer.Portrait:SetSize(64, 64)
 	frame.TargetFrameContainer.Portrait:ClearAllPoints()
-	frame.TargetFrameContainer.Portrait:SetPoint("TOPRIGHT", -22, -16)
+	frame.TargetFrameContainer.Portrait:SetPoint("TOPRIGHT", -22, -20)
 
-	contentMain:Hide()
-
+	contextual.NumericalThreat:SetParent(frame)
 	contextual.NumericalThreat:ClearAllPoints()
-	contextual.NumericalThreat:SetPoint("BOTTOM", frame, "TOP", -30, -26)
+	contextual.NumericalThreat:SetPoint("BOTTOM", frame, "TOP", -30, -30)
 
 	contextual.RaidTargetIcon:ClearAllPoints()
-	contextual.RaidTargetIcon:SetPoint("CENTER", frame.TargetFrameContainer.Portrait, "TOP", 2, -2)
+	contextual.RaidTargetIcon:SetPoint("CENTER", frame.TargetFrameContainer.Portrait, "TOP", 1, -2)
 
 	contentMain.Name:SetParent(contextual)
 	contentMain.Name:SetWidth(100)
 	contentMain.Name:ClearAllPoints()
-	contentMain.Name:SetPoint("TOPLEFT", 36, -30)
+	contentMain.Name:SetPoint("TOPLEFT", 36, -34)
 	contentMain.Name:SetJustifyH("CENTER")
 	contentMain.Name:SetFont("Fonts\\FRIZQT__.TTF", 11, "OUTLINE")
 
+	FrameHealthBar.OverAbsorbGlow:SetParent(contextual)
+	FrameHealthBar.OverAbsorbGlow:RemoveMaskTexture(FrameHealthBarContainer.HealthBarMask)
+	FrameHealthBar.OverAbsorbGlow:ClearAllPoints()
+	FrameHealthBar.OverAbsorbGlow:SetPoint("TOPLEFT", FrameHealthBar, "TOPRIGHT", -10, -9)
+	FrameHealthBar.OverAbsorbGlow:SetPoint("BOTTOMLEFT", FrameHealthBar, "BOTTOMRIGHT", -10, -1)
+
+	FrameHealthBar.TextString:SetParent(frame.TargetFrameContainer)
+	FrameHealthBarContainer.RightText:SetParent(frame.TargetFrameContainer)
+	FrameHealthBarContainer.LeftText:SetParent(frame.TargetFrameContainer)
+	FrameHealthBarContainer.DeadText:SetParent(frame.TargetFrameContainer)
+	FrameHealthBarContainer.UnconsciousText:SetParent(frame.TargetFrameContainer)
+
+    FrameManaBar:SetWidth(121)
+    FrameManaBar:SetPoint("TOPRIGHT", FrameHealthBarContainer, "BOTTOMRIGHT", -2, -1)
+	FrameManaBar.TextString:SetParent(frame.TargetFrameContainer)
+	FrameManaBar.RightText:SetParent(frame.TargetFrameContainer)
+	FrameManaBar.LeftText:SetParent(frame.TargetFrameContainer)
+
 	contentMain.ReputationColor:Hide()
 
-	local leaderIcon = contextual.LeaderIcon;
+	local leaderIcon = contextual.LeaderIcon
 	leaderIcon:SetSize(16, 16)
 	leaderIcon:SetTexture("Interface\\GroupFrame\\UI-Group-LeaderIcon")
 	leaderIcon:ClearAllPoints()
-	leaderIcon:SetPoint("TOPRIGHT", -24, -14)
+	leaderIcon:SetPoint("TOPRIGHT", -24, -18)
 
-	local guideIcon = contextual.GuideIcon;
+	local guideIcon = contextual.GuideIcon
 	guideIcon:SetSize(19, 19)
 	guideIcon:SetTexture("Interface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES")
 	guideIcon:SetTexCoord(0, 0.296875, 0.015625, 0.3125)
 	guideIcon:ClearAllPoints()
-	guideIcon:SetPoint("TOPRIGHT", -20, -14)
+	guideIcon:SetPoint("TOPRIGHT", -20, -18)
 
-	local questIcon = contextual.QuestIcon;
+	local questIcon = contextual.QuestIcon
 	questIcon:SetSize(32, 32)
 	questIcon:SetTexture("Interface\\TargetingFrame\\PortraitQuestBadge")
 	questIcon:ClearAllPoints()
-	questIcon:SetPoint("TOP", 32, -16)
+	questIcon:SetPoint("TOP", 32, -20)
 
 	if ComboFrame then
 		ComboFrame:ClearAllPoints()
-		ComboFrame:SetPoint("TOPRIGHT", TargetFrame, "TOPRIGHT", -24, -13)
+		ComboFrame:SetPoint("TOPRIGHT", TargetFrame, "TOPRIGHT", -24, -17)
 	end
 
 	hooksecurefunc(frame, "CheckClassification", function(self)
-		contextual.BossIcon:Hide()
-		self.TargetFrameContainer.BossPortraitFrameTexture:Hide()
-		self.TargetFrameContainer.FrameTexture:SetSize(232, 100)
-		self.TargetFrameContainer.FrameTexture:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-TargetingFrameNoLevel")
-		self.TargetFrameContainer.FrameTexture:SetTexCoord(0.09375, 1, 0, 0.78125)
-		self.TargetFrameContainer.FrameTexture:ClearAllPoints()
-		self.TargetFrameContainer.FrameTexture:SetPoint("TOPLEFT", 20, -4)
-	end)
+        FrameHealthBar:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
+        FrameHealthBar:SetStatusBarColor(0, 1, 0)
+        contextual.BossIcon:Hide()
+    	self.TargetFrameContainer.BossPortraitFrameTexture:Hide()
+    	self.TargetFrameContainer.FrameTexture:SetSize(235, 100)
+    	self.TargetFrameContainer.FrameTexture:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-TargetingFrameNoLevel")
+    	self.TargetFrameContainer.FrameTexture:SetTexCoord(0.09375, 1, 0, 0.78125)
+    	self.TargetFrameContainer.FrameTexture:ClearAllPoints()
+    	self.TargetFrameContainer.FrameTexture:SetPoint("TOPLEFT", 20, -8)
+    	CfTargetFrameBackground:SetSize(120, 41)
+        CfTargetFrameBackground:SetPoint("BOTTOMLEFT", 6, 35)
+        CfFocusFrameBackground:SetSize(120, 41)
+        CfFocusFrameBackground:SetPoint("BOTTOMLEFT", 6, 35)
+        FrameHealthBarContainer.HealthBarMask:ClearAllPoints()
+        FrameHealthBarContainer.HealthBarMask:SetPoint("TOPLEFT", FrameHealthBar, "TOPLEFT", 0, -5)
+        FrameHealthBarContainer.HealthBarMask:SetPoint("BOTTOMRIGHT", FrameHealthBar, "BOTTOMRIGHT", -1, -4)
+    	FrameHealthBar.TextString:SetPoint("CENTER", FrameHealthBar, "CENTER", 0, -5)
+        FrameHealthBarContainer.LeftText:SetPoint("LEFT", FrameHealthBar, "LEFT", 4, -5)
+        FrameHealthBarContainer.RightText:SetPoint("RIGHT", FrameHealthBar, "RIGHT", -7, -5)
+        FrameHealthBarContainer.DeadText:SetPoint("CENTER", FrameHealthBar, "CENTER", 0, -5)
+        FrameHealthBarContainer.UnconsciousText:SetPoint("CENTER", FrameHealthBar, "CENTER", 0, -5)
+    end)
 
 	hooksecurefunc(frame, "CheckFaction", function(self)
-		NameBackgroundColoring(self)
-		if self.showPVP then
-			contextual.PvpIcon:Hide()
-			contextual.PrestigePortrait:Hide()
-			contextual.PrestigeBadge:Hide()
-		end
-	end)
+        NameBackgroundColoring(self)
+    	if self.showPVP then
+            contextual.PvpIcon:Hide()
+    		contextual.PrestigePortrait:Hide()
+    		contextual.PrestigeBadge:Hide()
+    	end
+    end)
 
 	hooksecurefunc(frame, "CheckLevel", function()
-		contentMain.LevelText:Hide()
-		contextual.HighLevelTexture:Hide()
-	end)
+        contentMain.LevelText:Hide()
+    	contextual.HighLevelTexture:Hide()
+    end)
 
-	hooksecurefunc(frame.totFrame, "Update", function(self)
-		if UnitIsUnit(frame.unit, "player") or (not CVarCallbackRegistry:GetCVarValueBool("showTargetOfTarget")) then
-			return;
-		end
-		ToTHealthBarColoring(self)
-	end)
+    hooksecurefunc(frame.totFrame, "Update", function(self)
+        if UnitIsUnit(frame.unit, "player") or (not CVarCallbackRegistry:GetCVarValueBool("showTargetOfTarget")) then
+            return;
+        end
+        ToTHealthBarColoring(self)
+    end)
 
 	if (frame.totFrame) then
-		frame.totFrame:SetFrameStrata("HIGH")
-		frame.totFrame:ClearAllPoints()
-		frame.totFrame:SetPoint("TOPLEFT", frame, "BOTTOMRIGHT", -87, 23)
+        frame.totFrame:SetFrameStrata("HIGH")
+        frame.totFrame:ClearAllPoints()
+        frame.totFrame:SetPoint("TOPLEFT", frame, "BOTTOMRIGHT", -87, 23)
 
-		if (frame.totFrame.Background == nil) then
-			frame.totFrame.Background = frame.totFrame.HealthBar:CreateTexture(nil, "BACKGROUND")
-			frame.totFrame.Background:SetSize(46, 15)
-			frame.totFrame.Background:SetColorTexture(0, 0, 0, 0.5)
-			frame.totFrame.Background:ClearAllPoints()
-			frame.totFrame.Background:SetPoint("BOTTOMLEFT", frame.totFrame, "BOTTOMLEFT", 45, 20)
-		end
+        if (frame.totFrame.Background == nil) then
+            frame.totFrame.Background = frame.totFrame.HealthBar:CreateTexture(nil, "BACKGROUND")
+            frame.totFrame.Background:SetSize(46, 15)
+            frame.totFrame.Background:SetColorTexture(0, 0, 0, 0.5)
+            frame.totFrame.Background:ClearAllPoints()
+            frame.totFrame.Background:SetPoint("BOTTOMLEFT", frame.totFrame, "BOTTOMLEFT", 45, 20)
+        end
 
-		frame.totFrame.FrameTexture:SetSize(93, 45)
-		frame.totFrame.FrameTexture:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-TargetofTargetFrame")
-		frame.totFrame.FrameTexture:SetTexCoord(0.015625, 0.7265625, 0, 0.703125)
-		frame.totFrame.FrameTexture:ClearAllPoints()
-		frame.totFrame.FrameTexture:SetPoint("TOPLEFT", 0, 0)
-		frame.totFrame.Portrait:SetSize(37, 37)
-		frame.totFrame.Name:SetWidth(60)
-		frame.totFrame.Name:ClearAllPoints()
-		frame.totFrame.Name:SetPoint("BOTTOMLEFT", 42, 6)
-		frame.totFrame.Name:SetFont("Fonts\\FRIZQT__.TTF", 8, "OUTLINE")
-		frame.totFrame.HealthBar:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
-		frame.totFrame.HealthBar:SetSize(47, 8)
-		frame.totFrame.HealthBar:ClearAllPoints()
-		frame.totFrame.HealthBar:SetPoint("BOTTOMRIGHT", frame.totFrame, "TOPLEFT", 91, -22)
-		frame.totFrame.HealthBar:SetFrameLevel(1)
-		frame.totFrame.HealthBar.DeadText:SetParent(frame.totFrame)
-		frame.totFrame.HealthBar.DeadText:ClearAllPoints()
-		frame.totFrame.HealthBar.DeadText:SetPoint("LEFT", 57, 7)
-		frame.totFrame.HealthBar.DeadText:SetFont("Fonts\\FRIZQT__.TTF", 8, "OUTLINE")
-		frame.totFrame.HealthBar.UnconsciousText:SetParent(frame.totFrame)
-		frame.totFrame.HealthBar.UnconsciousText:ClearAllPoints()
-		frame.totFrame.HealthBar.UnconsciousText:SetPoint("LEFT", 45, 7)
-		frame.totFrame.HealthBar.UnconsciousText:SetFont("Fonts\\FRIZQT__.TTF", 8, "OUTLINE")
-		frame.totFrame.ManaBar:SetSize(47, 8)
-		frame.totFrame.ManaBar:ClearAllPoints()
-		frame.totFrame.ManaBar:SetPoint("BOTTOMRIGHT", frame.totFrame, "TOPLEFT", 91, -31)
-		frame.totFrame.ManaBar:SetFrameLevel(1)
+        frame.totFrame.FrameTexture:SetSize(93, 45)
+        frame.totFrame.FrameTexture:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-TargetofTargetFrame")
+        frame.totFrame.FrameTexture:SetTexCoord(0.015625, 0.7265625, 0, 0.703125)
+        frame.totFrame.FrameTexture:ClearAllPoints()
+        frame.totFrame.FrameTexture:SetPoint("TOPLEFT", 0, 0)
+        frame.totFrame.Portrait:SetSize(37, 37)
+        frame.totFrame.Name:SetWidth(60)
+        frame.totFrame.Name:ClearAllPoints()
+        frame.totFrame.Name:SetPoint("BOTTOMLEFT", 42, 6)
+        frame.totFrame.Name:SetFont("Fonts\\FRIZQT__.TTF", 8, "OUTLINE")
+        frame.totFrame.HealthBar:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
+        frame.totFrame.HealthBar:SetSize(47, 8)
+        frame.totFrame.HealthBar:ClearAllPoints()
+        frame.totFrame.HealthBar:SetPoint("BOTTOMRIGHT", frame.totFrame, "TOPLEFT", 91, -22)
+        frame.totFrame.HealthBar:SetFrameLevel(1)
+        frame.totFrame.HealthBar.DeadText:SetParent(frame.totFrame)
+        frame.totFrame.HealthBar.DeadText:ClearAllPoints()
+        frame.totFrame.HealthBar.DeadText:SetPoint("LEFT", 57, 7)
+        frame.totFrame.HealthBar.DeadText:SetFont("Fonts\\FRIZQT__.TTF", 8, "OUTLINE")
+        frame.totFrame.HealthBar.UnconsciousText:SetParent(frame.totFrame)
+        frame.totFrame.HealthBar.UnconsciousText:ClearAllPoints()
+        frame.totFrame.HealthBar.UnconsciousText:SetPoint("LEFT", 45, 7)
+        frame.totFrame.HealthBar.UnconsciousText:SetFont("Fonts\\FRIZQT__.TTF", 8, "OUTLINE")
+        frame.totFrame.ManaBar:SetSize(47, 8)
+        frame.totFrame.ManaBar:ClearAllPoints()
+        frame.totFrame.ManaBar:SetPoint("BOTTOMRIGHT", frame.totFrame, "TOPLEFT", 91, -31)
+        frame.totFrame.ManaBar:SetFrameLevel(1)
 
         local frameNameWithSuffix = frame.totFrame:GetName() .. "Debuff"
         for i = 1, 4 do
@@ -227,49 +222,35 @@ local function SkinFrame(frame)
                 debuffIcon:Hide()
             end
         end
-	end
+    end
 end
-
 SkinFrame(TargetFrame)
 SkinFrame(FocusFrame)
 
-hooksecurefunc(TargetFrame, "Update", function(self)
-	if (UnitExists(self.unit)) then
-		CfUnitFrame_Update(CfTargetFrame)
-	end
-end)
-
-hooksecurefunc(FocusFrame, "Update", function(self)
-	if (UnitExists(self.unit)) then
-		CfUnitFrame_Update(CfFocusFrame)
-	end
-end)
-
-hooksecurefunc('TargetFrame_UpdateBuffAnchor', function(frame, buff, index, numDebuffs, anchorBuff, anchorIndex, _, offsetX, offsetY, mirrorVertically)
+hooksecurefunc('TargetFrame_UpdateBuffAnchor', function(self, buff, index, numDebuffs, anchorBuff, anchorIndex, size, offsetX, offsetY, mirrorVertically)
 	--For mirroring vertically
-	local point, relativePoint;
-	local startY, auraOffsetY;
+	local point, relativePoint
+	local startY, auraOffsetY
 	if ( mirrorVertically ) then
-		point = "BOTTOM";
-		relativePoint = "TOP";
-		startY = -15;
-		if ( frame.threatNumericIndicator:IsShown() ) then
-			startY = startY + frame.threatNumericIndicator:GetHeight();
+		point = "BOTTOM"
+		relativePoint = "TOP"
+		startY = -15
+		if ( self.threatNumericIndicator:IsShown() ) then
+			startY = startY + self.threatNumericIndicator:GetHeight()
 		end
-		offsetY = - offsetY;
-		auraOffsetY = -3;
+		offsetY = - offsetY
+		auraOffsetY = -3
 	else
-		point = "TOP";
-		relativePoint="BOTTOM";
-		startY = 32;
-		auraOffsetY = 3;
+		point = "TOP"
+		relativePoint="BOTTOM"
+		startY = 32
+		auraOffsetY = 3
 	end
-
-	buff:ClearAllPoints();
-	local targetFrameContentContextual = frame.TargetFrameContent.TargetFrameContentContextual;
+	buff:ClearAllPoints()
+	local targetFrameContentContextual = self.TargetFrameContent.TargetFrameContentContextual
 	if (index == 1) then
-		if (UnitIsFriend("player", frame.unit) or numDebuffs == 0) then
-			buff:SetPoint(point.."LEFT", frame.TargetFrameContainer.FrameTexture, relativePoint.."LEFT", 5, startY)
+		if (UnitIsFriend("player", self.unit) or numDebuffs == 0) then
+			buff:SetPoint(point.."LEFT", self.TargetFrameContainer.FrameTexture, relativePoint.."LEFT", 5, startY)
 		else
 			buff:SetPoint(point.."LEFT", targetFrameContentContextual.debuffs, relativePoint.."LEFT", 0, -offsetY)
 		end
@@ -281,39 +262,34 @@ hooksecurefunc('TargetFrame_UpdateBuffAnchor', function(frame, buff, index, numD
 	else
 		buff:SetPoint(point.."LEFT", anchorBuff, point.."RIGHT", offsetX, 0)
 	end
-	buff:SetWidth(18)
-	buff:SetHeight(18)
 end)
 
-hooksecurefunc('TargetFrame_UpdateDebuffAnchor', function(frame, buff, index, numBuffs, anchorBuff, anchorIndex, _, offsetX, offsetY, mirrorVertically)
-	local isFriend = UnitIsFriend("player", frame.unit);
-
+hooksecurefunc('TargetFrame_UpdateDebuffAnchor', function(self, buff, index, numBuffs, anchorBuff, anchorIndex, size, offsetX, offsetY, mirrorVertically)
 	--For mirroring vertically
-	local point, relativePoint;
-	local startY, auraOffsetY;
+	local point, relativePoint
+	local startY, auraOffsetY
 	if ( mirrorVertically ) then
-		point = "BOTTOM";
-		relativePoint = "TOP";
-		startY = -15;
-		if ( frame.threatNumericIndicator:IsShown() ) then
-			startY = startY + frame.threatNumericIndicator:GetHeight();
+		point = "BOTTOM"
+		relativePoint = "TOP"
+		startY = -15
+		if ( self.threatNumericIndicator:IsShown() ) then
+			startY = startY + self.threatNumericIndicator:GetHeight()
 		end
-		offsetY = - offsetY;
-		auraOffsetY = -3;
+		offsetY = - offsetY
+		auraOffsetY = -3
 	else
-		point = "TOP";
-		relativePoint="BOTTOM";
-		startY = 32;
-		auraOffsetY = 3;
+		point = "TOP"
+		relativePoint="BOTTOM"
+		startY = 32
+		auraOffsetY = 3
 	end
-
-	buff:ClearAllPoints();
-	local targetFrameContentContextual = frame.TargetFrameContent.TargetFrameContentContextual;
+	buff:ClearAllPoints()
+	local targetFrameContentContextual = self.TargetFrameContent.TargetFrameContentContextual
 	if (index == 1) then
-		if (isFriend and numBuffs > 0) then
+		if (UnitIsFriend("player", self.unit) and numBuffs > 0) then
 			buff:SetPoint(point.."LEFT", targetFrameContentContextual.buffs, relativePoint.."LEFT", 0, -offsetY)
 		else
-			buff:SetPoint(point.."LEFT", frame.TargetFrameContainer.FrameTexture, relativePoint.."LEFT", 5, startY)
+			buff:SetPoint(point.."LEFT", self.TargetFrameContainer.FrameTexture, relativePoint.."LEFT", 5, startY)
 		end
 		targetFrameContentContextual.debuffs:SetPoint(point.."LEFT", buff, point.."LEFT", 0, 0)
 		targetFrameContentContextual.debuffs:SetPoint(relativePoint.."LEFT", buff, relativePoint.."LEFT", 0, -auraOffsetY)
@@ -323,10 +299,4 @@ hooksecurefunc('TargetFrame_UpdateDebuffAnchor', function(frame, buff, index, nu
 	else
 		buff:SetPoint(point.."LEFT", anchorBuff, point.."RIGHT", offsetX, 0)
 	end
-	-- Resize
-	buff:SetWidth(21);
-	buff:SetHeight(21);
-	local buffBorder = buff.Border;
-	buffBorder:SetWidth(23);
-	buffBorder:SetHeight(23);
 end)
