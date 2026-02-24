@@ -1,8 +1,7 @@
 ## Interface: 120001
 ## IconTexture: Interface/Icons/INV_Sword_2H_AshbringerCorrupt
 ## Title: Classic Frames
-## Notes: Restores the classic UI and Unit Frames
-## Author: luckfore
+## Notes: Restores the Pre-10.0 UI frames with a focus on PvP, minimalism, and performance.
 ## Version: 3.00
 ## OptionalDeps: SexyMap
 embeds.xml
