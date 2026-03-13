@@ -6,8 +6,8 @@ local healthBarContainer = PlayerFrame.PlayerFrameContent.PlayerFrameContentMain
 local healthBar = PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HealthBarsContainer.HealthBar
 local manaBar = PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.ManaBarArea.ManaBar
 
-PlayerFrame.PlayerFrameContainer:SetFrameLevel(4)
-PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual:SetFrameLevel(5)
+PlayerFrame.PlayerFrameContainer:SetFrameStrata("MEDIUM")
+PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual:SetFrameStrata("MEDIUM")
 
 PlayerFrame.PlayerFrameContainer.PlayerPortrait:SetSize(64, 64)
 PlayerFrame.PlayerFrameContainer.PlayerPortrait:SetPoint("TOPLEFT", 23, -20)
@@ -264,10 +264,6 @@ hooksecurefunc("PlayerFrame_ToPlayerArt", function(self)
 	healthBar.LeftText:SetPoint("LEFT", healthBar, "LEFT", 6, -5)
 	healthBar.RightText:SetPoint("RIGHT", healthBar, "RIGHT", -4, -5)
 
-    manaBar:SetHeight(10)
-    manaBar:SetWidth(123)
-    manaBar:SetPoint("TOPLEFT", 85, -61)
-
 	self.PlayerFrameContent.PlayerFrameContentContextual.GroupIndicator:ClearAllPoints()
 	self.PlayerFrameContent.PlayerFrameContentContextual.GroupIndicator:SetPoint("BOTTOMLEFT", CfPlayerFrame, "TOPLEFT", 97, -24)
 	self.PlayerFrameContent.PlayerFrameContentContextual.RoleIcon:SetPoint("TOPLEFT", 76, -23)
@@ -296,26 +292,14 @@ hooksecurefunc("PlayerFrame_ToVehicleArt", function(self)
 	healthBar.LeftText:SetPoint("LEFT", healthBar, "LEFT", 0, -6)
 	healthBar.RightText:SetPoint("RIGHT", healthBar, "RIGHT", -9, -6)
 
-    manaBar:SetWidth(100)
-    manaBar:SetHeight(10)
-    manaBar:SetPoint("TOPLEFT", 100, -61)
-
 	self.PlayerFrameContent.PlayerFrameContentContextual.GroupIndicator:ClearAllPoints()
 	self.PlayerFrameContent.PlayerFrameContentContextual.GroupIndicator:SetPoint("BOTTOMLEFT", CfPlayerFrame, "TOPLEFT", 97, -17)
 	self.PlayerFrameContent.PlayerFrameContentContextual.RoleIcon:SetPoint("TOPLEFT", 76, -23)
 
-	PlayerName:SetParent(self.PlayerFrameContainer)
 	PlayerName:ClearAllPoints()
 	PlayerName:SetPoint("TOPLEFT", self.PlayerFrameContainer, "TOPLEFT", 97, -30)
 	PlayerFrame.nameBackground:Hide()
 	CfPlayerFrameBackground:SetSize(114, 41)
-end)
-
-hooksecurefunc("PlayerFrame_UpdateLevel", function()
-	PlayerLevelText:SetParent(PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual)
-	PlayerLevelText:SetDrawLayer("ARTWORK")
-	PlayerLevelText:ClearAllPoints()
-	PlayerLevelText:SetPoint("CENTER", -80, -25)
 end)
 
 hooksecurefunc("PlayerFrame_UpdatePartyLeader", function()
