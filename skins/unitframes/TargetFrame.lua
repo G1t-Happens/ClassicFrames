@@ -247,14 +247,19 @@ end
 SkinFrame(TargetFrame)
 SkinFrame(FocusFrame)
 
-if CfTargetFrameBackground then
-    CfTargetFrameBackground:SetSize(120, 41)
-    CfTargetFrameBackground:SetPoint("BOTTOMLEFT", 6, 35)
-end
-if CfFocusFrameBackground then
-    CfFocusFrameBackground:SetSize(120, 41)
-    CfFocusFrameBackground:SetPoint("BOTTOMLEFT", 6, 35)
-end
+local cfBgFrame = CreateFrame("Frame")
+cfBgFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+cfBgFrame:SetScript("OnEvent", function(self)
+    if CfTargetFrameBackground then
+        CfTargetFrameBackground:SetSize(120, 41)
+        CfTargetFrameBackground:SetPoint("BOTTOMLEFT", 6, 35)
+    end
+    if CfFocusFrameBackground then
+        CfFocusFrameBackground:SetSize(120, 41)
+        CfFocusFrameBackground:SetPoint("BOTTOMLEFT", 6, 35)
+    end
+    self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+end)
 
 hooksecurefunc('TargetFrame_UpdateBuffAnchor', function(self, buff, index, numDebuffs, anchorBuff, anchorIndex, size, offsetX, offsetY, mirrorVertically)
     local point, relativePoint
