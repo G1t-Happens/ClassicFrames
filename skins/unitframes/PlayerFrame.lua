@@ -39,25 +39,25 @@ PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HitIndicator.HitText:SetPo
 
 local groupIndicator = PlayerFrame.PlayerFrameContent.PlayerFrameContentContextual.GroupIndicator
 if groupIndicator then
-	groupIndicator.GroupIndicatorLeft:SetSize(24, 16)
+	groupIndicator.GroupIndicatorLeft:SetSize(24, 13)
 	groupIndicator.GroupIndicatorLeft:SetTexture("Interface\\CharacterFrame\\UI-CharacterFrame-GroupIndicator")
 	groupIndicator.GroupIndicatorLeft:SetTexCoord(0, 0.1875, 0, 1)
-	groupIndicator.GroupIndicatorLeft:SetAlpha(0.3)
-	groupIndicator.GroupIndicatorRight:SetSize(24, 16)
+	groupIndicator.GroupIndicatorLeft:SetAlpha(0.4)
+	groupIndicator.GroupIndicatorRight:SetSize(24, 13)
 	groupIndicator.GroupIndicatorRight:SetTexture("Interface\\CharacterFrame\\UI-CharacterFrame-GroupIndicator")
 	groupIndicator.GroupIndicatorRight:SetTexCoord(0.53125, 0.71875, 0, 1)
-	groupIndicator.GroupIndicatorRight:SetAlpha(0.3)
+	groupIndicator.GroupIndicatorRight:SetAlpha(0.4)
 	if (groupIndicator.GroupIndicatorMiddle == nil) then
 		groupIndicator.GroupIndicatorMiddle = groupIndicator:CreateTexture(nil, "BACKGROUND")
-		groupIndicator.GroupIndicatorMiddle:SetSize(0, 16)
+		groupIndicator.GroupIndicatorMiddle:SetSize(0, 13)
 		groupIndicator.GroupIndicatorMiddle:SetTexture("Interface\\CharacterFrame\\UI-CharacterFrame-GroupIndicator")
 		groupIndicator.GroupIndicatorMiddle:SetTexCoord(0.1875, 0.53125, 0, 1)
 		groupIndicator.GroupIndicatorMiddle:SetPoint("LEFT", groupIndicator.GroupIndicatorLeft, "RIGHT")
 		groupIndicator.GroupIndicatorMiddle:SetPoint("RIGHT", groupIndicator.GroupIndicatorRight, "LEFT")
-		groupIndicator.GroupIndicatorMiddle:SetAlpha(0.3)
+		groupIndicator.GroupIndicatorMiddle:SetAlpha(0.4)
 	end
 	select(3, groupIndicator:GetRegions()):SetAlpha(0)
-	PlayerFrameGroupIndicatorText:SetPoint("LEFT", 20, -2)
+	PlayerFrameGroupIndicatorText:SetPoint("LEFT", 20, 0)
 end
 
 if (PlayerFrame.nameBackground == nil) then
