@@ -1,378 +1,406 @@
+-- =============================================================================
+-- CfPlayerFrame.lua – Optimised v2
+-- =============================================================================
+
 function CfPlayerFrame_OnLoad(self)
-	self:EnableMouse(false)
+    self:EnableMouse(false)
 end
 
--- Lokale Referenzen: tiefe Pfade einmal aufloesen
-local pfContainer   = PlayerFrame.PlayerFrameContainer
-local pfContent     = PlayerFrame.PlayerFrameContent
-local pfMain        = pfContent.PlayerFrameContentMain
-local pfContextual  = pfContent.PlayerFrameContentContextual
+-- ─── Cached globals ──────────────────────────────────────────────────────────
+local UnitClass         = UnitClass
+local RAID_CLASS_COLORS = RAID_CLASS_COLORS
+local hooksecurefunc    = hooksecurefunc
 
-local healthBarContainer = pfMain.HealthBarsContainer
-local healthBar          = pfMain.HealthBarsContainer.HealthBar
-local manaBarContainer   = pfMain.ManaBarArea.ManaBar
-local manaBar            = pfMain.ManaBarArea.ManaBar
+-- ─── Cached texture paths ────────────────────────────────────────────────────
+local TEX_STATUSBAR = "Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar"
+local TEX_NOLEVEL   = "Interface\\AddOns\\ClassicFrames\\textures\\UI-TargetingFrameNoLevel"
+local TEX_GROUP_IND = "Interface\\CharacterFrame\\UI-CharacterFrame-GroupIndicator"
+local TEX_PORTRAIT  = "Interface\\CharacterFrame\\TempPortraitAlphaMask"
+local TEX_LEADER    = "Interface\\GroupFrame\\UI-Group-LeaderIcon"
+local TEX_GUIDE     = "Interface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES"
+local TEX_VEHICLE   = "Interface\\Vehicles\\UI-Vehicle-Frame"
+local TEX_MONK_MANA = "Interface\\PlayerFrame\\MonkManaBar"
+local FONT_FRIZ     = "Fonts\\FRIZQT__.TTF"
 
--- ========================
--- INIT: Einmalige statische Calls
--- ========================
+-- ─── Local frame references ──────────────────────────────────────────────────
+local pfContainer  = PlayerFrame.PlayerFrameContainer
+local pfContent    = PlayerFrame.PlayerFrameContent
+local pfMain       = pfContent.PlayerFrameContentMain
+local pfContextual = pfContent.PlayerFrameContentContextual
+
+local hbContainer = pfMain.HealthBarsContainer
+local hb          = hbContainer.HealthBar
+local mb          = pfMain.ManaBarArea.ManaBar
+
+-- =============================================================================
+-- INIT: One-time static setup
+-- =============================================================================
+
 pfContainer:SetFrameStrata("MEDIUM")
 pfContextual:SetFrameStrata("MEDIUM")
 
+-- Portrait
 local portrait = pfContainer.PlayerPortrait
 portrait:SetSize(64, 64)
 portrait:SetPoint("TOPLEFT", 23, -20)
 
 local portraitMask = pfContainer.PlayerPortraitMask
 portraitMask:SetSize(64, 64)
-portraitMask:SetTexture("Interface\\CharacterFrame\\TempPortraitAlphaMask")
+portraitMask:SetTexture(TEX_PORTRAIT)
 portraitMask:SetPoint("TOPLEFT", 23, -20)
 
-local overAbsorbGlow = healthBar.OverAbsorbGlow
-overAbsorbGlow:SetParent(pfContainer)
-overAbsorbGlow:RemoveMaskTexture(healthBarContainer.HealthBarMask)
-overAbsorbGlow:ClearAllPoints()
-overAbsorbGlow:SetPoint("TOPLEFT", healthBar, "TOPRIGHT", -10, -8)
-overAbsorbGlow:SetPoint("BOTTOMLEFT", healthBar, "BOTTOMRIGHT", -10, -1)
+-- Over-absorb glow
+local oag = hb.OverAbsorbGlow
+oag:SetParent(pfContainer)
+oag:RemoveMaskTexture(hbContainer.HealthBarMask)
+oag:ClearAllPoints()
+oag:SetPoint("TOPLEFT", hb, "TOPRIGHT", -10, -8)
+oag:SetPoint("BOTTOMLEFT", hb, "BOTTOMRIGHT", -10, -1)
 
-healthBar.TextString:SetParent(pfContainer)
-healthBar.LeftText:SetParent(pfContainer)
-healthBar.RightText:SetParent(pfContainer)
+-- Health bar text
+hb.TextString:SetParent(pfContainer)
+hb.LeftText:SetParent(pfContainer)
+hb.RightText:SetParent(pfContainer)
 
-local fullPowerFrame = manaBar.FullPowerFrame
-fullPowerFrame:SetSize(119, 12)
-fullPowerFrame:ClearAllPoints()
-fullPowerFrame:SetPoint("TOPRIGHT", manaBar, "TOPRIGHT", -3, 1)
+-- Mana bar full-power frame
+local fpf = mb.FullPowerFrame
+fpf:SetSize(119, 12)
+fpf:ClearAllPoints()
+fpf:SetPoint("TOPRIGHT", mb, "TOPRIGHT", -3, 1)
 
-manaBar.TextString:SetParent(pfContainer)
-manaBar.LeftText:SetParent(pfContainer)
-manaBar.RightText:SetParent(pfContainer)
+mb.TextString:SetParent(pfContainer)
+mb.LeftText:SetParent(pfContainer)
+mb.RightText:SetParent(pfContainer)
 
-local hitIndicator = pfMain.HitIndicator
-hitIndicator:SetParent(pfContextual)
-hitIndicator.HitText:ClearAllPoints()
-hitIndicator.HitText:SetPoint("CENTER", hitIndicator, "TOPLEFT", 54, -50)
+-- Hit indicator
+local hitInd = pfMain.HitIndicator
+hitInd:SetParent(pfContextual)
+hitInd.HitText:ClearAllPoints()
+hitInd.HitText:SetPoint("CENTER", hitInd, "TOPLEFT", 54, -50)
 
--- GroupIndicator
-local groupIndicator = pfContextual.GroupIndicator
-if groupIndicator then
-	local giLeft = groupIndicator.GroupIndicatorLeft
-	giLeft:SetSize(24, 13)
-	giLeft:SetTexture("Interface\\CharacterFrame\\UI-CharacterFrame-GroupIndicator")
-	giLeft:SetTexCoord(0, 0.1875, 0, 1)
-	giLeft:SetAlpha(0.4)
+-- ─── Group indicator ─────────────────────────────────────────────────────────
+do
+    local gi = pfContextual.GroupIndicator
+    if gi then
+        local giLeft = gi.GroupIndicatorLeft
+        giLeft:SetSize(24, 13)
+        giLeft:SetTexture(TEX_GROUP_IND)
+        giLeft:SetTexCoord(0, 0.1875, 0, 1)
+        giLeft:SetAlpha(0.4)
 
-	local giRight = groupIndicator.GroupIndicatorRight
-	giRight:SetSize(24, 13)
-	giRight:SetTexture("Interface\\CharacterFrame\\UI-CharacterFrame-GroupIndicator")
-	giRight:SetTexCoord(0.53125, 0.71875, 0, 1)
-	giRight:SetAlpha(0.4)
+        local giRight = gi.GroupIndicatorRight
+        giRight:SetSize(24, 13)
+        giRight:SetTexture(TEX_GROUP_IND)
+        giRight:SetTexCoord(0.53125, 0.71875, 0, 1)
+        giRight:SetAlpha(0.4)
 
-	if groupIndicator.GroupIndicatorMiddle == nil then
-		local giMiddle = groupIndicator:CreateTexture(nil, "BACKGROUND")
-		giMiddle:SetSize(0, 13)
-		giMiddle:SetTexture("Interface\\CharacterFrame\\UI-CharacterFrame-GroupIndicator")
-		giMiddle:SetTexCoord(0.1875, 0.53125, 0, 1)
-		giMiddle:SetPoint("LEFT", giLeft, "RIGHT")
-		giMiddle:SetPoint("RIGHT", giRight, "LEFT")
-		giMiddle:SetAlpha(0.4)
-		groupIndicator.GroupIndicatorMiddle = giMiddle
-	end
+        if not gi.GroupIndicatorMiddle then
+            local giMid = gi:CreateTexture(nil, "BACKGROUND")
+            giMid:SetSize(0, 13)
+            giMid:SetTexture(TEX_GROUP_IND)
+            giMid:SetTexCoord(0.1875, 0.53125, 0, 1)
+            giMid:SetPoint("LEFT", giLeft, "RIGHT")
+            giMid:SetPoint("RIGHT", giRight, "LEFT")
+            giMid:SetAlpha(0.4)
+            gi.GroupIndicatorMiddle = giMid
+        end
 
-	local groupIndicatorBackground = select(3, groupIndicator:GetRegions())
-	if groupIndicatorBackground then
-		groupIndicatorBackground:SetAlpha(0)
-	end
+        local giBg = select(3, gi:GetRegions())
+        if giBg then giBg:SetAlpha(0) end
 
-	if PlayerFrameGroupIndicatorText then
-		PlayerFrameGroupIndicatorText:SetPoint("LEFT", 20, 0)
-	end
+        if PlayerFrameGroupIndicatorText then
+            PlayerFrameGroupIndicatorText:SetPoint("LEFT", 20, 0)
+        end
+    end
 end
 
--- nameBackground
-if PlayerFrame.nameBackground == nil then
-	local nb = pfMain:CreateTexture(nil, "BACKGROUND")
-	nb:SetSize(118, 19)
-	nb:ClearAllPoints()
-	nb:SetPoint("CENTER", pfMain, 32, 9)
-	nb:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
-	local _, Class = UnitClass("Player")
-	local Color = RAID_CLASS_COLORS[Class]
-	nb:SetVertexColor(Color.r, Color.g, Color.b)
-	PlayerFrame.nameBackground = nb
+-- ─── Name background ─────────────────────────────────────────────────────────
+if not PlayerFrame.nameBackground then
+    local nb = pfMain:CreateTexture(nil, "BACKGROUND")
+    nb:SetSize(118, 19)
+    nb:ClearAllPoints()
+    nb:SetPoint("CENTER", pfMain, 32, 9)
+    nb:SetTexture(TEX_STATUSBAR)
+    local _, class = UnitClass("player")
+    local color = RAID_CLASS_COLORS[class]
+    if color then nb:SetVertexColor(color.r, color.g, color.b) end
+    PlayerFrame.nameBackground = nb
 end
 
--- RestLoop: einmalig stoppen – kein Hook noetig
-local restLoop = pfContextual.PlayerRestLoop
-restLoop:Hide()
-restLoop.PlayerRestLoopAnim:Stop()
+-- ─── Rest loop: stop once ────────────────────────────────────────────────────
+do
+    local rl = pfContextual.PlayerRestLoop
+    rl:Hide()
+    rl.PlayerRestLoopAnim:Stop()
+end
 
--- ========================
--- Klassen-spezifische Bars
--- ========================
-
--- Hilfsfunktion: Border-Textur fuer Bars erstellen
-local CF_BAR_TEX = "Interface\\AddOns\\ClassicFrames\\textures\\UI-CharacterFrame-GroupIndicator"
+-- =============================================================================
+-- Class-specific bars
+-- =============================================================================
 
 local function CreateBarBorders(bar, borderOffsetY)
-	borderOffsetY = borderOffsetY or 0
+    borderOffsetY = borderOffsetY or 0
 
-	if not bar.Background then
-		local bg = bar:CreateTexture(nil, "BACKGROUND")
-		bg:SetAllPoints()
-		bg:SetColorTexture(0, 0, 0, 0.5)
-		bar.Background = bg
-	end
+    if not bar.Background then
+        local bg = bar:CreateTexture(nil, "BACKGROUND")
+        bg:SetAllPoints()
+        bg:SetColorTexture(0, 0, 0, 0.5)
+        bar.Background = bg
+    end
 
-	if not bar.Border then
-		local b = bar:CreateTexture(nil, "OVERLAY")
-		b:SetSize(0, 16)
-		b:SetTexture(CF_BAR_TEX)
-		b:SetTexCoord(0.125, 0.250, 1, 0)
-		b:SetPoint("TOPLEFT", 4, borderOffsetY)
-		b:SetPoint("TOPRIGHT", -4, borderOffsetY)
-		bar.Border = b
-	end
+    if not bar.Border then
+        local b = bar:CreateTexture(nil, "OVERLAY")
+        b:SetSize(0, 16)
+        b:SetTexture(TEX_GROUP_IND)
+        b:SetTexCoord(0.125, 0.250, 1, 0)
+        b:SetPoint("TOPLEFT", 4, borderOffsetY)
+        b:SetPoint("TOPRIGHT", -4, borderOffsetY)
+        bar.Border = b
+    end
 
-	if not bar.LeftBorder then
-		local lb = bar:CreateTexture(nil, "OVERLAY")
-		lb:SetSize(16, 16)
-		lb:SetTexture(CF_BAR_TEX)
-		lb:SetTexCoord(0, 0.125, 1, 0)
-		lb:SetPoint("RIGHT", bar.Border, "LEFT", 1, 0)
-		bar.LeftBorder = lb
-	end
+    if not bar.LeftBorder then
+        local lb = bar:CreateTexture(nil, "OVERLAY")
+        lb:SetSize(16, 16)
+        lb:SetTexture(TEX_GROUP_IND)
+        lb:SetTexCoord(0, 0.125, 1, 0)
+        lb:SetPoint("RIGHT", bar.Border, "LEFT", 1, 0)
+        bar.LeftBorder = lb
+    end
 
-	if not bar.RightBorder then
-		local rb = bar:CreateTexture(nil, "OVERLAY")
-		rb:SetSize(16, 16)
-		rb:SetTexture(CF_BAR_TEX)
-		rb:SetTexCoord(0.125, 0, 1, 0)
-		rb:SetPoint("LEFT", bar.Border, "RIGHT", -1, 0)
-		bar.RightBorder = rb
-	end
+    if not bar.RightBorder then
+        local rb = bar:CreateTexture(nil, "OVERLAY")
+        rb:SetSize(16, 16)
+        rb:SetTexture(TEX_GROUP_IND)
+        rb:SetTexCoord(0.125, 0, 1, 0)
+        rb:SetPoint("LEFT", bar.Border, "RIGHT", -1, 0)
+        bar.RightBorder = rb
+    end
 end
 
+local function HookBarEvaluate(bar, r, g, b)
+    hooksecurefunc(bar, "EvaluateUnit", function(self)
+        self:SetStatusBarTexture(TEX_STATUSBAR)
+        self:SetStatusBarColor(r, g, b)
+        if self.PowerBarMask then self.PowerBarMask:Hide() end
+    end)
+end
+
+-- AlternatePowerBar
 if _G.AlternatePowerBar then
-	local apb = AlternatePowerBar
-	apb:SetSize(104, 12)
-	apb:ClearAllPoints()
-	apb:SetPoint("BOTTOMLEFT", 95, 20)
+    local apb = AlternatePowerBar
+    apb:SetSize(104, 12)
+    apb:ClearAllPoints()
+    apb:SetPoint("BOTTOMLEFT", 95, 20)
 
-	AlternatePowerBarText:SetPoint("CENTER", 0, -1)
-	apb.LeftText:SetPoint("LEFT", 0, -1)
-	apb.RightText:SetPoint("RIGHT", 0, -1)
+    AlternatePowerBarText:SetPoint("CENTER", 0, -1)
+    apb.LeftText:SetPoint("LEFT", 0, -1)
+    apb.RightText:SetPoint("RIGHT", 0, -1)
 
-	CreateBarBorders(apb, -0.5)
-
-	hooksecurefunc(apb, "EvaluateUnit", function(self)
-		self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
-		self:SetStatusBarColor(0, 0, 1)
-		if self.PowerBarMask then
-			self.PowerBarMask:Hide()
-		end
-	end)
+    CreateBarBorders(apb, -0.5)
+    HookBarEvaluate(apb, 0, 0, 1)
 end
 
+-- MonkStaggerBar
 if _G.MonkStaggerBar then
-	local msb = MonkStaggerBar
-	msb:SetSize(94, 12)
-	msb:ClearAllPoints()
-	msb:SetPoint("TOPLEFT", PlayerFrameAlternatePowerBarArea, "TOPLEFT", 100, -73)
-	msb.PowerBarMask:Hide()
+    local msb = MonkStaggerBar
+    msb:SetSize(94, 12)
+    msb:ClearAllPoints()
+    msb:SetPoint("TOPLEFT", PlayerFrameAlternatePowerBarArea, "TOPLEFT", 100, -73)
+    msb.PowerBarMask:Hide()
 
-	if not msb.Background then
-		local bg = msb:CreateTexture(nil, "BACKGROUND")
-		bg:SetSize(128, 16)
-		bg:SetTexture("Interface\\PlayerFrame\\MonkManaBar")
-		bg:SetTexCoord(0, 1, 0.5, 1)
-		bg:SetPoint("TOPLEFT", -17, 0)
-		msb.Background = bg
-	end
+    if not msb.Background then
+        local bg = msb:CreateTexture(nil, "BACKGROUND")
+        bg:SetSize(128, 16)
+        bg:SetTexture(TEX_MONK_MANA)
+        bg:SetTexCoord(0, 1, 0.5, 1)
+        bg:SetPoint("TOPLEFT", -17, 0)
+        msb.Background = bg
+    end
 
-	if not msb.Border then
-		local b = msb:CreateTexture(nil, "OVERLAY")
-		b:SetSize(128, 16)
-		b:SetTexture("Interface\\PlayerFrame\\MonkManaBar")
-		b:SetTexCoord(0, 1, 0, 0.5)
-		b:SetPoint("TOPLEFT", -17, 0)
-		msb.Border = b
-	end
+    if not msb.Border then
+        local b = msb:CreateTexture(nil, "OVERLAY")
+        b:SetSize(128, 16)
+        b:SetTexture(TEX_MONK_MANA)
+        b:SetTexCoord(0, 1, 0, 0.5)
+        b:SetPoint("TOPLEFT", -17, 0)
+        msb.Border = b
+    end
 
-	hooksecurefunc(msb, "EvaluateUnit", function(self)
-		self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
-		self:SetStatusBarColor(0, 0, 1)
-	end)
+    -- MonkStaggerBar uses its own textures, not HookBarEvaluate
+    hooksecurefunc(msb, "EvaluateUnit", function(self)
+        self:SetStatusBarTexture(TEX_STATUSBAR)
+        self:SetStatusBarColor(0, 0, 1)
+    end)
 end
 
+-- EvokerEbonMightBar
 if _G.EvokerEbonMightBar then
-	local emb = EvokerEbonMightBar
-	emb:SetSize(104, 12)
-	emb:ClearAllPoints()
-	emb:SetPoint("BOTTOMLEFT", 95, 19)
+    local emb = EvokerEbonMightBar
+    emb:SetSize(104, 12)
+    emb:ClearAllPoints()
+    emb:SetPoint("BOTTOMLEFT", 95, 19)
 
-	EvokerEbonMightBarText:SetPoint("CENTER", 0, -1)
-	emb.LeftText:SetPoint("LEFT", 0, -1)
-	emb.RightText:SetPoint("RIGHT", 0, -1)
+    EvokerEbonMightBarText:SetPoint("CENTER", 0, -1)
+    emb.LeftText:SetPoint("LEFT", 0, -1)
+    emb.RightText:SetPoint("RIGHT", 0, -1)
 
-	CreateBarBorders(emb, 0)
-
-	hooksecurefunc(emb, "EvaluateUnit", function(self)
-		self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
-		self:SetStatusBarColor(1, 0.5, 0.25)
-		if self.PowerBarMask then
-			self.PowerBarMask:Hide()
-		end
-	end)
+    CreateBarBorders(emb, 0)
+    HookBarEvaluate(emb, 1, 0.5, 0.25)
 end
 
+-- DemonHunterSoulFragmentsBar
 if _G.DemonHunterSoulFragmentsBar then
-	local dhb = DemonHunterSoulFragmentsBar
-	dhb:SetSize(104, 12)
-	dhb:ClearAllPoints()
-	dhb:SetPoint("BOTTOMLEFT", 95, 15)
-
-	CreateBarBorders(dhb, 0)
+    local dhb = DemonHunterSoulFragmentsBar
+    dhb:SetSize(104, 12)
+    dhb:ClearAllPoints()
+    dhb:SetPoint("BOTTOMLEFT", 95, 15)
+    CreateBarBorders(dhb, 0)
 end
 
--- ========================
--- Hilfsfunktion: Frame-Textur setzen (FrameTexture & AlternatePowerFrameTexture identisch)
--- ========================
-local CF_FRAME_TEX = "Interface\\AddOns\\ClassicFrames\\textures\\UI-TargetingFrameNoLevel"
+-- =============================================================================
+-- Helpers for hooks
+-- =============================================================================
 
 local function SetPlayerFrameTexture(tex, x)
-	tex:SetTexture(CF_FRAME_TEX)
-	tex:SetTexCoord(1, 0.09375, 0, 0.78125)
-	tex:SetDrawLayer("BORDER")
-	tex:SetSize(235, 100)
-	tex:ClearAllPoints()
-	tex:SetPoint("TOPLEFT", x, -8)
+    tex:SetTexture(TEX_NOLEVEL)
+    tex:SetTexCoord(1, 0.09375, 0, 0.78125)
+    tex:SetDrawLayer("BORDER")
+    tex:SetSize(235, 100)
+    tex:ClearAllPoints()
+    tex:SetPoint("TOPLEFT", x, -8)
 end
 
--- ========================
+local function ApplyHealthBarSkin()
+    hb:SetStatusBarTexture(TEX_STATUSBAR)
+    hb:SetStatusBarColor(0, 1, 0)
+end
+
+-- =============================================================================
 -- Hooks
--- ========================
+-- =============================================================================
 
 hooksecurefunc("PlayerFrame_ToPlayerArt", function(self)
-	local c = self.PlayerFrameContainer
-	SetPlayerFrameTexture(c.FrameTexture, -21.5)
-	SetPlayerFrameTexture(c.AlternatePowerFrameTexture, -21.5)
+    local c = self.PlayerFrameContainer
+    SetPlayerFrameTexture(c.FrameTexture, -21.5)
+    SetPlayerFrameTexture(c.AlternatePowerFrameTexture, -21.5)
 
-	c.FrameFlash:Hide()
-	pfMain.StatusTexture:Hide()
+    c.FrameFlash:Hide()
+    pfMain.StatusTexture:Hide()
 
-	healthBar:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
-	healthBar:SetStatusBarColor(0, 1, 0)
+    ApplyHealthBarSkin()
 
-	healthBarContainer.HealthBarMask:ClearAllPoints()
-	healthBarContainer.HealthBarMask:SetPoint("TOPLEFT", healthBar, "TOPLEFT", 1, -4)
-	healthBarContainer.HealthBarMask:SetPoint("BOTTOMRIGHT", healthBar, "BOTTOMRIGHT", -1, -4)
+    local hbMask = hbContainer.HealthBarMask
+    hbMask:ClearAllPoints()
+    hbMask:SetPoint("TOPLEFT", hb, "TOPLEFT", 1, -4)
+    hbMask:SetPoint("BOTTOMRIGHT", hb, "BOTTOMRIGHT", -1, -4)
 
-	manaBarContainer.ManaBarMask:ClearAllPoints()
-	manaBarContainer.ManaBarMask:SetPoint("TOPLEFT", manaBar, "TOPLEFT", 1, 2)
-	manaBarContainer.ManaBarMask:SetPoint("BOTTOMRIGHT", manaBar, "BOTTOMRIGHT", -1, -2)
+    local mbMask = mb.ManaBarMask
+    mbMask:ClearAllPoints()
+    mbMask:SetPoint("TOPLEFT", mb, "TOPLEFT", 1, 2)
+    mbMask:SetPoint("BOTTOMRIGHT", mb, "BOTTOMRIGHT", -1, -2)
 
-	healthBar.TextString:SetPoint("CENTER", healthBar, "CENTER", 0, -5)
-	healthBar.LeftText:SetPoint("LEFT", healthBar, "LEFT", 6, -5)
-	healthBar.RightText:SetPoint("RIGHT", healthBar, "RIGHT", -4, -5)
+    hb.TextString:SetPoint("CENTER", hb, "CENTER", 0, -5)
+    hb.LeftText:SetPoint("LEFT", hb, "LEFT", 6, -5)
+    hb.RightText:SetPoint("RIGHT", hb, "RIGHT", -4, -5)
 
-	local ctx = self.PlayerFrameContent.PlayerFrameContentContextual
-	ctx.GroupIndicator:ClearAllPoints()
-	ctx.GroupIndicator:SetPoint("BOTTOMLEFT", CfPlayerFrame, "TOPLEFT", 97, -24)
-	ctx.RoleIcon:SetPoint("TOPLEFT", 76, -23)
+    local ctx = self.PlayerFrameContent.PlayerFrameContentContextual
+    ctx.GroupIndicator:ClearAllPoints()
+    ctx.GroupIndicator:SetPoint("BOTTOMLEFT", CfPlayerFrame, "TOPLEFT", 97, -24)
+    ctx.RoleIcon:SetPoint("TOPLEFT", 76, -23)
 
-	CfPlayerFrameBackground:SetSize(120, 41)
-	PlayerFrame.nameBackground:Show()
+    CfPlayerFrameBackground:SetSize(120, 41)
+    PlayerFrame.nameBackground:Show()
 end)
 
 hooksecurefunc("PlayerFrame_ToVehicleArt", function(self)
-	local c = self.PlayerFrameContainer
-	local vft = c.VehicleFrameTexture
-	vft:SetSize(240, 120)
-	vft:SetTexture("Interface\\Vehicles\\UI-Vehicle-Frame")
-	vft:SetDrawLayer("BORDER")
-	vft:ClearAllPoints()
-	vft:SetPoint("TOPLEFT", -3, 2)
+    local c = self.PlayerFrameContainer
+    local vft = c.VehicleFrameTexture
+    vft:SetSize(240, 120)
+    vft:SetTexture(TEX_VEHICLE)
+    vft:SetDrawLayer("BORDER")
+    vft:ClearAllPoints()
+    vft:SetPoint("TOPLEFT", -3, 2)
 
-	c.FrameFlash:Hide()
-	pfMain.StatusTexture:Hide()
+    c.FrameFlash:Hide()
+    pfMain.StatusTexture:Hide()
 
-	healthBar:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
-	healthBar:SetStatusBarColor(0, 1, 0)
+    ApplyHealthBarSkin()
 
-	healthBarContainer.HealthBarMask:ClearAllPoints()
-	healthBarContainer.HealthBarMask:SetPoint("TOPLEFT", healthBar, "TOPLEFT", 7, -3)
-	healthBarContainer.HealthBarMask:SetPoint("BOTTOMRIGHT", healthBar, "BOTTOMRIGHT", -10, -3)
+    local hbMask = hbContainer.HealthBarMask
+    hbMask:ClearAllPoints()
+    hbMask:SetPoint("TOPLEFT", hb, "TOPLEFT", 7, -3)
+    hbMask:SetPoint("BOTTOMRIGHT", hb, "BOTTOMRIGHT", -10, -3)
 
-	healthBar.TextString:SetPoint("CENTER", healthBar, "CENTER", -2, -5)
-	healthBar.LeftText:SetPoint("LEFT", healthBar, "LEFT", 0, -6)
-	healthBar.RightText:SetPoint("RIGHT", healthBar, "RIGHT", -9, -6)
+    hb.TextString:SetPoint("CENTER", hb, "CENTER", -2, -5)
+    hb.LeftText:SetPoint("LEFT", hb, "LEFT", 0, -6)
+    hb.RightText:SetPoint("RIGHT", hb, "RIGHT", -9, -6)
 
-	manaBarContainer.ManaBarMask:ClearAllPoints()
-	manaBarContainer.ManaBarMask:SetPoint("TOPLEFT", manaBar, "TOPLEFT", 7, 2)
-	manaBarContainer.ManaBarMask:SetPoint("BOTTOMRIGHT", manaBar, "BOTTOMRIGHT", -5, -2)
+    local mbMask = mb.ManaBarMask
+    mbMask:ClearAllPoints()
+    mbMask:SetPoint("TOPLEFT", mb, "TOPLEFT", 7, 2)
+    mbMask:SetPoint("BOTTOMRIGHT", mb, "BOTTOMRIGHT", -5, -2)
 
-	local ctx = self.PlayerFrameContent.PlayerFrameContentContextual
-	ctx.GroupIndicator:ClearAllPoints()
-	ctx.GroupIndicator:SetPoint("BOTTOMLEFT", CfPlayerFrame, "TOPLEFT", 97, -17)
-	ctx.RoleIcon:SetPoint("TOPLEFT", 76, -23)
+    local ctx = self.PlayerFrameContent.PlayerFrameContentContextual
+    ctx.GroupIndicator:ClearAllPoints()
+    ctx.GroupIndicator:SetPoint("BOTTOMLEFT", CfPlayerFrame, "TOPLEFT", 97, -17)
+    ctx.RoleIcon:SetPoint("TOPLEFT", 76, -23)
 
-	PlayerName:ClearAllPoints()
-	PlayerName:SetPoint("TOPLEFT", c, "TOPLEFT", 97, -30)
-	PlayerFrame.nameBackground:Hide()
-	CfPlayerFrameBackground:SetSize(114, 41)
+    PlayerName:ClearAllPoints()
+    PlayerName:SetPoint("TOPLEFT", c, "TOPLEFT", 97, -30)
+    PlayerFrame.nameBackground:Hide()
+    CfPlayerFrameBackground:SetSize(114, 41)
 end)
 
 hooksecurefunc("PlayerFrame_UpdatePartyLeader", function()
-	local leaderIcon = pfContextual.LeaderIcon
-	leaderIcon:SetSize(16, 16)
-	leaderIcon:SetTexture("Interface\\GroupFrame\\UI-Group-LeaderIcon")
-	leaderIcon:ClearAllPoints()
-	leaderIcon:SetPoint("TOPLEFT", 21, -16)
+    local li = pfContextual.LeaderIcon
+    li:SetSize(16, 16)
+    li:SetTexture(TEX_LEADER)
+    li:ClearAllPoints()
+    li:SetPoint("TOPLEFT", 21, -16)
 
-	local guideIcon = pfContextual.GuideIcon
-	guideIcon:SetSize(19, 19)
-	guideIcon:SetTexture("Interface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES")
-	guideIcon:SetTexCoord(0, 0.296875, 0.015625, 0.3125)
-	guideIcon:ClearAllPoints()
-	guideIcon:SetPoint("TOPLEFT", 21, -16)
+    local gi = pfContextual.GuideIcon
+    gi:SetSize(19, 19)
+    gi:SetTexture(TEX_GUIDE)
+    gi:SetTexCoord(0, 0.296875, 0.015625, 0.3125)
+    gi:ClearAllPoints()
+    gi:SetPoint("TOPLEFT", 21, -16)
 end)
 
 hooksecurefunc("PlayerFrame_UpdatePlayerNameTextAnchor", function()
-	PlayerName:SetWidth(100)
-	PlayerName:ClearAllPoints()
-	PlayerName:SetPoint("TOPLEFT", 97, -34)
-	PlayerName:SetJustifyH("CENTER")
-	PlayerName:SetFont("Fonts\\FRIZQT__.TTF", 11, "OUTLINE")
+    PlayerName:SetWidth(100)
+    PlayerName:ClearAllPoints()
+    PlayerName:SetPoint("TOPLEFT", 97, -34)
+    PlayerName:SetJustifyH("CENTER")
+    PlayerName:SetFont(FONT_FRIZ, 11, "OUTLINE")
 end)
 
 hooksecurefunc("PlayerFrame_UpdatePlayerRestLoop", function()
-	local rl = pfContextual.PlayerRestLoop
-	rl:Hide()
-	rl.PlayerRestLoopAnim:Stop()
+    local rl = pfContextual.PlayerRestLoop
+    rl:Hide()
+    rl.PlayerRestLoopAnim:Stop()
 end)
 
 hooksecurefunc("PlayerFrame_UpdatePvPStatus", function()
-	pfContextual.PrestigePortrait:Hide()
-	pfContextual.PrestigeBadge:Hide()
-	pfContextual.PVPIcon:Hide()
-	PlayerPVPTimerText:SetAlpha(0)
+    pfContextual.PrestigePortrait:Hide()
+    pfContextual.PrestigeBadge:Hide()
+    pfContextual.PVPIcon:Hide()
+    PlayerPVPTimerText:SetAlpha(0)
 end)
 
 hooksecurefunc("PlayerFrame_UpdateRolesAssigned", function()
-	pfContextual.RoleIcon:Hide()
-	PlayerLevelText:Hide()
+    pfContextual.RoleIcon:Hide()
+    PlayerLevelText:Hide()
 end)
 
 hooksecurefunc("PlayerFrame_UpdateStatus", function()
-	pfContextual.AttackIcon:Hide()
-	pfContextual.PlayerPortraitCornerIcon:Hide()
-	pfMain.StatusTexture:Hide()
+    pfContextual.AttackIcon:Hide()
+    pfContextual.PlayerPortraitCornerIcon:Hide()
+    pfMain.StatusTexture:Hide()
 end)
 
--- ========================
--- CVars & andere
--- ========================
+-- =============================================================================
+-- CVars & cleanup
+-- =============================================================================
 C_CVar.SetCVar("threatWarning", 0)
 UIErrorsFrame:SetAlpha(0)
 PlayerFrame:UnregisterEvent("UNIT_COMBAT")
