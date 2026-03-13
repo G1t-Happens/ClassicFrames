@@ -256,6 +256,8 @@ local function SkinFrame(frame)
     totFT:SetPoint("TOPLEFT", 0, 0)
 
     tot.Portrait:SetSize(37, 37)
+    tot.Portrait:ClearAllPoints()
+    tot.Portrait:SetPoint("TOPLEFT", tot, "TOPLEFT", 4, -4)
 
     local totName = tot.Name
     totName:SetWidth(60)
@@ -285,7 +287,7 @@ local function SkinFrame(frame)
     local totMB = tot.ManaBar
     totMB:SetSize(47, 8)
     totMB:ClearAllPoints()
-    totMB:SetPoint("BOTTOMRIGHT", tot, "TOPLEFT", 91, -31)
+    totMB:SetPoint("BOTTOMRIGHT", tot, "TOPLEFT", 90, -31)
     totMB:SetFrameLevel(1)
 
     local prefix = tot:GetName() .. "Debuff"
