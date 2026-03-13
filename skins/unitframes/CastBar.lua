@@ -192,7 +192,7 @@ local function SkinTargetCastbar(self)
     local spark = self.Spark
 
     -- Upvalue locals for the flash texture created on first finish.
-    -- Avoids self.NewFlash / self.NewFlashAnim table lookups on every subsequent cast.
+    -- Avoids self.NewFlash / self.NewFlashAnim table lookups on every subsequent cast
     local newFlash, newFlashAnim
 
     hooksecurefunc(self, "UpdateShownState", function()
