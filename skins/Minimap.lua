@@ -1,10 +1,10 @@
 -- =============================================================================
--- CfMinimap.lua – Optimised v2
+-- Minimap.lua
 -- =============================================================================
 
 if C_AddOns.IsAddOnLoaded("SexyMap") then return end
 
--- ─── LibDBIcon refresh ───────────────────────────────────────────────────────
+-- LibDBIcon refresh
 do
     local ldbi = LibStub and LibStub:GetLibrary("LibDBIcon-1.0", true)
     if ldbi then
@@ -14,7 +14,7 @@ do
     end
 end
 
--- ─── Cached references ──────────────────────────────────────────────────────
+-- Cached references
 local cluster    = MinimapCluster
 local minimap    = Minimap
 local backdrop   = MinimapBackdrop
@@ -28,7 +28,7 @@ local craftIcon  = MiniMapCraftingOrderIcon
 
 local hooksecurefunc = hooksecurefunc
 
--- ─── Cached texture paths ───────────────────────────────────────────────────
+-- Cached texture paths
 local TEX_BORDER     = "Interface\\AddOns\\ClassicFrames\\textures\\MiniMap\\UI-Minimap-Border"
 local TEX_NORTH      = "Interface\\AddOns\\ClassicFrames\\textures\\MiniMap\\CompassNorthTag"
 local TEX_TRACK_BRD  = "Interface\\AddOns\\ClassicFrames\\icons\\MiniMap-TrackingBorder"
@@ -39,10 +39,10 @@ local TEX_TRACK_NONE = "Interface\\Minimap\\Tracking\\None"
 local TEX_MAIL_ICON  = "Interface\\Icons\\INV_Letter_15"
 local TEX_CRAFT_ICON = "Interface\\Icons\\INV_Hammer_12"
 
--- ─── Shared utility ─────────────────────────────────────────────────────────
+-- Shared utility
 local function HideOnShow(self) self:Hide() end
 
--- ─── Minimap cluster & map ──────────────────────────────────────────────────
+-- Minimap cluster & map
 cluster:SetScale(1)
 cluster:SetSize(192, 192)
 cluster:SetHitRectInsets(30, 10, 0, 30)
@@ -51,7 +51,7 @@ minimap:SetSize(165, 165)
 minimap:ClearAllPoints()
 minimap:SetPoint("CENTER", cluster, "TOP", 20, -80)
 
--- ─── Backdrop ───────────────────────────────────────────────────────────────
+-- Backdrop
 backdrop:SetSize(225, 225)
 backdrop:ClearAllPoints()
 backdrop:SetPoint("CENTER", cluster, "CENTER", 10, -10)
@@ -79,13 +79,13 @@ northTag:Show()
 
 MinimapCompassTexture:Hide()
 
--- ─── Cluster layout hook ────────────────────────────────────────────────────
+-- Cluster layout hook
 hooksecurefunc(cluster, "Layout", function(self)
     self:SetScale(1)
     self:SetSize(192, 192)
 end)
 
--- ─── Tracking frame ─────────────────────────────────────────────────────────
+-- Tracking frame
 tracking:SetParent(backdrop)
 tracking:SetSize(32, 32)
 tracking:ClearAllPoints()
@@ -134,7 +134,7 @@ trackBtnBorder:SetSize(54, 54)
 trackBtnBorder:SetTexture(TEX_TRACK_BRD)
 trackBtnBorder:SetPoint("TOPLEFT")
 
--- ─── Indicator frame (mail & crafting) ──────────────────────────────────────
+-- Indicator frame (mail & crafting)
 mailFrame:ClearAllPoints()
 mailFrame:SetPoint("TOPRIGHT", minimap, "TOPRIGHT", 24, -37)
 mailFrame:SetSize(33, 33)
@@ -190,7 +190,7 @@ craftBorder:SetTexture(TEX_TRACK_BRD)
 craftBorder:SetPoint("TOPLEFT", craftFrame, "TOPLEFT", 0, 0)
 craftBorder:SetDrawLayer("OVERLAY", 0)
 
--- ─── Hide unwanted elements ─────────────────────────────────────────────────
+-- Hide unwanted elements
 cluster.InstanceDifficulty:Hide()
 cluster.BorderTop:Hide()
 cluster.ZoneTextButton:Hide()
@@ -209,7 +209,7 @@ if ExpansionLandingPageMinimapButton then
     ExpansionLandingPageMinimapButton:Hide()
 end
 
--- ─── Clock setup (one-shot via own event frame) ─────────────────────────────
+-- Clock setup (one-shot via own event frame)
 do
     local f = CreateFrame("Frame")
     f:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -243,7 +243,7 @@ do
     end)
 end
 
--- ─── Queue status button ────────────────────────────────────────────────────
+-- Queue status button
 do
     local qsb = QueueStatusButton
 

@@ -1,12 +1,12 @@
 -- =============================================================================
--- CfTargetFrame.lua – Optimised v2
+-- TargetFrame.lua
 -- =============================================================================
 
 function CfTargetFrame_OnLoad(self)
     self:EnableMouse(false)
 end
 
--- ─── Cached globals ──────────────────────────────────────────────────────────
+-- Cached globals
 local UnitIsPlayer          = UnitIsPlayer
 local UnitIsConnected       = UnitIsConnected
 local UnitClass             = UnitClass
@@ -20,7 +20,7 @@ local RAID_CLASS_COLORS     = RAID_CLASS_COLORS
 local FACTION_BAR_COLORS    = FACTION_BAR_COLORS
 local hooksecurefunc        = hooksecurefunc
 
--- ─── Cached texture paths ────────────────────────────────────────────────────
+-- Cached texture paths
 local TEX_STATUSBAR = "Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar"
 local TEX_NOLEVEL   = "Interface\\AddOns\\ClassicFrames\\textures\\UI-TargetingFrameNoLevel"
 local TEX_TOT       = "Interface\\AddOns\\ClassicFrames\\textures\\UI-TargetofTargetFrame"
@@ -29,13 +29,13 @@ local TEX_GUIDE     = "Interface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES"
 local TEX_QUEST     = "Interface\\TargetingFrame\\PortraitQuestBadge"
 local FONT_FRIZ     = "Fonts\\FRIZQT__.TTF"
 
--- ─── Pre-computed anchor point strings ───────────────────────────────────────
+-- Pre-computed anchor point strings
 local ANCHOR = {
     TOP    = { L = "TOPLEFT",    R = "TOPRIGHT"    },
     BOTTOM = { L = "BOTTOMLEFT", R = "BOTTOMRIGHT" },
 }
 
--- ─── Helpers ─────────────────────────────────────────────────────────────────
+-- Helpers
 
 --- Returns (colorTable, r, g, b).  Exactly one of the two is non-nil.
 --- Faithfully preserves original fall-through semantics.
@@ -46,11 +46,10 @@ local function GetUnitColor(unit)
             if class then
                 return RAID_CLASS_COLORS[class]
             end
-            return nil                          -- connected, no class (theoretical)
+            return nil
         end
-        return nil, .5, .5, .5                  -- disconnected
+        return nil, .5, .5, .5
     end
-    -- NPC path
     if not UnitExists(unit) then return nil end
     if not UnitPlayerControlled(unit) and UnitIsTapDenied(unit) then
         return nil, .5, .5, .5
@@ -79,8 +78,7 @@ local function SetVertexColorByUnit(tex, unit)
     end
 end
 
--- ─── SkinFrame (called once per frame: TargetFrame, FocusFrame) ──────────────
-
+-- SkinFrame (called once per frame: TargetFrame, FocusFrame)
 local function SkinFrame(frame)
     local ctx         = frame.TargetFrameContent.TargetFrameContentContextual
     local contentMain = frame.TargetFrameContent.TargetFrameContentMain
@@ -176,7 +174,7 @@ local function SkinFrame(frame)
         ComboFrame:SetPoint("TOPRIGHT", TargetFrame, "TOPRIGHT", -24, -17)
     end
 
-    -- ── Hook: CheckClassification ────────────────────────────────────────────
+    -- Hook: CheckClassification
     hooksecurefunc(frame, "CheckClassification", function(self)
         local ft = self.TargetFrameContainer.FrameTexture
 
@@ -198,7 +196,7 @@ local function SkinFrame(frame)
         mask:SetPoint("BOTTOMRIGHT", hb, "BOTTOMRIGHT", 2, -4)
     end)
 
-    -- ── Hook: CheckFaction ───────────────────────────────────────────────────
+    -- Hook: CheckFaction
     hooksecurefunc(frame, "CheckFaction", function(self)
         if not self.nameBackground then
             local bg = self.TargetFrameContainer:CreateTexture(nil, "BORDER")
@@ -217,13 +215,13 @@ local function SkinFrame(frame)
         end
     end)
 
-    -- ── Hook: CheckLevel ─────────────────────────────────────────────────────
+    -- Hook: CheckLevel
     hooksecurefunc(frame, "CheckLevel", function()
         contentMain.LevelText:Hide()
         ctx.HighLevelTexture:Hide()
     end)
 
-    -- ── Target-of-Target ─────────────────────────────────────────────────────
+    -- Target-of-Target
     local tot = frame.totFrame
     if not tot then return end
 
@@ -300,11 +298,11 @@ local function SkinFrame(frame)
     end
 end
 
--- ─── Apply to TargetFrame & FocusFrame ───────────────────────────────────────
+-- Apply to TargetFrame & FocusFrame
 SkinFrame(TargetFrame)
 SkinFrame(FocusFrame)
 
--- ─── Background sizing (one-shot) ───────────────────────────────────────────
+-- Background sizing (one-shot)
 do
     local f = CreateFrame("Frame")
     f:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -322,8 +320,7 @@ do
     end)
 end
 
--- ─── Aura anchor hooks (unified, zero string concat) ─────────────────────────
-
+-- Aura anchor hooks (unified, zero string concat)
 local function UpdateAuraAnchor(self, buff, index, numOther, anchorBuff, anchorIndex, _, offsetX, offsetY, mirrorVertically, isBuff)
     local a, startY, auraOffsetY
 

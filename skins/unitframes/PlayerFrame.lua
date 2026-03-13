@@ -1,17 +1,17 @@
 -- =============================================================================
--- CfPlayerFrame.lua
+-- PlayerFrame.lua
 -- =============================================================================
 
 function CfPlayerFrame_OnLoad(self)
     self:EnableMouse(false)
 end
 
--- ─── Cached globals ──────────────────────────────────────────────────────────
+-- Cached globals
 local UnitClass         = UnitClass
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 local hooksecurefunc    = hooksecurefunc
 
--- ─── Cached texture paths ────────────────────────────────────────────────────
+-- Cached texture paths
 local TEX_STATUSBAR = "Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar"
 local TEX_NOLEVEL   = "Interface\\AddOns\\ClassicFrames\\textures\\UI-TargetingFrameNoLevel"
 local TEX_GROUP_IND = "Interface\\CharacterFrame\\UI-CharacterFrame-GroupIndicator"
@@ -22,7 +22,7 @@ local TEX_VEHICLE   = "Interface\\Vehicles\\UI-Vehicle-Frame"
 local TEX_MONK_MANA = "Interface\\PlayerFrame\\MonkManaBar"
 local FONT_FRIZ     = "Fonts\\FRIZQT__.TTF"
 
--- ─── Local frame references ──────────────────────────────────────────────────
+-- Local frame references
 local pfContainer  = PlayerFrame.PlayerFrameContainer
 local pfContent    = PlayerFrame.PlayerFrameContent
 local pfMain       = pfContent.PlayerFrameContentMain
@@ -78,7 +78,7 @@ hitInd:SetParent(pfContextual)
 hitInd.HitText:ClearAllPoints()
 hitInd.HitText:SetPoint("CENTER", hitInd, "TOPLEFT", 54, -50)
 
--- ─── Group indicator ─────────────────────────────────────────────────────────
+-- Group indicator
 do
     local gi = pfContextual.GroupIndicator
     if gi then
@@ -114,7 +114,7 @@ do
     end
 end
 
--- ─── Name background ─────────────────────────────────────────────────────────
+-- Name background
 if not PlayerFrame.nameBackground then
     local nb = pfMain:CreateTexture(nil, "BACKGROUND")
     nb:SetSize(118, 19)
@@ -127,7 +127,7 @@ if not PlayerFrame.nameBackground then
     PlayerFrame.nameBackground = nb
 end
 
--- ─── Rest loop: stop once ────────────────────────────────────────────────────
+-- Rest loop: stop once
 do
     local rl = pfContextual.PlayerRestLoop
     rl:Hide()
