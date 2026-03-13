@@ -140,16 +140,16 @@ local function AdjustPosition(self)
         if buffsOnTop or auraRows <= 1 then
             self:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 45, -24)
         else
-            self:SetPoint("TOPLEFT", parent.spellbarAnchor, "BOTTOMLEFT", 20, -15)
+            self:SetPoint("TOPLEFT", parent.spellbarAnchor, "BOTTOMLEFT", 22, -12)
         end
     elseif parent.haveElite then
         if buffsOnTop or auraRows <= 1 then
             self:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 45, -9)
         else
-            self:SetPoint("TOPLEFT", parent.spellbarAnchor, "BOTTOMLEFT", 20, -15)
+            self:SetPoint("TOPLEFT", parent.spellbarAnchor, "BOTTOMLEFT", 22, -12)
         end
     elseif (not buffsOnTop) and auraRows > 0 then
-        self:SetPoint("TOPLEFT", parent.spellbarAnchor, "BOTTOMLEFT", 20, -15)
+        self:SetPoint("TOPLEFT", parent.spellbarAnchor, "BOTTOMLEFT", 22, -12)
     else
         self:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 45, 3)
     end
