@@ -1,194 +1,264 @@
-castbarColors = {}
-castbarColors.Standard = CreateColor(1.0, 0.7, 0.0, 1)
-castbarColors.Channel = CreateColor(0.0, 1.0, 0.0, 1)
-castbarColors.Uninterruptable = CreateColor(0.7, 0.7, 0.7, 1)
+-- Cache global function lookups (avoid repeated global table traversals)
+local hooksecurefunc = hooksecurefunc
+local CreateColor = CreateColor
+local CreateFrame = CreateFrame
+local UnitCastingInfo = UnitCastingInfo
+local UnitChannelInfo = UnitChannelInfo
 
+-- Cache texture/font path strings (single reference instead of repeated literals)
+local STATUSBAR_TEX    = "Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar"
+local BORDER_TEX       = "Interface\\AddOns\\ClassicFrames\\textures\\CastingBar\\UI-CastingBar-Border"
+local BORDER_SMALL_TEX = "Interface\\AddOns\\ClassicFrames\\textures\\CastingBar\\UI-CastingBar-Border-Small"
+local SHIELD_TEX       = "Interface\\AddOns\\ClassicFrames\\textures\\CastingBar\\UI-CastingBar-Small-Shield"
+local FLASH_TEX        = "Interface\\AddOns\\ClassicFrames\\textures\\CastingBar\\UI-CastingBar-Flash"
+local FLASH_SMALL_TEX  = "Interface\\CastingBar\\UI-CastingBar-Flash-Small"
+local FONT_PATH        = "Fonts\\FRIZQT__.TTF"
 
+-- Cache color objects locally (avoid table lookups in hot paths)
+local colorStandard        = CreateColor(1.0, 0.7, 0.0, 1)
+local colorChannel         = CreateColor(0.0, 1.0, 0.0, 1)
+local colorUninterruptable = CreateColor(0.7, 0.7, 0.7, 1)
+
+-- Expose globally for external access
+castbarColors = {
+    Standard        = colorStandard,
+    Channel         = colorChannel,
+    Uninterruptable = colorUninterruptable,
+}
+
+--------------------------------------------------------------------------------
+-- Shared hooks (identical logic reused across player/target/focus → single closure)
+--------------------------------------------------------------------------------
+
+-- Original calls UnitCastingInfo/UnitChannelInfo TWICE each (once for the if-check,
+-- once for destructuring). This version calls each API at most once.
+local function OnGetTypeInfo(self)
+    local unit = self.unit
+    local name, _, _, _, _, _, _, notInterruptible = UnitCastingInfo(unit)
+    if name then
+        self:GetStatusBarTexture():SetVertexColorFromBoolean(notInterruptible, colorUninterruptable, colorStandard)
+        return
+    end
+    local cName, _, _, _, _, _, notInterruptibleC = UnitChannelInfo(unit)
+    if cName then
+        self:GetStatusBarTexture():SetVertexColorFromBoolean(notInterruptibleC, colorUninterruptable, colorChannel)
+    end
+end
+
+local function OnPlayInterruptAnims(self)
+    self:SetStatusBarTexture(STATUSBAR_TEX)
+    self:SetStatusBarColor(1, 0, 0, 1)
+    self:SetValue(self.maxValue)
+    local spark = self.Spark
+    if spark then spark:Hide() end
+end
+
+--------------------------------------------------------------------------------
 -- Player Castbar
+--------------------------------------------------------------------------------
+
 local function SetLookReplacementPlayer(self)
     self:SetSize(190, 10)
     self.Background:SetColorTexture(0, 0, 0, 0.5)
-    self.Border:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\CastingBar\\UI-CastingBar-Border")
-    self.Border:SetSize(280, 70)
-    self.Border:ClearAllPoints()
-    self.Border:SetPoint("TOP", 0, 30.5)
-    self.BorderShield:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\CastingBar\\UI-CastingBar-Small-Shield")
-    self.BorderShield:ClearAllPoints()
-    self.BorderShield:SetPoint("TOP", 0, 30.5)
-    self.BorderShield:SetSize(280, 70)
+
+    local border = self.Border
+    border:SetTexture(BORDER_TEX)
+    border:SetSize(280, 70)
+    border:ClearAllPoints()
+    border:SetPoint("TOP", 0, 30.5)
+
+    local shield = self.BorderShield
+    shield:SetTexture(SHIELD_TEX)
+    shield:ClearAllPoints()
+    shield:SetPoint("TOP", 0, 30.5)
+    shield:SetSize(280, 70)
+
     self.Icon:Hide()
 end
 
 local function SkinPlayerCastbar(self)
     SetLookReplacementPlayer(self)
 
+    local text = self.Text
+    local spark = self.Spark
+    local flash = self.Flash
+
     hooksecurefunc(self, "ShowSpark", function(s)
-        if s.StandardGlow then s.StandardGlow:Hide() end
-        if s.CraftingGlow then s.CraftingGlow:Hide() end
-        if s.ChannelShadow then s.ChannelShadow:Hide() end
+        local sg = s.StandardGlow
+        if sg then sg:Hide() end
+        local cg = s.CraftingGlow
+        if cg then cg:Hide() end
+        local cs = s.ChannelShadow
+        if cs then cs:Hide() end
     end)
 
-    hooksecurefunc(self, 'UpdateShownState', function()
-        self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
+    hooksecurefunc(self, "UpdateShownState", function()
+        self:SetStatusBarTexture(STATUSBAR_TEX)
         self.TextBorder:Hide()
-        self.Text:ClearAllPoints()
-        self.Text:SetPoint("CENTER", self, "CENTER", 0, 1)
-        self.Text:SetFont("Fonts\\FRIZQT__.TTF", 10, "OUTLINE")
+        text:ClearAllPoints()
+        text:SetPoint("CENTER", self, "CENTER", 0, 1)
+        text:SetFont(FONT_PATH, 10, "OUTLINE")
         if self.channeling then
-            self.Spark:Hide()
+            spark:Hide()
         end
     end)
 
-    hooksecurefunc(self, 'PlayFinishAnim', function()
-        self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
-        self.Flash:SetVertexColor(self:GetStatusBarColor())
-        self.Flash:SetSize(280, 70)
-        self.Flash:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\CastingBar\\UI-CastingBar-Flash")
-        self.Flash:ClearAllPoints()
-        self.Flash:SetPoint("TOP", 0, 30.5)
-        self.Flash:SetBlendMode("ADD")
+    hooksecurefunc(self, "PlayFinishAnim", function()
+        self:SetStatusBarTexture(STATUSBAR_TEX)
+        flash:SetVertexColor(self:GetStatusBarColor())
+        flash:SetSize(280, 70)
+        flash:SetTexture(FLASH_TEX)
+        flash:ClearAllPoints()
+        flash:SetPoint("TOP", 0, 30.5)
+        flash:SetBlendMode("ADD")
         self.EnergyGlow:Hide()
         self.Flakes01:Hide()
         self.Flakes02:Hide()
     end)
 
-    hooksecurefunc(self, 'PlayInterruptAnims', function()
-        self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
-        self:SetStatusBarColor(1, 0, 0, 1)
-        self:SetValue(self.maxValue)
-        if self.Spark then self.Spark:Hide() end
-    end)
-
-    hooksecurefunc(self, 'GetTypeInfo', function()
-        if UnitCastingInfo(self.unit) then
-            local _, _, _, _, _, _, _, notInterruptible = UnitCastingInfo(self.unit)
-            self:GetStatusBarTexture():SetVertexColorFromBoolean(notInterruptible, castbarColors.Uninterruptable, castbarColors.Standard)
-        elseif UnitChannelInfo(self.unit) then
-            local _, _, _, _, _, _, notInterruptible = UnitChannelInfo(self.unit)
-            self:GetStatusBarTexture():SetVertexColorFromBoolean(notInterruptible, castbarColors.Uninterruptable, castbarColors.Channel)
-        end
-    end)
+    hooksecurefunc(self, "PlayInterruptAnims", OnPlayInterruptAnims)
+    hooksecurefunc(self, "GetTypeInfo", OnGetTypeInfo)
 end
 
+--------------------------------------------------------------------------------
 -- Target & Focus Castbar
+--------------------------------------------------------------------------------
+
 local function AdjustPosition(self)
-    local parentFrame = self:GetParent()
-    if (parentFrame.haveToT) then
-        if (parentFrame.buffsOnTop or parentFrame.auraRows <= 1) then
-            self:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 45, -24)
+    local parent = self:GetParent()
+    local buffsOnTop = parent.buffsOnTop
+    local auraRows = parent.auraRows
+
+    if parent.haveToT then
+        if buffsOnTop or auraRows <= 1 then
+            self:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 45, -24)
         else
-            self:SetPoint("TOPLEFT", parentFrame.spellbarAnchor, "BOTTOMLEFT", 20, -15)
+            self:SetPoint("TOPLEFT", parent.spellbarAnchor, "BOTTOMLEFT", 20, -15)
         end
-    elseif (parentFrame.haveElite) then
-        if (parentFrame.buffsOnTop or parentFrame.auraRows <= 1) then
-            self:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 45, -9)
+    elseif parent.haveElite then
+        if buffsOnTop or auraRows <= 1 then
+            self:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 45, -9)
         else
-            self:SetPoint("TOPLEFT", parentFrame.spellbarAnchor, "BOTTOMLEFT", 20, -15)
+            self:SetPoint("TOPLEFT", parent.spellbarAnchor, "BOTTOMLEFT", 20, -15)
         end
+    elseif (not buffsOnTop) and auraRows > 0 then
+        self:SetPoint("TOPLEFT", parent.spellbarAnchor, "BOTTOMLEFT", 20, -15)
     else
-        if ((not parentFrame.buffsOnTop) and parentFrame.auraRows > 0) then
-            self:SetPoint("TOPLEFT", parentFrame.spellbarAnchor, "BOTTOMLEFT", 20, -15)
-        else
-            self:SetPoint("TOPLEFT", parentFrame, "BOTTOMLEFT", 45, 3)
-        end
+        self:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 45, 3)
     end
 end
 
 local function SetLook(self)
     self:SetScale(1.1)
     self.Background:SetColorTexture(0, 0, 0, 0.5)
-    self.Border:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\CastingBar\\UI-CastingBar-Border-Small")
-    self.Border:SetWidth(0)
-    self.Border:SetHeight(49)
-    self.Border:ClearAllPoints()
-    self.Border:SetPoint("TOPLEFT", -25, 20)
-    self.Border:SetPoint("TOPRIGHT", 25, 20)
-    self.BorderShield:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\CastingBar\\UI-CastingBar-Small-Shield")
-    self.BorderShield:SetWidth(0)
-    self.BorderShield:SetHeight(51)
-    self.BorderShield:ClearAllPoints()
-    self.BorderShield:SetPoint("TOPLEFT", -29, 21)
-    self.BorderShield:SetPoint("TOPRIGHT", 21, 21)
-    self.Text:SetWidth(0)
-    self.Text:SetHeight(16)
-    self.Text:ClearAllPoints()
-    self.Text:SetPoint("CENTER", self, "CENTER", 0, 1)
-    self.Text:SetFont("Fonts\\FRIZQT__.TTF", 10, "OUTLINE")
+
+    local border = self.Border
+    border:SetTexture(BORDER_SMALL_TEX)
+    border:SetWidth(0)
+    border:SetHeight(49)
+    border:ClearAllPoints()
+    border:SetPoint("TOPLEFT", -25, 20)
+    border:SetPoint("TOPRIGHT", 25, 20)
+
+    local shield = self.BorderShield
+    shield:SetTexture(SHIELD_TEX)
+    shield:SetWidth(0)
+    shield:SetHeight(51)
+    shield:ClearAllPoints()
+    shield:SetPoint("TOPLEFT", -29, 21)
+    shield:SetPoint("TOPRIGHT", 21, 21)
+
+    local text = self.Text
+    text:SetWidth(0)
+    text:SetHeight(16)
+    text:ClearAllPoints()
+    text:SetPoint("CENTER", self, "CENTER", 0, 1)
+    text:SetFont(FONT_PATH, 10, "OUTLINE")
+
     self.TextBorder:Hide()
-    self.Icon:ClearAllPoints()
-    self.Icon:SetPoint("RIGHT", self, "LEFT", -4, 0)
-    self.Icon:SetSize(19, 19)
+
+    local icon = self.Icon
+    icon:ClearAllPoints()
+    icon:SetPoint("RIGHT", self, "LEFT", -4, 0)
+    icon:SetSize(19, 19)
 end
 
 local function SkinTargetCastbar(self)
     SetLook(self)
 
-    hooksecurefunc(self, 'UpdateShownState', function()
-        self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
+    local spark = self.Spark
+
+    hooksecurefunc(self, "UpdateShownState", function()
+        self:SetStatusBarTexture(STATUSBAR_TEX)
         if self.channeling then
-            self.Spark:Hide()
+            spark:Hide()
         end
     end)
 
-    hooksecurefunc(self, 'PlayFinishAnim', function()
-        self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
-        if (self.NewFlash == nil) then
-            self.NewFlash = self.Flash:GetParent():CreateTexture(nil, "OVERLAY")
-            self.NewFlash:SetSize(0, 49)
-            self.NewFlash:SetTexture("Interface\\CastingBar\\UI-CastingBar-Flash-Small")
-            self.NewFlash:ClearAllPoints()
-            self.NewFlash:SetPoint("TOPLEFT", -25, 20)
-            self.NewFlash:SetPoint("TOPRIGHT", 25, 20)
-            self.NewFlash:SetBlendMode("ADD")
-            self.NewFlash:SetAlpha(0)
-            self.NewFlashAnim = self.NewFlash:CreateAnimationGroup()
-            self.NewFlashAnim:SetToFinalAlpha(true)
-            local anim = self.NewFlashAnim:CreateAnimation("Alpha")
+    hooksecurefunc(self, "PlayFinishAnim", function()
+        self:SetStatusBarTexture(STATUSBAR_TEX)
+
+        local newFlash = self.NewFlash
+        if not newFlash then
+            local flashParent = self.Flash:GetParent()
+            newFlash = flashParent:CreateTexture(nil, "OVERLAY")
+            newFlash:SetSize(0, 49)
+            newFlash:SetTexture(FLASH_SMALL_TEX)
+            newFlash:ClearAllPoints()
+            newFlash:SetPoint("TOPLEFT", -25, 20)
+            newFlash:SetPoint("TOPRIGHT", 25, 20)
+            newFlash:SetBlendMode("ADD")
+            newFlash:SetAlpha(0)
+
+            local animGroup = newFlash:CreateAnimationGroup()
+            animGroup:SetToFinalAlpha(true)
+            local anim = animGroup:CreateAnimation("Alpha")
             anim:SetDuration(0.5)
             anim:SetFromAlpha(1)
             anim:SetToAlpha(0)
+
+            self.NewFlash = newFlash
+            self.NewFlashAnim = animGroup
         end
+
         self.NewFlashAnim:Play()
-        self.NewFlash:SetVertexColor(self:GetStatusBarColor())
+        newFlash:SetVertexColor(self:GetStatusBarColor())
     end)
 
-    hooksecurefunc(self, 'PlayInterruptAnims', function()
-        self:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
-        self:SetStatusBarColor(1, 0, 0, 1)
-        self:SetValue(self.maxValue)
-        if self.Spark then self.Spark:Hide() end
-    end)
-
-    hooksecurefunc(self, 'GetTypeInfo', function()
-        if UnitCastingInfo(self.unit) then
-            local _, _, _, _, _, _, _, notInterruptible = UnitCastingInfo(self.unit)
-            self:GetStatusBarTexture():SetVertexColorFromBoolean(notInterruptible, castbarColors.Uninterruptable, castbarColors.Standard)
-        elseif UnitChannelInfo(self.unit) then
-            local _, _, _, _, _, _, notInterruptible = UnitChannelInfo(self.unit)
-            self:GetStatusBarTexture():SetVertexColorFromBoolean(notInterruptible, castbarColors.Uninterruptable, castbarColors.Channel)
-        end
-    end)
+    hooksecurefunc(self, "PlayInterruptAnims", OnPlayInterruptAnims)
+    hooksecurefunc(self, "GetTypeInfo", OnGetTypeInfo)
 end
 
-local OnLogin = CreateFrame("Frame")
-OnLogin:RegisterEvent("PLAYER_LOGIN")
-OnLogin:SetScript("OnEvent", function()
-    if PlayerCastingBarFrame then
-        PlayerCastingBarFrame.BaseGlow:Hide()
-        PlayerCastingBarFrame.WispGlow:Hide()
-        PlayerCastingBarFrame.EnergyGlow:Hide()
-        PlayerCastingBarFrame.Sparkles01:Hide()
-        PlayerCastingBarFrame.Sparkles02:Hide()
-        SkinPlayerCastbar(PlayerCastingBarFrame)
+--------------------------------------------------------------------------------
+-- Init
+--------------------------------------------------------------------------------
+
+local function OnPlayerLogin()
+    local pcb = PlayerCastingBarFrame
+    if pcb then
+        pcb.BaseGlow:Hide()
+        pcb.WispGlow:Hide()
+        pcb.EnergyGlow:Hide()
+        pcb.Sparkles01:Hide()
+        pcb.Sparkles02:Hide()
+        SkinPlayerCastbar(pcb)
     end
-    if TargetFrame.spellbar then
-        hooksecurefunc(TargetFrame.spellbar, "AdjustPosition", AdjustPosition)
-        TargetFrame.spellbar:HookScript("OnEvent", AdjustPosition)
-        SkinTargetCastbar(TargetFrame.spellbar)
+
+    local targetBar = TargetFrame and TargetFrame.spellbar
+    if targetBar then
+        hooksecurefunc(targetBar, "AdjustPosition", AdjustPosition)
+        targetBar:HookScript("OnEvent", AdjustPosition)
+        SkinTargetCastbar(targetBar)
     end
-    if FocusFrame.spellbar then
-        hooksecurefunc(FocusFrame.spellbar, "AdjustPosition", AdjustPosition)
-        FocusFrame.spellbar:HookScript("OnEvent", AdjustPosition)
-        SkinTargetCastbar(FocusFrame.spellbar)
+
+    local focusBar = FocusFrame and FocusFrame.spellbar
+    if focusBar then
+        hooksecurefunc(focusBar, "AdjustPosition", AdjustPosition)
+        focusBar:HookScript("OnEvent", AdjustPosition)
+        SkinTargetCastbar(focusBar)
     end
-end)
+end
+
+local initFrame = CreateFrame("Frame")
+initFrame:RegisterEvent("PLAYER_LOGIN")
+initFrame:SetScript("OnEvent", OnPlayerLogin)
