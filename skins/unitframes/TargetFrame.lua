@@ -2,60 +2,53 @@ function CfTargetFrame_OnLoad(self)
 	self:EnableMouse(false)
 end
 
-local function ToTHealthBarColoring(frame)
-    if (not frame) or (not frame.unit) or (not frame.HealthBar) then
-        return
+local function GetUnitColor(unit)
+    local isPlayer = UnitIsPlayer(unit)
+    if isPlayer then
+        if UnitIsConnected(unit) then
+            local _, class = UnitClass(unit)
+            if class then
+                return RAID_CLASS_COLORS[class]
+            end
+        else
+            return nil, .5, .5, .5
+        end
+    else
+        if UnitExists(unit) then
+            if not UnitPlayerControlled(unit) and UnitIsTapDenied(unit) then
+                return nil, .5, .5, .5
+            elseif not UnitIsTapDenied(unit) then
+                return FACTION_BAR_COLORS[UnitReaction(unit, "player")]
+            end
+        end
     end
+end
 
-	if UnitIsPlayer(frame.unit) and UnitIsConnected(frame.unit) and UnitClass(frame.unit) then
-		local _, Class = UnitClass(frame.unit)
-		local Color = RAID_CLASS_COLORS[Class]
-		frame.HealthBar:SetStatusBarColor(Color.r, Color.g, Color.b)
-	elseif UnitIsPlayer(frame.unit) and not UnitIsConnected(frame.unit) then
-		frame.HealthBar:SetStatusBarColor(.5, .5, .5)
-	else
-		if UnitExists(frame.unit) then
-			if (not UnitPlayerControlled(frame.unit) and UnitIsTapDenied(frame.unit)) then
-				frame.HealthBar:SetStatusBarColor(.5, .5, .5)
-			elseif not UnitIsTapDenied(frame.unit) then
-				local Reaction = FACTION_BAR_COLORS[UnitReaction(frame.unit, "player")]
-				if Reaction then
-					frame.HealthBar:SetStatusBarColor(Reaction.r, Reaction.g, Reaction.b)
-				end
-			end
-		end
-	end
+local function ToTHealthBarColoring(frame)
+    if not frame or not frame.unit or not frame.HealthBar then return end
+    local color, r, g, b = GetUnitColor(frame.unit)
+    if color then
+        frame.HealthBar:SetStatusBarColor(color.r, color.g, color.b)
+    elseif r then
+        frame.HealthBar:SetStatusBarColor(r, g, b)
+    end
 end
 
 local function NameBackgroundColoring(frame)
-	if (frame.nameBackground == nil) then
-		frame.nameBackground = frame.TargetFrameContainer:CreateTexture(nil, "BORDER")
-	end
-
-	frame.nameBackground:SetSize(120, 19)
-	frame.nameBackground:ClearAllPoints()
-	frame.nameBackground:SetPoint("TOPRIGHT", frame.TargetFrameContent.TargetFrameContentMain, "TOPRIGHT", -87, -31)
-	frame.nameBackground:SetDrawLayer("BACKGROUND", 0)
-	frame.nameBackground:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
-
-	if UnitIsPlayer(frame.unit) and UnitIsConnected(frame.unit) and UnitClass(frame.unit) then
-		local _, Class = UnitClass(frame.unit)
-		local Color = RAID_CLASS_COLORS[Class]
-		frame.nameBackground:SetVertexColor(Color.r, Color.g, Color.b)
-	elseif UnitIsPlayer(frame.unit) and not UnitIsConnected(frame.unit) then
-		frame.nameBackground:SetVertexColor(.5, .5, .5)
-	else
-		if UnitExists(frame.unit) then
-			if (not UnitPlayerControlled(frame.unit) and UnitIsTapDenied(frame.unit)) then
-				frame.nameBackground:SetVertexColor(.5, .5, .5)
-			elseif not UnitIsTapDenied(frame.unit) then
-				local Reaction = FACTION_BAR_COLORS[UnitReaction(frame.unit, "player")]
-				if Reaction then
-					frame.nameBackground:SetVertexColor(Reaction.r, Reaction.g, Reaction.b)
-				end
-			end
-		end
-	end
+    if not frame.nameBackground then
+        local bg = frame.TargetFrameContainer:CreateTexture(nil, "BORDER")
+        bg:SetSize(120, 19)
+        bg:SetPoint("TOPRIGHT", frame.TargetFrameContent.TargetFrameContentMain, "TOPRIGHT", -87, -31)
+        bg:SetDrawLayer("BACKGROUND", 0)
+        bg:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
+        frame.nameBackground = bg
+    end
+    local color, r, g, b = GetUnitColor(frame.unit)
+    if color then
+        frame.nameBackground:SetVertexColor(color.r, color.g, color.b)
+    elseif r then
+        frame.nameBackground:SetVertexColor(r, g, b)
+    end
 end
 
 local function SkinFrame(frame)
