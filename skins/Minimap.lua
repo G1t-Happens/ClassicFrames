@@ -143,15 +143,19 @@ GameTimeFrame:Hide()
 Minimap.ZoomIn:SetAlpha(0)
 Minimap.ZoomOut:SetAlpha(0)
 
-AddonCompartmentFrame:SetScript("OnShow", function(self)
-	self:Hide()
-end)
-AddonCompartmentFrame:Hide()
+if AddonCompartmentFrame then
+	AddonCompartmentFrame:HookScript("OnShow", function(self)
+		self:Hide()
+	end)
+	AddonCompartmentFrame:Hide()
+end
 
-ExpansionLandingPageMinimapButton:SetScript("OnShow", function(self)
-	self:Hide()
-end)
-ExpansionLandingPageMinimapButton:Hide()
+if ExpansionLandingPageMinimapButton then
+	ExpansionLandingPageMinimapButton:HookScript("OnShow", function(self)
+		self:Hide()
+	end)
+	ExpansionLandingPageMinimapButton:Hide()
+end
 
 Minimap:HookScript("OnEvent", function(self, event, ...)
 	if ( event == "PLAYER_ENTERING_WORLD" ) then

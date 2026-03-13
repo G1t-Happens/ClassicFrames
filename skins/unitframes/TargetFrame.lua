@@ -3,6 +3,10 @@ function CfTargetFrame_OnLoad(self)
 end
 
 local function ToTHealthBarColoring(frame)
+    if (not frame) or (not frame.unit) or (not frame.HealthBar) then
+        return
+    end
+
 	if UnitIsPlayer(frame.unit) and UnitIsConnected(frame.unit) and UnitClass(frame.unit) then
 		local _, Class = UnitClass(frame.unit)
 		local Color = RAID_CLASS_COLORS[Class]
@@ -161,19 +165,19 @@ local function SkinFrame(frame)
     	end
     end)
 
-	hooksecurefunc(frame, "CheckLevel", function()
-        contentMain.LevelText:Hide()
-    	contextual.HighLevelTexture:Hide()
-    end)
-
-    hooksecurefunc(frame.totFrame, "Update", function(self)
-        if UnitIsUnit(frame.unit, "player") or (not CVarCallbackRegistry:GetCVarValueBool("showTargetOfTarget")) then
-            return;
-        end
-        ToTHealthBarColoring(self)
-    end)
+  hooksecurefunc(frame, "CheckLevel", function()
+      contentMain.LevelText:Hide()
+      contextual.HighLevelTexture:Hide()
+  end)
 
 	if (frame.totFrame) then
+        hooksecurefunc(frame.totFrame, "Update", function(self)
+            if UnitIsUnit(frame.unit, "player") or (not CVarCallbackRegistry:GetCVarValueBool("showTargetOfTarget")) then
+                return;
+            end
+            ToTHealthBarColoring(self)
+        end)
+
         frame.totFrame:SetFrameStrata("HIGH")
         frame.totFrame:ClearAllPoints()
         frame.totFrame:SetPoint("TOPLEFT", frame, "BOTTOMRIGHT", -87, 23)
@@ -217,9 +221,11 @@ local function SkinFrame(frame)
         local frameNameWithSuffix = frame.totFrame:GetName() .. "Debuff"
         for i = 1, 4 do
             local debuffIcon = _G[frameNameWithSuffix .. i]
-            debuffIcon:ClearAllPoints()
-            if debuffIcon:IsShown() then
-                debuffIcon:Hide()
+			if debuffIcon then
+				debuffIcon:ClearAllPoints()
+				if debuffIcon:IsShown() then
+					debuffIcon:Hide()
+				end
             end
         end
     end

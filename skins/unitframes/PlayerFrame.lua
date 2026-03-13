@@ -57,8 +57,13 @@ if groupIndicator then
 		groupIndicator.GroupIndicatorMiddle:SetPoint("RIGHT", groupIndicator.GroupIndicatorRight, "LEFT")
 		groupIndicator.GroupIndicatorMiddle:SetAlpha(0.4)
 	end
-	select(3, groupIndicator:GetRegions()):SetAlpha(0)
-	PlayerFrameGroupIndicatorText:SetPoint("LEFT", 20, 0)
+	local groupIndicatorBackground = select(3, groupIndicator:GetRegions())
+	if groupIndicatorBackground then
+		groupIndicatorBackground:SetAlpha(0)
+	end
+	if PlayerFrameGroupIndicatorText then
+		PlayerFrameGroupIndicatorText:SetPoint("LEFT", 20, 0)
+	end
 end
 
 if (PlayerFrame.nameBackground == nil) then

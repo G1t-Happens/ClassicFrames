@@ -59,6 +59,12 @@ hooksecurefunc("UnitFrameManaBar_UpdateType", function(manaBar)
 	else
 		if ( not altR ) then
 			info = CfPowerBarColor[powerType] or CfPowerBarColor["MANA"]
+			if ( info.atlas ) then
+				manaBar:SetStatusBarTexture(info.atlas)
+				manaBar:SetStatusBarColor(1, 1, 1)
+			else
+				manaBar:SetStatusBarColor(info.r, info.g, info.b)
+			end
 		else
 			manaBar:SetStatusBarColor(altR, altG, altB)
 		end
