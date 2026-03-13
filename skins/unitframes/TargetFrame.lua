@@ -108,7 +108,7 @@ local function SkinFrame(frame)
 	leaderIcon:SetSize(16, 16)
 	leaderIcon:SetTexture("Interface\\GroupFrame\\UI-Group-LeaderIcon")
 	leaderIcon:ClearAllPoints()
-	leaderIcon:SetPoint("TOPRIGHT", -24, -18)
+	leaderIcon:SetPoint("TOPRIGHT", -20, -16)
 
 	local guideIcon = contextual.GuideIcon
 	guideIcon:SetSize(19, 19)
