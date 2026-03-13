@@ -250,6 +250,7 @@ hooksecurefunc("PlayerFrame_ToPlayerArt", function(self)
 	self.PlayerFrameContainer.AlternatePowerFrameTexture:SetTexCoord(1, 0.09375, 0, 0.78125)
 	self.PlayerFrameContainer.AlternatePowerFrameTexture:ClearAllPoints()
 	self.PlayerFrameContainer.AlternatePowerFrameTexture:SetPoint("TOPLEFT", -21.5, -8)
+	self.PlayerFrameContainer.AlternatePowerFrameTexture:SetDrawLayer("BORDER")
 
 	self.PlayerFrameContainer.FrameFlash:Hide()
     self.PlayerFrameContent.PlayerFrameContentMain.StatusTexture:Hide()
@@ -287,10 +288,6 @@ hooksecurefunc("PlayerFrame_ToVehicleArt", function(self)
 	healthBarContainer.HealthBarMask:ClearAllPoints()
 	healthBarContainer.HealthBarMask:SetPoint("TOPLEFT", healthBar, "TOPLEFT", 7, -3)
 	healthBarContainer.HealthBarMask:SetPoint("BOTTOMRIGHT", healthBar, "BOTTOMRIGHT", -10, -3)
-
-	healthBar.TextString:SetPoint("CENTER", healthBar, "CENTER", -2, -5)
-	healthBar.LeftText:SetPoint("LEFT", healthBar, "LEFT", 0, -6)
-	healthBar.RightText:SetPoint("RIGHT", healthBar, "RIGHT", -9, -6)
 
 	self.PlayerFrameContent.PlayerFrameContentContextual.GroupIndicator:ClearAllPoints()
 	self.PlayerFrameContent.PlayerFrameContentContextual.GroupIndicator:SetPoint("BOTTOMLEFT", CfPlayerFrame, "TOPLEFT", 97, -17)
