@@ -333,8 +333,7 @@ hooksecurefunc("PlayerFrame_UpdatePvPStatus", function()
 	parent.PrestigePortrait:Hide()
 	parent.PrestigeBadge:Hide()
 	parent.PVPIcon:Hide()
-	PlayerPVPTimerText:Hide()
-	PlayerPVPTimerText.timeLeft = nil
+	PlayerPVPTimerText:SetAlpha(0)
 end)
 
 hooksecurefunc("PlayerFrame_UpdateRolesAssigned", function()
