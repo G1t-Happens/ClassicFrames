@@ -1,3 +1,7 @@
+-- =============================================================================
+-- CastBar.lua
+-- =============================================================================
+
 -- Cache global function lookups
 local hooksecurefunc = hooksecurefunc
 local CreateColor = CreateColor

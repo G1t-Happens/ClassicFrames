@@ -1,3 +1,7 @@
+-- =============================================================================
+-- ObjectiveTracker.lua
+-- =============================================================================
+
 if not _G.ObjectiveTrackerFrame then return end
 
 ObjectiveTrackerFrame.Header:Hide()
