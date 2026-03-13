@@ -3,6 +3,7 @@ function CfPlayerFrame_OnLoad(self)
 end
 
 local healthBarContainer = PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HealthBarsContainer
+local manaBarContainer = PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.ManaBarArea.ManaBar
 local healthBar = PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HealthBarsContainer.HealthBar
 local manaBar = PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.ManaBarArea.ManaBar
 
@@ -261,6 +262,10 @@ hooksecurefunc("PlayerFrame_ToPlayerArt", function(self)
 	healthBarContainer.HealthBarMask:SetPoint("TOPLEFT", healthBar, "TOPLEFT", 1, -4)
 	healthBarContainer.HealthBarMask:SetPoint("BOTTOMRIGHT", healthBar, "BOTTOMRIGHT", -1, -4)
 
+    manaBarContainer.ManaBarMask:ClearAllPoints()
+    manaBarContainer.ManaBarMask:SetPoint("TOPLEFT", manaBar, "TOPLEFT", 1, 2)
+    manaBarContainer.ManaBarMask:SetPoint("BOTTOMRIGHT", manaBar, "BOTTOMRIGHT", -1, -2)
+
 	healthBar.TextString:SetPoint("CENTER", healthBar, "CENTER", 0, -5)
 	healthBar.LeftText:SetPoint("LEFT", healthBar, "LEFT", 6, -5)
 	healthBar.RightText:SetPoint("RIGHT", healthBar, "RIGHT", -4, -5)
@@ -288,6 +293,14 @@ hooksecurefunc("PlayerFrame_ToVehicleArt", function(self)
 	healthBarContainer.HealthBarMask:ClearAllPoints()
 	healthBarContainer.HealthBarMask:SetPoint("TOPLEFT", healthBar, "TOPLEFT", 7, -3)
 	healthBarContainer.HealthBarMask:SetPoint("BOTTOMRIGHT", healthBar, "BOTTOMRIGHT", -10, -3)
+
+	healthBar.TextString:SetPoint("CENTER", healthBar, "CENTER", -2, -5)
+    healthBar.LeftText:SetPoint("LEFT", healthBar, "LEFT", 0, -6)
+    healthBar.RightText:SetPoint("RIGHT", healthBar, "RIGHT", -9, -6)
+
+	manaBarContainer.ManaBarMask:ClearAllPoints()
+	manaBarContainer.ManaBarMask:SetPoint("TOPLEFT", manaBar, "TOPLEFT", 7, 2)
+    manaBarContainer.ManaBarMask:SetPoint("BOTTOMRIGHT", manaBar, "BOTTOMRIGHT", -5, -2)
 
 	self.PlayerFrameContent.PlayerFrameContentContextual.GroupIndicator:ClearAllPoints()
 	self.PlayerFrameContent.PlayerFrameContentContextual.GroupIndicator:SetPoint("BOTTOMLEFT", CfPlayerFrame, "TOPLEFT", 97, -17)
