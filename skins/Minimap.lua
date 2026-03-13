@@ -1,196 +1,265 @@
-if (C_AddOns.IsAddOnLoaded("SexyMap")) then return end
+-- =============================================================================
+-- CfMinimap.lua – Optimised v2
+-- =============================================================================
 
-local ldbi = LibStub ~= nil and LibStub:GetLibrary("LibDBIcon-1.0")
-if (ldbi ~= nil) then
-	for _, v in pairs(ldbi:GetButtonList()) do
-		ldbi:Refresh(v)
-	end
+if C_AddOns.IsAddOnLoaded("SexyMap") then return end
+
+-- ─── LibDBIcon refresh ───────────────────────────────────────────────────────
+do
+    local ldbi = LibStub and LibStub:GetLibrary("LibDBIcon-1.0", true)
+    if ldbi then
+        for _, v in ipairs(ldbi:GetButtonList()) do
+            ldbi:Refresh(v)
+        end
+    end
 end
 
-MinimapCluster:SetScale(1)
-MinimapCluster:SetSize(192, 192)
-MinimapCluster:SetHitRectInsets(30, 10, 0, 30)
-Minimap:SetParent(MinimapCluster)
-Minimap:SetSize(165, 165)
-Minimap:ClearAllPoints()
-Minimap:SetPoint("CENTER", MinimapCluster, "TOP", 20, -80)
-MinimapBackdrop:SetSize(225, 225)
-MinimapBackdrop:ClearAllPoints()
-MinimapBackdrop:SetPoint("CENTER", MinimapCluster, "CENTER", 10, -10)
-MinimapBackdrop.StaticOverlayTexture:SetSize(178, 181)
-MinimapBackdrop.StaticOverlayTexture:ClearAllPoints()
-MinimapBackdrop.StaticOverlayTexture:SetPoint("CENTER", MinimapCluster, "TOP", 20, -78)
-MinimapBackdrop.StaticOverlayTexture:SetDrawLayer("BACKGROUND")
-MinimapBackdrop:CreateTexture("MinimapBorder", "ARTWORK")
-MinimapBorder:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\MiniMap\\UI-Minimap-Border")
-MinimapBorder:SetTexCoord(0.25, 1, 0.125, 0.875)
-MinimapBorder:ClearAllPoints()
-MinimapBorder:SetAllPoints(MinimapBackdrop)
-MinimapBorder:SetDrawLayer("ARTWORK", 7)
-MinimapBackdrop:CreateTexture("MinimapNorthTag")
-MinimapNorthTag:SetSize(16, 16)
-MinimapNorthTag:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\MiniMap\\CompassNorthTag", "OVERLAY")
-MinimapNorthTag:ClearAllPoints()
-MinimapNorthTag:SetPoint("CENTER", Minimap, "CENTER", 0, 80)
-MinimapNorthTag:SetDrawLayer("OVERLAY", 0)
-MinimapNorthTag:Show()
+-- ─── Cached references ──────────────────────────────────────────────────────
+local cluster    = MinimapCluster
+local minimap    = Minimap
+local backdrop   = MinimapBackdrop
+local tracking   = cluster.Tracking
+local indicator  = cluster.IndicatorFrame
+local mailFrame  = indicator.MailFrame
+local craftFrame = indicator.CraftingOrderFrame
+local trackBtn   = tracking.Button
+local mailIcon   = MiniMapMailIcon
+local craftIcon  = MiniMapCraftingOrderIcon
+
+local hooksecurefunc = hooksecurefunc
+
+-- ─── Cached texture paths ───────────────────────────────────────────────────
+local TEX_BORDER     = "Interface\\AddOns\\ClassicFrames\\textures\\MiniMap\\UI-Minimap-Border"
+local TEX_NORTH      = "Interface\\AddOns\\ClassicFrames\\textures\\MiniMap\\CompassNorthTag"
+local TEX_TRACK_BRD  = "Interface\\AddOns\\ClassicFrames\\icons\\MiniMap-TrackingBorder"
+local TEX_CLOCK_BG   = "Interface\\AddOns\\ClassicFrames\\textures\\MiniMap\\ClockBackground"
+local TEX_MM_BG      = "Interface\\Minimap\\UI-Minimap-Background"
+local TEX_ZOOM_HL    = "Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight"
+local TEX_TRACK_NONE = "Interface\\Minimap\\Tracking\\None"
+local TEX_MAIL_ICON  = "Interface\\Icons\\INV_Letter_15"
+local TEX_CRAFT_ICON = "Interface\\Icons\\INV_Hammer_12"
+
+-- ─── Shared utility ─────────────────────────────────────────────────────────
+local function HideOnShow(self) self:Hide() end
+
+-- ─── Minimap cluster & map ──────────────────────────────────────────────────
+cluster:SetScale(1)
+cluster:SetSize(192, 192)
+cluster:SetHitRectInsets(30, 10, 0, 30)
+minimap:SetParent(cluster)
+minimap:SetSize(165, 165)
+minimap:ClearAllPoints()
+minimap:SetPoint("CENTER", cluster, "TOP", 20, -80)
+
+-- ─── Backdrop ───────────────────────────────────────────────────────────────
+backdrop:SetSize(225, 225)
+backdrop:ClearAllPoints()
+backdrop:SetPoint("CENTER", cluster, "CENTER", 10, -10)
+
+local overlayTex = backdrop.StaticOverlayTexture
+overlayTex:SetSize(178, 181)
+overlayTex:ClearAllPoints()
+overlayTex:SetPoint("CENTER", cluster, "TOP", 20, -78)
+overlayTex:SetDrawLayer("BACKGROUND")
+
+-- Border
+local mmBorder = backdrop:CreateTexture("MinimapBorder", "ARTWORK")
+mmBorder:SetTexture(TEX_BORDER)
+mmBorder:SetTexCoord(0.25, 1, 0.125, 0.875)
+mmBorder:SetAllPoints(backdrop)
+mmBorder:SetDrawLayer("ARTWORK", 7)
+
+-- North tag
+local northTag = backdrop:CreateTexture("MinimapNorthTag")
+northTag:SetSize(16, 16)
+northTag:SetTexture(TEX_NORTH, "OVERLAY")
+northTag:SetPoint("CENTER", minimap, "CENTER", 0, 80)
+northTag:SetDrawLayer("OVERLAY", 0)
+northTag:Show()
+
 MinimapCompassTexture:Hide()
 
-hooksecurefunc(MinimapCluster, "Layout", function(self)
-	self:SetScale(1)
-	self:SetSize(192, 192)
+-- ─── Cluster layout hook ────────────────────────────────────────────────────
+hooksecurefunc(cluster, "Layout", function(self)
+    self:SetScale(1)
+    self:SetSize(192, 192)
 end)
 
-MinimapCluster.Tracking:SetParent(MinimapBackdrop)
-MinimapCluster.Tracking:SetSize(32, 32)
-MinimapCluster.Tracking:ClearAllPoints()
-MinimapCluster.Tracking:SetPoint("TOPLEFT", 20, -45)
-MinimapCluster.Tracking.Background:SetSize(25, 25)
-MinimapCluster.Tracking.Background:SetTexture("Interface\\Minimap\\UI-Minimap-Background")
-MinimapCluster.Tracking.Background:ClearAllPoints()
-MinimapCluster.Tracking.Background:SetPoint("TOPLEFT", 2, -4)
-MinimapCluster.Tracking.Background:SetAlpha(0.6)
-MinimapCluster.Tracking:CreateTexture("MiniMapTrackingIcon", "ARTWORK")
-MinimapCluster.Tracking.MiniMapTrackingIcon = MiniMapTrackingIcon
-MinimapCluster.Tracking.MiniMapTrackingIcon:SetSize(20, 20)
-MinimapCluster.Tracking.MiniMapTrackingIcon:SetTexture("Interface\\Minimap\\Tracking\\None")
-MinimapCluster.Tracking.MiniMapTrackingIcon:ClearAllPoints()
-MinimapCluster.Tracking.MiniMapTrackingIcon:SetPoint("TOPLEFT", 6, -6)
-MinimapCluster.Tracking.MiniMapTrackingIcon:Show()
-MinimapCluster.Tracking:CreateTexture("MiniMapTrackingIconOverlay", "OVERLAY")
-MinimapCluster.Tracking.MiniMapTrackingIconOverlay = MiniMapTrackingIconOverlay
-MinimapCluster.Tracking.MiniMapTrackingIconOverlay:SetSize(20, 20)
-MinimapCluster.Tracking.MiniMapTrackingIconOverlay:ClearAllPoints()
-MinimapCluster.Tracking.MiniMapTrackingIconOverlay:SetAllPoints(MinimapCluster.Tracking.MiniMapTrackingIcon)
-MinimapCluster.Tracking.MiniMapTrackingIconOverlay:SetColorTexture(0, 0, 0, 0.5)
-MinimapCluster.Tracking.MiniMapTrackingIconOverlay:Hide()
+-- ─── Tracking frame ─────────────────────────────────────────────────────────
+tracking:SetParent(backdrop)
+tracking:SetSize(32, 32)
+tracking:ClearAllPoints()
+tracking:SetPoint("TOPLEFT", 20, -45)
 
-MinimapCluster.Tracking.Button:SetSize(32, 32)
-MinimapCluster.Tracking.Button:ClearAllPoints()
-MinimapCluster.Tracking.Button:SetPoint("TOPLEFT")
-MinimapCluster.Tracking.Button:GetNormalTexture():SetTexture(nil)
-MinimapCluster.Tracking.Button:GetNormalTexture():SetAlpha(0)
-MinimapCluster.Tracking.Button:GetNormalTexture():Hide()
-MinimapCluster.Tracking.Button:GetPushedTexture():SetTexture(nil)
-MinimapCluster.Tracking.Button:GetPushedTexture():SetAlpha(0)
-MinimapCluster.Tracking.Button:GetPushedTexture():Hide()
-MinimapCluster.Tracking.Button:SetHighlightTexture("Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight", "ADD")
-MinimapCluster.Tracking.Button:CreateTexture("MiniMapTrackingButtonBorder", "BORDER")
-MinimapCluster.Tracking.ButtonBorder = MiniMapTrackingButtonBorder
-MinimapCluster.Tracking.ButtonBorder:SetSize(54, 54)
-MinimapCluster.Tracking.ButtonBorder:SetTexture("Interface\\AddOns\\ClassicFrames\\icons\\MiniMap-TrackingBorder")
-MinimapCluster.Tracking.ButtonBorder:ClearAllPoints()
-MinimapCluster.Tracking.ButtonBorder:SetPoint("TOPLEFT")
+tracking.Background:SetSize(25, 25)
+tracking.Background:SetTexture(TEX_MM_BG)
+tracking.Background:ClearAllPoints()
+tracking.Background:SetPoint("TOPLEFT", 2, -4)
+tracking.Background:SetAlpha(0.6)
 
-MinimapCluster.IndicatorFrame.MailFrame:ClearAllPoints()
-MinimapCluster.IndicatorFrame.MailFrame:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", 24, -37)
-MinimapCluster.IndicatorFrame.MailFrame:SetSize(33, 33)
-MinimapCluster.IndicatorFrame.MailFrame:SetFrameStrata("LOW")
-MinimapCluster.IndicatorFrame.MailFrame:SetFrameLevel(6)
+local trackIcon = tracking:CreateTexture("MiniMapTrackingIcon", "ARTWORK")
+tracking.MiniMapTrackingIcon = trackIcon
+trackIcon:SetSize(20, 20)
+trackIcon:SetTexture(TEX_TRACK_NONE)
+trackIcon:SetPoint("TOPLEFT", 6, -6)
+trackIcon:Show()
 
-MinimapCluster.IndicatorFrame.CraftingOrderFrame:SetSize(33, 33)
-MinimapCluster.IndicatorFrame.CraftingOrderFrame:ClearAllPoints()
-MinimapCluster.IndicatorFrame.CraftingOrderFrame:SetPoint("TOPLEFT", MinimapCluster.IndicatorFrame, "TOPLEFT", 0, 0)
-MinimapCluster.IndicatorFrame.CraftingOrderFrame:SetFrameStrata("LOW")
-MinimapCluster.IndicatorFrame.CraftingOrderFrame:SetFrameLevel(5)
+local trackOverlay = tracking:CreateTexture("MiniMapTrackingIconOverlay", "OVERLAY")
+tracking.MiniMapTrackingIconOverlay = trackOverlay
+trackOverlay:SetSize(20, 20)
+trackOverlay:SetAllPoints(trackIcon)
+trackOverlay:SetColorTexture(0, 0, 0, 0.5)
+trackOverlay:Hide()
 
-MinimapCluster.IndicatorFrame:SetParent(MinimapCluster)
-MinimapCluster.IndicatorFrame:SetSize(33, 33)
-MinimapCluster.IndicatorFrame:ClearAllPoints()
-MinimapCluster.IndicatorFrame:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", 24, -37)
-MinimapCluster.IndicatorFrame:SetFrameStrata("LOW")
-MinimapCluster.IndicatorFrame:SetFrameLevel(4)
+-- Tracking button
+trackBtn:SetSize(32, 32)
+trackBtn:ClearAllPoints()
+trackBtn:SetPoint("TOPLEFT")
 
-hooksecurefunc(MinimapCluster.IndicatorFrame, "Layout", function(self)
-	self:SetSize(33, 33)
-	self.MailFrame:ClearAllPoints()
-	self.MailFrame:SetPoint("TOPRIGHT", Minimap, "TOPRIGHT", 5, -5)
-	self.CraftingOrderFrame:ClearAllPoints()
-	self.CraftingOrderFrame:SetPoint("TOPLEFT", self, "TOPLEFT", 0, 0)
+local btnNormal = trackBtn:GetNormalTexture()
+btnNormal:SetTexture(nil)
+btnNormal:SetAlpha(0)
+btnNormal:Hide()
+
+local btnPushed = trackBtn:GetPushedTexture()
+btnPushed:SetTexture(nil)
+btnPushed:SetAlpha(0)
+btnPushed:Hide()
+
+trackBtn:SetHighlightTexture(TEX_ZOOM_HL, "ADD")
+
+local trackBtnBorder = trackBtn:CreateTexture("MiniMapTrackingButtonBorder", "BORDER")
+tracking.ButtonBorder = trackBtnBorder
+trackBtnBorder:SetSize(54, 54)
+trackBtnBorder:SetTexture(TEX_TRACK_BRD)
+trackBtnBorder:SetPoint("TOPLEFT")
+
+-- ─── Indicator frame (mail & crafting) ──────────────────────────────────────
+mailFrame:ClearAllPoints()
+mailFrame:SetPoint("TOPRIGHT", minimap, "TOPRIGHT", 24, -37)
+mailFrame:SetSize(33, 33)
+mailFrame:SetFrameStrata("LOW")
+mailFrame:SetFrameLevel(6)
+
+craftFrame:SetSize(33, 33)
+craftFrame:ClearAllPoints()
+craftFrame:SetPoint("TOPLEFT", indicator, "TOPLEFT", 0, 0)
+craftFrame:SetFrameStrata("LOW")
+craftFrame:SetFrameLevel(5)
+
+indicator:SetParent(cluster)
+indicator:SetSize(33, 33)
+indicator:ClearAllPoints()
+indicator:SetPoint("TOPRIGHT", minimap, "TOPRIGHT", 24, -37)
+indicator:SetFrameStrata("LOW")
+indicator:SetFrameLevel(4)
+
+hooksecurefunc(indicator, "Layout", function(self)
+    self:SetSize(33, 33)
+    mailFrame:ClearAllPoints()
+    mailFrame:SetPoint("TOPRIGHT", minimap, "TOPRIGHT", 5, -5)
+    craftFrame:ClearAllPoints()
+    craftFrame:SetPoint("TOPLEFT", self, "TOPLEFT", 0, 0)
 end)
 
-MiniMapMailIcon:SetSize(18, 18)
-MiniMapMailIcon:SetTexture("Interface\\Icons\\INV_Letter_15")
-MiniMapMailIcon:ClearAllPoints()
-MiniMapMailIcon:SetPoint("TOPLEFT", MinimapCluster.IndicatorFrame.MailFrame, "TOPLEFT", 6, -6)
-MiniMapMailIcon:SetDrawLayer("ARTWORK", 0)
+-- Mail icon
+mailIcon:SetSize(18, 18)
+mailIcon:SetTexture(TEX_MAIL_ICON)
+mailIcon:ClearAllPoints()
+mailIcon:SetPoint("TOPLEFT", mailFrame, "TOPLEFT", 6, -6)
+mailIcon:SetDrawLayer("ARTWORK", 0)
 
-MiniMapCraftingOrderIcon:SetSize(18, 18)
-MiniMapCraftingOrderIcon:SetTexture("Interface\\Icons\\INV_Hammer_12")
-MiniMapCraftingOrderIcon:ClearAllPoints()
-MiniMapCraftingOrderIcon:SetPoint("TOPLEFT", MinimapCluster.IndicatorFrame.CraftingOrderFrame, "TOPLEFT", 7, -6)
-MiniMapCraftingOrderIcon:SetDrawLayer("ARTWORK", 0)
+-- Crafting icon
+craftIcon:SetSize(18, 18)
+craftIcon:SetTexture(TEX_CRAFT_ICON)
+craftIcon:ClearAllPoints()
+craftIcon:SetPoint("TOPLEFT", craftFrame, "TOPLEFT", 7, -6)
+craftIcon:SetDrawLayer("ARTWORK", 0)
 
-MinimapCluster.IndicatorFrame.MailFrame:CreateTexture("MiniMapMailBorder", "OVERLAY")
-MiniMapMailBorder:SetSize(52, 52)
-MiniMapMailBorder:SetTexture("Interface\\AddOns\\ClassicFrames\\icons\\MiniMap-TrackingBorder")
-MiniMapMailBorder:ClearAllPoints()
-MiniMapMailBorder:SetPoint("TOPLEFT", MinimapCluster.IndicatorFrame.MailFrame, "TOPLEFT", 0, 0)
-MiniMapMailBorder:SetDrawLayer("OVERLAY", 0)
+-- Mail border
+local mailBorder = mailFrame:CreateTexture("MiniMapMailBorder", "OVERLAY")
+mailBorder:SetSize(52, 52)
+mailBorder:SetTexture(TEX_TRACK_BRD)
+mailBorder:SetPoint("TOPLEFT", mailFrame, "TOPLEFT", 0, 0)
+mailBorder:SetDrawLayer("OVERLAY", 0)
 
-MinimapCluster.IndicatorFrame.CraftingOrderFrame:CreateTexture("MiniMapCraftingBorder", "OVERLAY")
-MiniMapCraftingBorder:SetSize(52, 52)
-MiniMapCraftingBorder:SetTexture("Interface\\AddOns\\ClassicFrames\\icons\\MiniMap-TrackingBorder")
-MiniMapCraftingBorder:ClearAllPoints()
-MiniMapCraftingBorder:SetPoint("TOPLEFT", MinimapCluster.IndicatorFrame.CraftingOrderFrame, "TOPLEFT", 0, 0)
-MiniMapCraftingBorder:SetDrawLayer("OVERLAY", 0)
+-- Crafting border
+local craftBorder = craftFrame:CreateTexture("MiniMapCraftingBorder", "OVERLAY")
+craftBorder:SetSize(52, 52)
+craftBorder:SetTexture(TEX_TRACK_BRD)
+craftBorder:SetPoint("TOPLEFT", craftFrame, "TOPLEFT", 0, 0)
+craftBorder:SetDrawLayer("OVERLAY", 0)
 
-MinimapCluster.InstanceDifficulty:Hide()
-MinimapCluster.BorderTop:Hide()
-MinimapCluster.ZoneTextButton:Hide()
+-- ─── Hide unwanted elements ─────────────────────────────────────────────────
+cluster.InstanceDifficulty:Hide()
+cluster.BorderTop:Hide()
+cluster.ZoneTextButton:Hide()
 MinimapZoneText:Hide()
 GameTimeFrame:Hide()
-Minimap.ZoomIn:SetAlpha(0)
-Minimap.ZoomOut:SetAlpha(0)
+minimap.ZoomIn:SetAlpha(0)
+minimap.ZoomOut:SetAlpha(0)
 
 if AddonCompartmentFrame then
-	AddonCompartmentFrame:HookScript("OnShow", function(self)
-		self:Hide()
-	end)
-	AddonCompartmentFrame:Hide()
+    AddonCompartmentFrame:HookScript("OnShow", HideOnShow)
+    AddonCompartmentFrame:Hide()
 end
 
 if ExpansionLandingPageMinimapButton then
-	ExpansionLandingPageMinimapButton:HookScript("OnShow", function(self)
-		self:Hide()
-	end)
-	ExpansionLandingPageMinimapButton:Hide()
+    ExpansionLandingPageMinimapButton:HookScript("OnShow", HideOnShow)
+    ExpansionLandingPageMinimapButton:Hide()
 end
 
-Minimap:HookScript("OnEvent", function(self, event, ...)
-	if ( event == "PLAYER_ENTERING_WORLD" ) then
-		TimeManagerClockButton:SetParent(self)
-		TimeManagerClockButton:SetSize(60, 28)
-		TimeManagerClockButton:ClearAllPoints()
-		TimeManagerClockButton:SetPoint("CENTER", 0, -88)
-		TimeManagerClockButton:SetFrameStrata("LOW")
-		TimeManagerClockButton:SetFrameLevel(5)
+-- ─── Clock setup (one-shot via own event frame) ─────────────────────────────
+do
+    local f = CreateFrame("Frame")
+    f:RegisterEvent("PLAYER_ENTERING_WORLD")
+    f:SetScript("OnEvent", function(self)
+        local clockBtn = TimeManagerClockButton
+        if clockBtn then
+            clockBtn:SetParent(minimap)
+            clockBtn:SetSize(60, 28)
+            clockBtn:ClearAllPoints()
+            clockBtn:SetPoint("CENTER", 0, -88)
+            clockBtn:SetFrameStrata("LOW")
+            clockBtn:SetFrameLevel(5)
 
-		if (TimeManagerClockButtonBackground == nil) then
-			TimeManagerClockButtonBackground = TimeManagerClockButton:CreateTexture("TimeManagerClockButtonBackground", "BORDER")
-			TimeManagerClockButtonBackground:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\MiniMap\\ClockBackground")
-			TimeManagerClockButtonBackground:SetTexCoord(0.015625, 0.8125, 0.015625, 0.390625)
-			TimeManagerClockButtonBackground:ClearAllPoints()
-			TimeManagerClockButtonBackground:SetAllPoints(TimeManagerClockButton)
-		end
+            if not clockBtn.cfBackground then
+                local bg = clockBtn:CreateTexture("TimeManagerClockButtonBackground", "BORDER")
+                bg:SetTexture(TEX_CLOCK_BG)
+                bg:SetTexCoord(0.015625, 0.8125, 0.015625, 0.390625)
+                bg:SetAllPoints(clockBtn)
+                clockBtn.cfBackground = bg
+            end
 
-		TimeManagerClockTicker:ClearAllPoints()
-		TimeManagerClockTicker:SetPoint("CENTER", TimeManagerClockButton, "CENTER", 3, 1)
-	end
-end)
+            local ticker = TimeManagerClockTicker
+            if ticker then
+                ticker:ClearAllPoints()
+                ticker:SetPoint("CENTER", clockBtn, "CENTER", 3, 1)
+            end
+        end
 
-hooksecurefunc(QueueStatusButton, "UpdatePosition", function(self)
-	self:SetParent(MinimapBackdrop)
-	self:ClearAllPoints()
-	self:SetScale(0.6)
-	self:SetPoint("BOTTOMLEFT", 65, 110)
-	self:SetFrameLevel(6)
-end)
+        self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+        self:SetScript("OnEvent", nil)
+    end)
+end
 
-if (QueueStatusButtonBorder == nil) then
-	QueueStatusButton:CreateTexture("QueueStatusButtonBorder", "OVERLAY")
-	QueueStatusButtonBorder:SetSize(100, 100)
-	QueueStatusButtonBorder:SetTexture("Interface\\AddOns\\ClassicFrames\\icons\\MiniMap-TrackingBorder")
-	QueueStatusButtonBorder:ClearAllPoints()
-	QueueStatusButtonBorder:SetPoint("TOPLEFT", QueueStatusButton, "TOPLEFT", -7, 7)
+-- ─── Queue status button ────────────────────────────────────────────────────
+do
+    local qsb = QueueStatusButton
+
+    hooksecurefunc(qsb, "UpdatePosition", function(self)
+        self:SetParent(backdrop)
+        self:ClearAllPoints()
+        self:SetScale(0.6)
+        self:SetPoint("BOTTOMLEFT", 65, 110)
+        self:SetFrameLevel(6)
+    end)
+
+    if not qsb.cfBorder then
+        local qBorder = qsb:CreateTexture("QueueStatusButtonBorder", "OVERLAY")
+        qBorder:SetSize(100, 100)
+        qBorder:SetTexture(TEX_TRACK_BRD)
+        qBorder:SetPoint("TOPLEFT", qsb, "TOPLEFT", -7, 7)
+        qsb.cfBorder = qBorder
+    end
 end
