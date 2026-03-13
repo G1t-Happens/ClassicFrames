@@ -1,11 +1,11 @@
--- Cache global function lookups (avoid repeated global table traversals)
+-- Cache global function lookups
 local hooksecurefunc = hooksecurefunc
 local CreateColor = CreateColor
 local CreateFrame = CreateFrame
 local UnitCastingInfo = UnitCastingInfo
 local UnitChannelInfo = UnitChannelInfo
 
--- Cache texture/font path strings (single reference instead of repeated literals)
+-- Cache texture/font path strings
 local STATUSBAR_TEX    = "Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar"
 local BORDER_TEX       = "Interface\\AddOns\\ClassicFrames\\textures\\CastingBar\\UI-CastingBar-Border"
 local BORDER_SMALL_TEX = "Interface\\AddOns\\ClassicFrames\\textures\\CastingBar\\UI-CastingBar-Border-Small"
@@ -27,11 +27,9 @@ castbarColors = {
 }
 
 --------------------------------------------------------------------------------
--- Shared hooks (identical logic reused across player/target/focus → single closure)
+-- Shared hooks (identical logic reused across player/target/focus)
 --------------------------------------------------------------------------------
 
--- Original calls UnitCastingInfo/UnitChannelInfo TWICE each (once for the if-check,
--- once for destructuring). This version calls each API at most once.
 local function OnGetTypeInfo(self)
     local unit = self.unit
     local name, _, _, _, _, _, _, notInterruptible = UnitCastingInfo(unit)
@@ -79,9 +77,14 @@ end
 local function SkinPlayerCastbar(self)
     SetLookReplacementPlayer(self)
 
-    local text = self.Text
-    local spark = self.Spark
-    local flash = self.Flash
+    -- Cache all frame children accessed in hooks as upvalues
+    local text       = self.Text
+    local textBorder = self.TextBorder
+    local spark      = self.Spark
+    local flash      = self.Flash
+    local energyGlow = self.EnergyGlow
+    local flakes01   = self.Flakes01
+    local flakes02   = self.Flakes02
 
     hooksecurefunc(self, "ShowSpark", function(s)
         local sg = s.StandardGlow
@@ -94,7 +97,7 @@ local function SkinPlayerCastbar(self)
 
     hooksecurefunc(self, "UpdateShownState", function()
         self:SetStatusBarTexture(STATUSBAR_TEX)
-        self.TextBorder:Hide()
+        textBorder:Hide()
         text:ClearAllPoints()
         text:SetPoint("CENTER", self, "CENTER", 0, 1)
         text:SetFont(FONT_PATH, 10, "OUTLINE")
@@ -111,9 +114,9 @@ local function SkinPlayerCastbar(self)
         flash:ClearAllPoints()
         flash:SetPoint("TOP", 0, 30.5)
         flash:SetBlendMode("ADD")
-        self.EnergyGlow:Hide()
-        self.Flakes01:Hide()
-        self.Flakes02:Hide()
+        energyGlow:Hide()
+        flakes01:Hide()
+        flakes02:Hide()
     end)
 
     hooksecurefunc(self, "PlayInterruptAnims", OnPlayInterruptAnims)
@@ -188,6 +191,10 @@ local function SkinTargetCastbar(self)
 
     local spark = self.Spark
 
+    -- Upvalue locals for the flash texture created on first finish.
+    -- Avoids self.NewFlash / self.NewFlashAnim table lookups on every subsequent cast.
+    local newFlash, newFlashAnim
+
     hooksecurefunc(self, "UpdateShownState", function()
         self:SetStatusBarTexture(STATUSBAR_TEX)
         if self.channeling then
@@ -198,7 +205,6 @@ local function SkinTargetCastbar(self)
     hooksecurefunc(self, "PlayFinishAnim", function()
         self:SetStatusBarTexture(STATUSBAR_TEX)
 
-        local newFlash = self.NewFlash
         if not newFlash then
             local flashParent = self.Flash:GetParent()
             newFlash = flashParent:CreateTexture(nil, "OVERLAY")
@@ -210,18 +216,15 @@ local function SkinTargetCastbar(self)
             newFlash:SetBlendMode("ADD")
             newFlash:SetAlpha(0)
 
-            local animGroup = newFlash:CreateAnimationGroup()
-            animGroup:SetToFinalAlpha(true)
-            local anim = animGroup:CreateAnimation("Alpha")
+            newFlashAnim = newFlash:CreateAnimationGroup()
+            newFlashAnim:SetToFinalAlpha(true)
+            local anim = newFlashAnim:CreateAnimation("Alpha")
             anim:SetDuration(0.5)
             anim:SetFromAlpha(1)
             anim:SetToAlpha(0)
-
-            self.NewFlash = newFlash
-            self.NewFlashAnim = animGroup
         end
 
-        self.NewFlashAnim:Play()
+        newFlashAnim:Play()
         newFlash:SetVertexColor(self:GetStatusBarColor())
     end)
 
@@ -230,10 +233,15 @@ local function SkinTargetCastbar(self)
 end
 
 --------------------------------------------------------------------------------
--- Init
+-- Init (fire once, then clean up)
 --------------------------------------------------------------------------------
 
-local function OnPlayerLogin()
+local initFrame = CreateFrame("Frame")
+initFrame:RegisterEvent("PLAYER_LOGIN")
+initFrame:SetScript("OnEvent", function(frame)
+    frame:UnregisterAllEvents()
+    frame:SetScript("OnEvent", nil)
+
     local pcb = PlayerCastingBarFrame
     if pcb then
         pcb.BaseGlow:Hide()
@@ -257,8 +265,4 @@ local function OnPlayerLogin()
         focusBar:HookScript("OnEvent", AdjustPosition)
         SkinTargetCastbar(focusBar)
     end
-end
-
-local initFrame = CreateFrame("Frame")
-initFrame:RegisterEvent("PLAYER_LOGIN")
-initFrame:SetScript("OnEvent", OnPlayerLogin)
+end)
