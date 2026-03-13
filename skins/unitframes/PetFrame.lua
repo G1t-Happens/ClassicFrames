@@ -1,68 +1,106 @@
 if not _G.PetFrame then return end
 
-PetFrame:SetSize(128, 53)
+-- Cache texture/font paths
+local STATUSBAR_TEX = "Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar"
+local FONT_PATH     = "Fonts\\FRIZQT__.TTF"
 
-PetPortrait:ClearAllPoints()
-PetPortrait:SetPoint("TOPLEFT", 7, -6)
+-- Cache all global frame references as locals
+local petFrame       = PetFrame
+local portrait       = PetPortrait
+local petName        = PetName
+local frameTex       = PetFrameTexture
+local frameFlash     = PetFrameFlash
+local healthBar      = PetFrameHealthBar
+local manaBar        = PetFrameManaBar
+local attackMode     = PetAttackModeTexture
+local hitIndicator   = PetHitIndicator
+local overAbsorbGlow = PetFrameOverAbsorbGlow
 
-PetName:ClearAllPoints()
-PetName:SetPoint("BOTTOMLEFT", 53, 33)
-PetName:SetJustifyH("LEFT")
-PetName:SetFont("Fonts\\FRIZQT__.TTF", 10, "OUTLINE")
+-- Frame sizing
+petFrame:SetSize(128, 53)
 
-PetFrameTexture:SetSize(128, 64)
-PetFrameTexture:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-SmallTargetingFrame")
-PetFrameTexture:ClearAllPoints()
-PetFrameTexture:SetPoint("TOPLEFT", 0, -2)
+-- Portrait
+portrait:ClearAllPoints()
+portrait:SetPoint("TOPLEFT", 7, -6)
 
-PetFrameFlash:SetSize(128, 64)
-PetFrameFlash:SetTexture("Interface\\TargetingFrame\\UI-PartyFrame-Flash")
-PetFrameFlash:SetPoint("TOPLEFT", -4, 11)
-PetFrameFlash:SetTexCoord(0, 1, 1, 0)
-PetFrameFlash:SetDrawLayer("BACKGROUND")
+-- Name
+petName:ClearAllPoints()
+petName:SetPoint("BOTTOMLEFT", 53, 33)
+petName:SetJustifyH("LEFT")
+petName:SetFont(FONT_PATH, 10, "OUTLINE")
 
-PetFrameHealthBar:SetSize(68, 8)
-PetFrameHealthBar:SetStatusBarTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar")
-PetFrameHealthBar:SetStatusBarColor(0, 1, 0)
-PetFrameHealthBar:ClearAllPoints()
-PetFrameHealthBar:SetPoint("TOPLEFT", 46, -22)
-PetFrameHealthBar:SetFrameLevel(1)
+-- Frame texture
+frameTex:SetSize(128, 64)
+frameTex:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-SmallTargetingFrame")
+frameTex:ClearAllPoints()
+frameTex:SetPoint("TOPLEFT", 0, -2)
+
+-- Flash
+frameFlash:SetSize(128, 64)
+frameFlash:SetTexture("Interface\\TargetingFrame\\UI-PartyFrame-Flash")
+frameFlash:SetPoint("TOPLEFT", -4, 11)
+frameFlash:SetTexCoord(0, 1, 1, 0)
+frameFlash:SetDrawLayer("BACKGROUND")
+
+-- Health bar
+healthBar:SetSize(68, 8)
+healthBar:SetStatusBarTexture(STATUSBAR_TEX)
+healthBar:SetStatusBarColor(0, 1, 0)
+healthBar:ClearAllPoints()
+healthBar:SetPoint("TOPLEFT", 46, -22)
+healthBar:SetFrameLevel(1)
 PetFrameHealthBarMask:Hide()
 
-PetFrameManaBar:SetSize(68, 8)
-PetFrameManaBar:ClearAllPoints()
-PetFrameManaBar:SetPoint("TOPLEFT", 46, -29)
-PetFrameManaBar:SetFrameLevel(1)
+-- Mana bar
+manaBar:SetSize(68, 8)
+manaBar:ClearAllPoints()
+manaBar:SetPoint("TOPLEFT", 46, -29)
+manaBar:SetFrameLevel(1)
 PetFrameManaBarMask:Hide()
 
-PetFrameHealthBarText:SetParent(PetFrame)
-PetFrameHealthBarTextLeft:SetParent(PetFrame)
-PetFrameHealthBarTextRight:SetParent(PetFrame)
-PetFrameManaBarText:SetParent(PetFrame)
-PetFrameManaBarTextLeft:SetParent(PetFrame)
-PetFrameManaBarTextRight:SetParent(PetFrame)
+-- Reparent & reposition bar texts
+local hpText      = PetFrameHealthBarText
+local hpTextLeft  = PetFrameHealthBarTextLeft
+local hpTextRight = PetFrameHealthBarTextRight
+local mpText      = PetFrameManaBarText
+local mpTextLeft  = PetFrameManaBarTextLeft
+local mpTextRight = PetFrameManaBarTextRight
 
-PetFrameHealthBarText:ClearAllPoints()
-PetFrameHealthBarText:SetPoint("CENTER", PetFrame, "TOPLEFT", 82, -26)
-PetFrameHealthBarTextLeft:ClearAllPoints()
-PetFrameHealthBarTextLeft:SetPoint("LEFT", PetFrame, "TOPLEFT", 46, -26)
-PetFrameHealthBarTextRight:ClearAllPoints()
-PetFrameHealthBarTextRight:SetPoint("RIGHT", PetFrame, "TOPLEFT", 113, -26)
-PetFrameManaBarText:ClearAllPoints()
-PetFrameManaBarText:SetPoint("CENTER", PetFrame, "TOPLEFT", 82, -35)
-PetFrameManaBarTextLeft:ClearAllPoints()
-PetFrameManaBarTextLeft:SetPoint("LEFT", PetFrame, "TOPLEFT", 46, -35)
-PetFrameManaBarTextRight:ClearAllPoints()
-PetFrameManaBarTextRight:SetPoint("RIGHT", PetFrame, "TOPLEFT", 113, -35)
+hpText:SetParent(petFrame)
+hpText:ClearAllPoints()
+hpText:SetPoint("CENTER", petFrame, "TOPLEFT", 82, -26)
 
-PetFrameOverAbsorbGlow:SetParent(PetFrame)
-PetFrameOverAbsorbGlow:SetDrawLayer("ARTWORK", 7)
+hpTextLeft:SetParent(petFrame)
+hpTextLeft:ClearAllPoints()
+hpTextLeft:SetPoint("LEFT", petFrame, "TOPLEFT", 46, -26)
 
-PetAttackModeTexture:SetSize(76, 64)
-PetAttackModeTexture:SetTexture("Interface\\TargetingFrame\\UI-Player-AttackStatus")
-PetAttackModeTexture:SetTexCoord(0.703125, 1, 0, 1)
-PetAttackModeTexture:ClearAllPoints()
-PetAttackModeTexture:SetPoint("TOPLEFT", 6, -9)
+hpTextRight:SetParent(petFrame)
+hpTextRight:ClearAllPoints()
+hpTextRight:SetPoint("RIGHT", petFrame, "TOPLEFT", 113, -26)
 
-PetHitIndicator:ClearAllPoints()
-PetHitIndicator:SetPoint("CENTER", PetFrame, "TOPLEFT", 28, -27)
+mpText:SetParent(petFrame)
+mpText:ClearAllPoints()
+mpText:SetPoint("CENTER", petFrame, "TOPLEFT", 82, -35)
+
+mpTextLeft:SetParent(petFrame)
+mpTextLeft:ClearAllPoints()
+mpTextLeft:SetPoint("LEFT", petFrame, "TOPLEFT", 46, -35)
+
+mpTextRight:SetParent(petFrame)
+mpTextRight:ClearAllPoints()
+mpTextRight:SetPoint("RIGHT", petFrame, "TOPLEFT", 113, -35)
+
+-- Over-absorb glow
+overAbsorbGlow:SetParent(petFrame)
+overAbsorbGlow:SetDrawLayer("ARTWORK", 7)
+
+-- Attack mode texture
+attackMode:SetSize(76, 64)
+attackMode:SetTexture("Interface\\TargetingFrame\\UI-Player-AttackStatus")
+attackMode:SetTexCoord(0.703125, 1, 0, 1)
+attackMode:ClearAllPoints()
+attackMode:SetPoint("TOPLEFT", 6, -9)
+
+-- Hit indicator
+hitIndicator:ClearAllPoints()
+hitIndicator:SetPoint("CENTER", petFrame, "TOPLEFT", 28, -27)
