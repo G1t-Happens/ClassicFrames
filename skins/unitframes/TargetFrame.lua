@@ -29,6 +29,13 @@ local TEX_GUIDE     = "Interface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES"
 local TEX_QUEST     = "Interface\\TargetingFrame\\PortraitQuestBadge"
 local FONT_FRIZ     = "Fonts\\FRIZQT__.TTF"
 
+-- Cache showTargetOfTarget CVar to avoid per-call registry lookup in the tot hook.
+-- CVarCallbackRegistry fires the callback with (event, value) on every change.
+local showToT = CVarCallbackRegistry:GetCVarValueBool("showTargetOfTarget")
+CVarCallbackRegistry:RegisterCallback("showTargetOfTarget", function(_, value)
+    showToT = (value == "1")
+end)
+
 -- Pre-computed anchor point strings
 local ANCHOR = {
     TOP    = { L = "TOPLEFT",    R = "TOPRIGHT"    },
@@ -226,8 +233,7 @@ local function SkinFrame(frame)
     if not tot then return end
 
     hooksecurefunc(tot, "Update", function(self)
-        if UnitIsUnit(frame.unit, "player")
-        or not CVarCallbackRegistry:GetCVarValueBool("showTargetOfTarget") then
+        if UnitIsUnit(frame.unit, "player") or not showToT then
             return
         end
         if self.unit and self.HealthBar then
