@@ -31,13 +31,39 @@ local trackBtn   = tracking.Button
 local mailIcon   = MiniMapMailIcon
 local craftIcon  = MiniMapCraftingOrderIcon
 
--- LibDBIcon refresh
+-- LibDBIcon: apply classic border/icon styling to minimap buttons
 do
     local ldbi = LibStub and LibStub:GetLibrary("LibDBIcon-1.0", true)
     if ldbi then
-        local list = ldbi:GetButtonList()
-        for i = 1, #list do
-            ldbi:Refresh(list[i])
+        local function StyleButton(button)
+            if not button then return end
+            if button.border then
+                button.border:SetTexture(TEX_TRACK_BRD)
+                button.border:SetSize(53, 53)
+                button.border:ClearAllPoints()
+                button.border:SetPoint("TOPLEFT")
+            end
+            if button.background then
+                button.background:SetSize(20, 20)
+                button.background:ClearAllPoints()
+                button.background:SetPoint("TOPLEFT", 7, -5)
+            end
+            if button.icon then
+                button.icon:SetSize(17, 17)
+                button.icon:ClearAllPoints()
+                button.icon:SetPoint("TOPLEFT", 7, -6)
+            end
+        end
+
+        -- Style buttons created in the future via callback
+        local receiver = {}
+        ldbi.RegisterCallback(receiver, "LibDBIcon_IconCreated", function(_, button)
+            StyleButton(button)
+        end)
+
+        -- Style any buttons that already exist
+        for _, button in pairs(ldbi.objects) do
+            StyleButton(button)
         end
     end
 end
