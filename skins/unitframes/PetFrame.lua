@@ -2,14 +2,17 @@
 -- PetFrame.lua
 -- =============================================================================
 
-if not _G.PetFrame then return end
+local petFrame = PetFrame
+if not petFrame then return end
 
--- Cache texture/font paths
+-- Cached texture/font paths
 local STATUSBAR_TEX = "Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar"
 local FONT_PATH     = "Fonts\\FRIZQT__.TTF"
+local TEX_FRAME     = "Interface\\AddOns\\ClassicFrames\\textures\\UI-SmallTargetingFrame"
+local TEX_FLASH     = "Interface\\TargetingFrame\\UI-PartyFrame-Flash"
+local TEX_ATTACK    = "Interface\\TargetingFrame\\UI-Player-AttackStatus"
 
--- Cache all global frame references as locals
-local petFrame       = PetFrame
+-- Cached frame references
 local portrait       = PetPortrait
 local petName        = PetName
 local frameTex       = PetFrameTexture
@@ -19,6 +22,12 @@ local manaBar        = PetFrameManaBar
 local attackMode     = PetAttackModeTexture
 local hitIndicator   = PetHitIndicator
 local overAbsorbGlow = PetFrameOverAbsorbGlow
+local hpText         = PetFrameHealthBarText
+local hpTextLeft     = PetFrameHealthBarTextLeft
+local hpTextRight    = PetFrameHealthBarTextRight
+local mpText         = PetFrameManaBarText
+local mpTextLeft     = PetFrameManaBarTextLeft
+local mpTextRight    = PetFrameManaBarTextRight
 
 -- Frame sizing
 petFrame:SetSize(128, 53)
@@ -35,13 +44,13 @@ petName:SetFont(FONT_PATH, 10, "OUTLINE")
 
 -- Frame texture
 frameTex:SetSize(128, 64)
-frameTex:SetTexture("Interface\\AddOns\\ClassicFrames\\textures\\UI-SmallTargetingFrame")
+frameTex:SetTexture(TEX_FRAME)
 frameTex:ClearAllPoints()
 frameTex:SetPoint("TOPLEFT", 0, -2)
 
 -- Flash
 frameFlash:SetSize(128, 64)
-frameFlash:SetTexture("Interface\\TargetingFrame\\UI-PartyFrame-Flash")
+frameFlash:SetTexture(TEX_FLASH)
 frameFlash:SetPoint("TOPLEFT", -4, 11)
 frameFlash:SetTexCoord(0, 1, 1, 0)
 frameFlash:SetDrawLayer("BACKGROUND")
@@ -63,13 +72,6 @@ manaBar:SetFrameLevel(1)
 PetFrameManaBarMask:Hide()
 
 -- Reparent & reposition bar texts
-local hpText      = PetFrameHealthBarText
-local hpTextLeft  = PetFrameHealthBarTextLeft
-local hpTextRight = PetFrameHealthBarTextRight
-local mpText      = PetFrameManaBarText
-local mpTextLeft  = PetFrameManaBarTextLeft
-local mpTextRight = PetFrameManaBarTextRight
-
 hpText:SetParent(petFrame)
 hpText:ClearAllPoints()
 hpText:SetPoint("CENTER", petFrame, "TOPLEFT", 82, -26)
@@ -100,7 +102,7 @@ overAbsorbGlow:SetDrawLayer("ARTWORK", 7)
 
 -- Attack mode texture
 attackMode:SetSize(76, 64)
-attackMode:SetTexture("Interface\\TargetingFrame\\UI-Player-AttackStatus")
+attackMode:SetTexture(TEX_ATTACK)
 attackMode:SetTexCoord(0.703125, 1, 0, 1)
 attackMode:ClearAllPoints()
 attackMode:SetPoint("TOPLEFT", 6, -9)

@@ -2,7 +2,8 @@
 -- ObjectiveTracker.lua
 -- =============================================================================
 
-if not _G.ObjectiveTrackerFrame then return end
+local tracker = ObjectiveTrackerFrame
+if not tracker then return end
 
-ObjectiveTrackerFrame.Header:Hide()
-ObjectiveTrackerFrame:SetScale(0.8)
+tracker.Header:Hide()
+tracker:SetScale(0.8)
