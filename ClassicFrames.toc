@@ -2,7 +2,7 @@
 ## IconTexture: Interface/Icons/INV_Sword_2H_AshbringerCorrupt
 ## Title: Classic Frames
 ## Notes: Restores the Pre-10.0 UI frames with a focus on PvP, minimalism, and performance.
-## Version: 3.02
+## Version: 3.03
 ## OptionalDeps: SexyMap
 embeds.xml
 skins\Minimap.lua
