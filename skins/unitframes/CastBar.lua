@@ -24,7 +24,7 @@ local colorChannel         = CreateColor(0.0, 1.0, 0.0, 1)
 local colorUninterruptable = CreateColor(0.7, 0.7, 0.7, 1)
 
 -- Expose globally for external access
-castbarColors = {
+CfCastBarColors = {
     Standard        = colorStandard,
     Channel         = colorChannel,
     Uninterruptable = colorUninterruptable,

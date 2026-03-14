@@ -64,6 +64,7 @@ local function GetUnitColor(unit)
     if not UnitIsTapDenied(unit) then
         return FACTION_BAR_COLORS[UnitReaction(unit, "player")]
     end
+    return nil
 end
 
 --- Direct-call helpers – no dynamic dispatch overhead.
