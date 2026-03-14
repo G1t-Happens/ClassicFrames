@@ -69,6 +69,8 @@ end
 
 local Frame = CreateFrame("Frame")
 Frame:RegisterEvent("PLAYER_ENTERING_WORLD")
-Frame:SetScript("OnEvent", function()
+Frame:SetScript("OnEvent", function(self)
     ColorFrames()
+    self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+    self:SetScript("OnEvent", nil)
 end)
