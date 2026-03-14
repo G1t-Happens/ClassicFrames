@@ -254,6 +254,14 @@ if _G.DemonHunterSoulFragmentsBar then
     dhb:SetSize(104, 12)
     dhb:ClearAllPoints()
     dhb:SetPoint("BOTTOMLEFT", 95, 15)
+
+    -- Anchor atlas-based overlay textures to the custom bar size
+    if dhb.Glow then dhb.Glow:SetAllPoints(dhb) end
+    if dhb.Ready then dhb.Ready:SetAllPoints(dhb) end
+    if dhb.Deplete then dhb.Deplete:SetAllPoints(dhb) end
+    if dhb.CollapsingStarDepleteFin then dhb.CollapsingStarDepleteFin:SetAllPoints(dhb) end
+    if dhb.CollapsingStarBackground then dhb.CollapsingStarBackground:SetAllPoints(dhb) end
+
     CreateBarBorders(dhb, 0)
 end
 
