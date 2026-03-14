@@ -259,14 +259,14 @@ initFrame:SetScript("OnEvent", function(frame)
     local targetBar = TargetFrame and TargetFrame.spellbar
     if targetBar then
         hooksecurefunc(targetBar, "AdjustPosition", AdjustPosition)
-        targetBar:HookScript("OnEvent", AdjustPosition)
+        targetBar:HookScript("OnShow", AdjustPosition)
         SkinTargetCastbar(targetBar)
     end
 
     local focusBar = FocusFrame and FocusFrame.spellbar
     if focusBar then
         hooksecurefunc(focusBar, "AdjustPosition", AdjustPosition)
-        focusBar:HookScript("OnEvent", AdjustPosition)
+        focusBar:HookScript("OnShow", AdjustPosition)
         SkinTargetCastbar(focusBar)
     end
 end)

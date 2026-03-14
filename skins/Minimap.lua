@@ -105,8 +105,12 @@ MinimapCompassTexture:Hide()
 
 -- Hooks
 hooksecurefunc(cluster, "Layout", function(self)
-    self:SetScale(1)
-    self:SetSize(192, 192)
+    if self:GetScale() ~= 1 then
+        self:SetScale(1)
+    end
+    if self:GetWidth() ~= 192 or self:GetHeight() ~= 192 then
+        self:SetSize(192, 192)
+    end
 end)
 
 -- =============================================================================
@@ -204,7 +208,9 @@ do
 
     -- Layout hook
     hooksecurefunc(indicator, "Layout", function(self)
-        self:SetSize(33, 33)
+        if self:GetWidth() ~= 33 or self:GetHeight() ~= 33 then
+            self:SetSize(33, 33)
+        end
         mailFrame:ClearAllPoints()
         mailFrame:SetPoint("TOPRIGHT", minimap, "TOPRIGHT", 5, -5)
         craftFrame:ClearAllPoints()

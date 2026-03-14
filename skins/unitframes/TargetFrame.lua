@@ -58,10 +58,11 @@ local function GetUnitColor(unit)
         return nil, .5, .5, .5
     end
     if not UnitExists(unit) then return nil end
-    if not UnitPlayerControlled(unit) and UnitIsTapDenied(unit) then
+    local tapDenied = UnitIsTapDenied(unit)
+    if not UnitPlayerControlled(unit) and tapDenied then
         return nil, .5, .5, .5
     end
-    if not UnitIsTapDenied(unit) then
+    if not tapDenied then
         return FACTION_BAR_COLORS[UnitReaction(unit, "player")]
     end
     return nil
