@@ -62,7 +62,7 @@ do
         end)
 
         -- Style any buttons that already exist
-        for _, button in pairs(ldbi.objects) do
+        for _, button in next, ldbi.objects do
             StyleButton(button)
         end
     end

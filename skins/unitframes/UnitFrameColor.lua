@@ -102,10 +102,10 @@ f:SetScript("OnEvent", function(self)
         end
     end
 
-    -- LibDBIcon minimap button borders
+    -- LibDBIcon minimap button borders (frame doubles as callback receiver)
     local ldbi = LibStub and LibStub:GetLibrary("LibDBIcon-1.0", true)
     if ldbi then
-        for _, button in pairs(ldbi.objects) do
+        for _, button in next, ldbi.objects do
             Tint(button.border)
         end
         ldbi.RegisterCallback(self, "LibDBIcon_IconCreated", function(_, button)
