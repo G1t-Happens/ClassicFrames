@@ -180,7 +180,7 @@ local function SetLook(self)
     text:SetHeight(16)
     text:ClearAllPoints()
     text:SetPoint("CENTER", self, "CENTER", 0, 1)
-    text:SetFont(FONT_PATH, 10, "OUTLINE")
+    text:SetFont(FONT_PATH, 9, "OUTLINE")
 
     self.TextBorder:Hide()
 
