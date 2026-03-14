@@ -4,28 +4,8 @@
 
 if C_AddOns.IsAddOnLoaded("SexyMap") then return end
 
--- LibDBIcon refresh
-do
-    local ldbi = LibStub and LibStub:GetLibrary("LibDBIcon-1.0", true)
-    if ldbi then
-        for _, v in ipairs(ldbi:GetButtonList()) do
-            ldbi:Refresh(v)
-        end
-    end
-end
-
--- Cached references
-local cluster    = MinimapCluster
-local minimap    = Minimap
-local backdrop   = MinimapBackdrop
-local tracking   = cluster.Tracking
-local indicator  = cluster.IndicatorFrame
-local mailFrame  = indicator.MailFrame
-local craftFrame = indicator.CraftingOrderFrame
-local trackBtn   = tracking.Button
-local mailIcon   = MiniMapMailIcon
-local craftIcon  = MiniMapCraftingOrderIcon
-
+-- Cached globals
+local CreateFrame    = CreateFrame
 local hooksecurefunc = hooksecurefunc
 
 -- Cached texture paths
@@ -39,19 +19,40 @@ local TEX_TRACK_NONE = "Interface\\Minimap\\Tracking\\None"
 local TEX_MAIL_ICON  = "Interface\\Icons\\INV_Letter_15"
 local TEX_CRAFT_ICON = "Interface\\Icons\\INV_Hammer_12"
 
--- Shared utility
-local function HideOnShow(self) self:Hide() end
+-- Cached frame references
+local cluster    = MinimapCluster
+local minimap    = Minimap
+local backdrop   = MinimapBackdrop
+local tracking   = cluster.Tracking
+local indicator  = cluster.IndicatorFrame
+local mailFrame  = indicator.MailFrame
+local craftFrame = indicator.CraftingOrderFrame
+local trackBtn   = tracking.Button
+local mailIcon   = MiniMapMailIcon
+local craftIcon  = MiniMapCraftingOrderIcon
+
+-- LibDBIcon refresh
+do
+    local ldbi = LibStub and LibStub:GetLibrary("LibDBIcon-1.0", true)
+    if ldbi then
+        local list = ldbi:GetButtonList()
+        for i = 1, #list do
+            ldbi:Refresh(list[i])
+        end
+    end
+end
 
 -- Minimap cluster & map
 cluster:SetScale(1)
 cluster:SetSize(192, 192)
 cluster:SetHitRectInsets(30, 10, 0, 30)
+
 minimap:SetParent(cluster)
 minimap:SetSize(165, 165)
 minimap:ClearAllPoints()
 minimap:SetPoint("CENTER", cluster, "TOP", 20, -80)
 
--- Backdrop
+-- Backdrop & border
 backdrop:SetSize(225, 225)
 backdrop:ClearAllPoints()
 backdrop:SetPoint("CENTER", cluster, "CENTER", 10, -10)
@@ -62,184 +63,183 @@ overlayTex:ClearAllPoints()
 overlayTex:SetPoint("CENTER", cluster, "TOP", 20, -78)
 overlayTex:SetDrawLayer("BACKGROUND")
 
--- Border
 local mmBorder = backdrop:CreateTexture("MinimapBorder", "ARTWORK")
 mmBorder:SetTexture(TEX_BORDER)
 mmBorder:SetTexCoord(0.25, 1, 0.125, 0.875)
 mmBorder:SetAllPoints(backdrop)
 mmBorder:SetDrawLayer("ARTWORK", 7)
 
--- North tag
 local northTag = backdrop:CreateTexture("MinimapNorthTag")
 northTag:SetSize(16, 16)
-northTag:SetTexture(TEX_NORTH, "OVERLAY")
+northTag:SetTexture(TEX_NORTH)
 northTag:SetPoint("CENTER", minimap, "CENTER", 0, 80)
 northTag:SetDrawLayer("OVERLAY", 0)
-northTag:Show()
 
 MinimapCompassTexture:Hide()
 
--- Cluster layout hook
+-- Hooks
 hooksecurefunc(cluster, "Layout", function(self)
     self:SetScale(1)
     self:SetSize(192, 192)
 end)
 
+-- =============================================================================
 -- Tracking frame
-tracking:SetParent(backdrop)
-tracking:SetSize(32, 32)
-tracking:ClearAllPoints()
-tracking:SetPoint("TOPLEFT", 20, -45)
+-- =============================================================================
 
-tracking.Background:SetSize(25, 25)
-tracking.Background:SetTexture(TEX_MM_BG)
-tracking.Background:ClearAllPoints()
-tracking.Background:SetPoint("TOPLEFT", 2, -4)
-tracking.Background:SetAlpha(0.6)
+do
+    tracking:SetParent(backdrop)
+    tracking:SetSize(32, 32)
+    tracking:ClearAllPoints()
+    tracking:SetPoint("TOPLEFT", 20, -45)
 
-local trackIcon = tracking:CreateTexture("MiniMapTrackingIcon", "ARTWORK")
-tracking.MiniMapTrackingIcon = trackIcon
-trackIcon:SetSize(20, 20)
-trackIcon:SetTexture(TEX_TRACK_NONE)
-trackIcon:SetPoint("TOPLEFT", 6, -6)
-trackIcon:Show()
+    local bg = tracking.Background
+    bg:SetSize(25, 25)
+    bg:SetTexture(TEX_MM_BG)
+    bg:ClearAllPoints()
+    bg:SetPoint("TOPLEFT", 2, -4)
+    bg:SetAlpha(0.6)
 
-local trackOverlay = tracking:CreateTexture("MiniMapTrackingIconOverlay", "OVERLAY")
-tracking.MiniMapTrackingIconOverlay = trackOverlay
-trackOverlay:SetSize(20, 20)
-trackOverlay:SetAllPoints(trackIcon)
-trackOverlay:SetColorTexture(0, 0, 0, 0.5)
-trackOverlay:Hide()
+    local trackIcon = tracking:CreateTexture("MiniMapTrackingIcon", "ARTWORK")
+    tracking.MiniMapTrackingIcon = trackIcon
+    trackIcon:SetSize(20, 20)
+    trackIcon:SetTexture(TEX_TRACK_NONE)
+    trackIcon:SetPoint("TOPLEFT", 6, -6)
 
--- Tracking button
-trackBtn:SetSize(32, 32)
-trackBtn:ClearAllPoints()
-trackBtn:SetPoint("TOPLEFT")
+    local trackOverlay = tracking:CreateTexture("MiniMapTrackingIconOverlay", "OVERLAY")
+    tracking.MiniMapTrackingIconOverlay = trackOverlay
+    trackOverlay:SetSize(20, 20)
+    trackOverlay:SetAllPoints(trackIcon)
+    trackOverlay:SetColorTexture(0, 0, 0, 0.5)
+    trackOverlay:Hide()
 
-local btnNormal = trackBtn:GetNormalTexture()
-btnNormal:SetTexture(nil)
-btnNormal:SetAlpha(0)
-btnNormal:Hide()
+    trackBtn:SetSize(32, 32)
+    trackBtn:ClearAllPoints()
+    trackBtn:SetPoint("TOPLEFT")
 
-local btnPushed = trackBtn:GetPushedTexture()
-btnPushed:SetTexture(nil)
-btnPushed:SetAlpha(0)
-btnPushed:Hide()
+    trackBtn:GetNormalTexture():SetTexture(nil)
+    trackBtn:GetPushedTexture():SetTexture(nil)
 
-trackBtn:SetHighlightTexture(TEX_ZOOM_HL, "ADD")
+    trackBtn:SetHighlightTexture(TEX_ZOOM_HL, "ADD")
 
-local trackBtnBorder = trackBtn:CreateTexture("MiniMapTrackingButtonBorder", "BORDER")
-tracking.ButtonBorder = trackBtnBorder
-trackBtnBorder:SetSize(54, 54)
-trackBtnBorder:SetTexture(TEX_TRACK_BRD)
-trackBtnBorder:SetPoint("TOPLEFT")
+    local trackBtnBorder = trackBtn:CreateTexture("MiniMapTrackingButtonBorder", "BORDER")
+    tracking.ButtonBorder = trackBtnBorder
+    trackBtnBorder:SetSize(54, 54)
+    trackBtnBorder:SetTexture(TEX_TRACK_BRD)
+    trackBtnBorder:SetPoint("TOPLEFT")
+end
 
 -- Indicator frame (mail & crafting)
-mailFrame:ClearAllPoints()
-mailFrame:SetPoint("TOPRIGHT", minimap, "TOPRIGHT", 24, -37)
-mailFrame:SetSize(33, 33)
-mailFrame:SetFrameStrata("LOW")
-mailFrame:SetFrameLevel(6)
+do
+    indicator:SetParent(cluster)
+    indicator:SetSize(33, 33)
+    indicator:ClearAllPoints()
+    indicator:SetPoint("TOPRIGHT", minimap, "TOPRIGHT", 24, -37)
+    indicator:SetFrameStrata("LOW")
+    indicator:SetFrameLevel(4)
 
-craftFrame:SetSize(33, 33)
-craftFrame:ClearAllPoints()
-craftFrame:SetPoint("TOPLEFT", indicator, "TOPLEFT", 0, 0)
-craftFrame:SetFrameStrata("LOW")
-craftFrame:SetFrameLevel(5)
-
-indicator:SetParent(cluster)
-indicator:SetSize(33, 33)
-indicator:ClearAllPoints()
-indicator:SetPoint("TOPRIGHT", minimap, "TOPRIGHT", 24, -37)
-indicator:SetFrameStrata("LOW")
-indicator:SetFrameLevel(4)
-
-hooksecurefunc(indicator, "Layout", function(self)
-    self:SetSize(33, 33)
+    -- Mail
     mailFrame:ClearAllPoints()
-    mailFrame:SetPoint("TOPRIGHT", minimap, "TOPRIGHT", 5, -5)
+    mailFrame:SetPoint("TOPRIGHT", minimap, "TOPRIGHT", 24, -37)
+    mailFrame:SetSize(33, 33)
+    mailFrame:SetFrameStrata("LOW")
+    mailFrame:SetFrameLevel(6)
+
+    mailIcon:SetSize(18, 18)
+    mailIcon:SetTexture(TEX_MAIL_ICON)
+    mailIcon:ClearAllPoints()
+    mailIcon:SetPoint("TOPLEFT", mailFrame, "TOPLEFT", 6, -6)
+    mailIcon:SetDrawLayer("ARTWORK", 0)
+
+    local mailBorder = mailFrame:CreateTexture("MiniMapMailBorder", "OVERLAY")
+    mailBorder:SetSize(52, 52)
+    mailBorder:SetTexture(TEX_TRACK_BRD)
+    mailBorder:SetPoint("TOPLEFT")
+    mailBorder:SetDrawLayer("OVERLAY", 0)
+
+    -- Crafting
+    craftFrame:SetSize(33, 33)
     craftFrame:ClearAllPoints()
-    craftFrame:SetPoint("TOPLEFT", self, "TOPLEFT", 0, 0)
-end)
+    craftFrame:SetPoint("TOPLEFT")
+    craftFrame:SetFrameStrata("LOW")
+    craftFrame:SetFrameLevel(5)
 
--- Mail icon
-mailIcon:SetSize(18, 18)
-mailIcon:SetTexture(TEX_MAIL_ICON)
-mailIcon:ClearAllPoints()
-mailIcon:SetPoint("TOPLEFT", mailFrame, "TOPLEFT", 6, -6)
-mailIcon:SetDrawLayer("ARTWORK", 0)
+    craftIcon:SetSize(18, 18)
+    craftIcon:SetTexture(TEX_CRAFT_ICON)
+    craftIcon:ClearAllPoints()
+    craftIcon:SetPoint("TOPLEFT", craftFrame, "TOPLEFT", 7, -6)
+    craftIcon:SetDrawLayer("ARTWORK", 0)
 
--- Crafting icon
-craftIcon:SetSize(18, 18)
-craftIcon:SetTexture(TEX_CRAFT_ICON)
-craftIcon:ClearAllPoints()
-craftIcon:SetPoint("TOPLEFT", craftFrame, "TOPLEFT", 7, -6)
-craftIcon:SetDrawLayer("ARTWORK", 0)
+    local craftBorder = craftFrame:CreateTexture("MiniMapCraftingBorder", "OVERLAY")
+    craftBorder:SetSize(52, 52)
+    craftBorder:SetTexture(TEX_TRACK_BRD)
+    craftBorder:SetPoint("TOPLEFT")
+    craftBorder:SetDrawLayer("OVERLAY", 0)
 
--- Mail border
-local mailBorder = mailFrame:CreateTexture("MiniMapMailBorder", "OVERLAY")
-mailBorder:SetSize(52, 52)
-mailBorder:SetTexture(TEX_TRACK_BRD)
-mailBorder:SetPoint("TOPLEFT", mailFrame, "TOPLEFT", 0, 0)
-mailBorder:SetDrawLayer("OVERLAY", 0)
-
--- Crafting border
-local craftBorder = craftFrame:CreateTexture("MiniMapCraftingBorder", "OVERLAY")
-craftBorder:SetSize(52, 52)
-craftBorder:SetTexture(TEX_TRACK_BRD)
-craftBorder:SetPoint("TOPLEFT", craftFrame, "TOPLEFT", 0, 0)
-craftBorder:SetDrawLayer("OVERLAY", 0)
+    -- Layout hook
+    hooksecurefunc(indicator, "Layout", function(self)
+        self:SetSize(33, 33)
+        mailFrame:ClearAllPoints()
+        mailFrame:SetPoint("TOPRIGHT", minimap, "TOPRIGHT", 5, -5)
+        craftFrame:ClearAllPoints()
+        craftFrame:SetPoint("TOPLEFT")
+    end)
+end
 
 -- Hide unwanted elements
-cluster.InstanceDifficulty:Hide()
-cluster.BorderTop:Hide()
-cluster.ZoneTextButton:Hide()
-MinimapZoneText:Hide()
-GameTimeFrame:Hide()
-minimap.ZoomIn:SetAlpha(0)
-minimap.ZoomOut:SetAlpha(0)
+do
+    local function HideOnShow(self) self:Hide() end
 
-if AddonCompartmentFrame then
-    AddonCompartmentFrame:HookScript("OnShow", HideOnShow)
-    AddonCompartmentFrame:Hide()
+    cluster.InstanceDifficulty:Hide()
+    cluster.BorderTop:Hide()
+    cluster.ZoneTextButton:Hide()
+    MinimapZoneText:Hide()
+    GameTimeFrame:Hide()
+    minimap.ZoomIn:SetAlpha(0)
+    minimap.ZoomOut:SetAlpha(0)
+
+    if AddonCompartmentFrame then
+        AddonCompartmentFrame:HookScript("OnShow", HideOnShow)
+        AddonCompartmentFrame:Hide()
+    end
+
+    if ExpansionLandingPageMinimapButton then
+        ExpansionLandingPageMinimapButton:HookScript("OnShow", HideOnShow)
+        ExpansionLandingPageMinimapButton:Hide()
+    end
 end
 
-if ExpansionLandingPageMinimapButton then
-    ExpansionLandingPageMinimapButton:HookScript("OnShow", HideOnShow)
-    ExpansionLandingPageMinimapButton:Hide()
-end
-
--- Clock setup (one-shot via own event frame)
+-- Clock setup (one-shot)
 do
     local f = CreateFrame("Frame")
     f:RegisterEvent("PLAYER_ENTERING_WORLD")
     f:SetScript("OnEvent", function(self)
-        local clockBtn = TimeManagerClockButton
-        if clockBtn then
-            clockBtn:SetParent(minimap)
-            clockBtn:SetSize(60, 28)
-            clockBtn:ClearAllPoints()
-            clockBtn:SetPoint("CENTER", 0, -88)
-            clockBtn:SetFrameStrata("LOW")
-            clockBtn:SetFrameLevel(5)
-
-            if not clockBtn.cfBackground then
-                local bg = clockBtn:CreateTexture("TimeManagerClockButtonBackground", "BORDER")
-                bg:SetTexture(TEX_CLOCK_BG)
-                bg:SetTexCoord(0.015625, 0.8125, 0.015625, 0.390625)
-                bg:SetAllPoints(clockBtn)
-                clockBtn.cfBackground = bg
-            end
-
-            local ticker = TimeManagerClockTicker
-            if ticker then
-                ticker:ClearAllPoints()
-                ticker:SetPoint("CENTER", clockBtn, "CENTER", 3, 1)
-            end
-        end
-
         self:UnregisterEvent("PLAYER_ENTERING_WORLD")
         self:SetScript("OnEvent", nil)
+
+        local clockBtn = TimeManagerClockButton
+        if not clockBtn then return end
+
+        clockBtn:SetParent(minimap)
+        clockBtn:SetSize(60, 28)
+        clockBtn:ClearAllPoints()
+        clockBtn:SetPoint("CENTER", 0, -88)
+        clockBtn:SetFrameStrata("LOW")
+        clockBtn:SetFrameLevel(5)
+
+        if not clockBtn.cfBackground then
+            local bg = clockBtn:CreateTexture("TimeManagerClockButtonBackground", "BORDER")
+            bg:SetTexture(TEX_CLOCK_BG)
+            bg:SetTexCoord(0.015625, 0.8125, 0.015625, 0.390625)
+            bg:SetAllPoints(clockBtn)
+            clockBtn.cfBackground = bg
+        end
+
+        local ticker = TimeManagerClockTicker
+        if ticker then
+            ticker:ClearAllPoints()
+            ticker:SetPoint("CENTER", clockBtn, "CENTER", 3, 1)
+        end
     end)
 end
 
