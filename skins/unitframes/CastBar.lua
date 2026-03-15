@@ -60,7 +60,7 @@ end
 --------------------------------------------------------------------------------
 
 local function SetLookReplacementPlayer(self)
-    self:SetSize(190, 10)
+    self:SetSize(206, 10)
     self.Background:SetColorTexture(0, 0, 0, 0.5)
 
     local border = self.Border
