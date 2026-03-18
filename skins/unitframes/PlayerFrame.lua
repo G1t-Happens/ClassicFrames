@@ -287,12 +287,11 @@ end
 -- Hooks
 -- =============================================================================
 
-hooksecurefunc("PlayerFrame_ToPlayerArt", function(self)
-    local c = self.PlayerFrameContainer
-    SetPlayerFrameTexture(c.FrameTexture, -21.5)
-    SetPlayerFrameTexture(c.AlternatePowerFrameTexture, -21.5)
+hooksecurefunc("PlayerFrame_ToPlayerArt", function()
+    SetPlayerFrameTexture(pfContainer.FrameTexture, -21.5)
+    SetPlayerFrameTexture(pfContainer.AlternatePowerFrameTexture, -21.5)
 
-    c.FrameFlash:Hide()
+    pfContainer.FrameFlash:Hide()
     pfMain.StatusTexture:Hide()
 
     ApplyHealthBarSkin()
@@ -311,25 +310,23 @@ hooksecurefunc("PlayerFrame_ToPlayerArt", function(self)
     hb.LeftText:SetPoint("LEFT", hb, "LEFT", 6, -5)
     hb.RightText:SetPoint("RIGHT", hb, "RIGHT", -4, -5)
 
-    local ctx = self.PlayerFrameContent.PlayerFrameContentContextual
-    ctx.GroupIndicator:ClearAllPoints()
-    ctx.GroupIndicator:SetPoint("BOTTOMLEFT", CfPlayerFrame, "TOPLEFT", 97, -24)
-    ctx.RoleIcon:SetPoint("TOPLEFT", 76, -23)
+    pfContextual.GroupIndicator:ClearAllPoints()
+    pfContextual.GroupIndicator:SetPoint("BOTTOMLEFT", CfPlayerFrame, "TOPLEFT", 97, -24)
+    pfContextual.RoleIcon:SetPoint("TOPLEFT", 76, -23)
 
     CfPlayerFrameBackground:SetSize(120, 41)
     PlayerFrame.nameBackground:Show()
 end)
 
-hooksecurefunc("PlayerFrame_ToVehicleArt", function(self)
-    local c = self.PlayerFrameContainer
-    local vft = c.VehicleFrameTexture
+hooksecurefunc("PlayerFrame_ToVehicleArt", function()
+    local vft = pfContainer.VehicleFrameTexture
     vft:SetSize(240, 120)
     vft:SetTexture(TEX_VEHICLE)
     vft:SetDrawLayer("BORDER")
     vft:ClearAllPoints()
     vft:SetPoint("TOPLEFT", -3, 2)
 
-    c.FrameFlash:Hide()
+    pfContainer.FrameFlash:Hide()
     pfMain.StatusTexture:Hide()
 
     ApplyHealthBarSkin()
@@ -348,13 +345,12 @@ hooksecurefunc("PlayerFrame_ToVehicleArt", function(self)
     mbMask:SetPoint("TOPLEFT", mb, "TOPLEFT", 7, 2)
     mbMask:SetPoint("BOTTOMRIGHT", mb, "BOTTOMRIGHT", -5, -2)
 
-    local ctx = self.PlayerFrameContent.PlayerFrameContentContextual
-    ctx.GroupIndicator:ClearAllPoints()
-    ctx.GroupIndicator:SetPoint("BOTTOMLEFT", CfPlayerFrame, "TOPLEFT", 97, -17)
-    ctx.RoleIcon:SetPoint("TOPLEFT", 76, -23)
+    pfContextual.GroupIndicator:ClearAllPoints()
+    pfContextual.GroupIndicator:SetPoint("BOTTOMLEFT", CfPlayerFrame, "TOPLEFT", 97, -17)
+    pfContextual.RoleIcon:SetPoint("TOPLEFT", 76, -23)
 
     PlayerName:ClearAllPoints()
-    PlayerName:SetPoint("TOPLEFT", c, "TOPLEFT", 97, -30)
+    PlayerName:SetPoint("TOPLEFT", pfContainer, "TOPLEFT", 97, -30)
     PlayerFrame.nameBackground:Hide()
     CfPlayerFrameBackground:SetSize(114, 41)
 end)
