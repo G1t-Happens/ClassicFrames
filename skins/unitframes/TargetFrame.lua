@@ -208,10 +208,9 @@ local function SkinFrame(frame)
     -- Hook: CheckFaction
     hooksecurefunc(frame, "CheckFaction", function(self)
         if not self.nameBackground then
-            local bg = self.TargetFrameContainer:CreateTexture(nil, "BORDER")
+            local bg = self.TargetFrameContainer:CreateTexture(nil, "BACKGROUND")
             bg:SetSize(120, 19)
             bg:SetPoint("TOPRIGHT", contentMain, "TOPRIGHT", -87, -31)
-            bg:SetDrawLayer("BACKGROUND", 0)
             bg:SetTexture(TEX_STATUSBAR)
             self.nameBackground = bg
         end
