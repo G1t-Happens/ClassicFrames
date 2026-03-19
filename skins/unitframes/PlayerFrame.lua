@@ -2,11 +2,8 @@
 -- PlayerFrame.lua
 -- =============================================================================
 
-function CfPlayerFrame_OnLoad(self)
-    self:EnableMouse(false)
-end
-
 -- Cached globals
+local CreateFrame       = CreateFrame
 local UnitClass         = UnitClass
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 local hooksecurefunc    = hooksecurefunc
@@ -32,10 +29,19 @@ local hbContainer = pfMain.HealthBarsContainer
 local hb          = hbContainer.HealthBar
 local mb          = pfMain.ManaBarArea.ManaBar
 
+-- Frame creation
+local cfPlayerFrame = CreateFrame("Button", nil, PlayerFrame)
+cfPlayerFrame:SetSize(232, 100)
+cfPlayerFrame:SetPoint("TOPLEFT", -19, -8)
+cfPlayerFrame:EnableMouse(false)
+
+local cfPlayerBg = cfPlayerFrame:CreateTexture(nil, "BACKGROUND")
+cfPlayerBg:SetPoint("TOPLEFT", 106, -22)
+cfPlayerBg:SetColorTexture(0, 0, 0, 0.5)
+
 -- =============================================================================
 -- INIT: One-time static setup
 -- =============================================================================
-
 pfContainer:SetFrameStrata("MEDIUM")
 pfContextual:SetFrameStrata("MEDIUM")
 
@@ -311,10 +317,10 @@ hooksecurefunc("PlayerFrame_ToPlayerArt", function()
     hb.RightText:SetPoint("RIGHT", hb, "RIGHT", -4, -5)
 
     pfContextual.GroupIndicator:ClearAllPoints()
-    pfContextual.GroupIndicator:SetPoint("BOTTOMLEFT", CfPlayerFrame, "TOPLEFT", 97, -24)
+    pfContextual.GroupIndicator:SetPoint("BOTTOMLEFT", cfPlayerFrame, "TOPLEFT", 97, -24)
     pfContextual.RoleIcon:SetPoint("TOPLEFT", 76, -23)
 
-    CfPlayerFrameBackground:SetSize(120, 41)
+    cfPlayerBg:SetSize(120, 41)
     PlayerFrame.nameBackground:Show()
 end)
 
@@ -346,13 +352,13 @@ hooksecurefunc("PlayerFrame_ToVehicleArt", function()
     mbMask:SetPoint("BOTTOMRIGHT", mb, "BOTTOMRIGHT", -5, -2)
 
     pfContextual.GroupIndicator:ClearAllPoints()
-    pfContextual.GroupIndicator:SetPoint("BOTTOMLEFT", CfPlayerFrame, "TOPLEFT", 97, -17)
+    pfContextual.GroupIndicator:SetPoint("BOTTOMLEFT", cfPlayerFrame, "TOPLEFT", 97, -17)
     pfContextual.RoleIcon:SetPoint("TOPLEFT", 76, -23)
 
     PlayerName:ClearAllPoints()
     PlayerName:SetPoint("TOPLEFT", pfContainer, "TOPLEFT", 97, -30)
     PlayerFrame.nameBackground:Hide()
-    CfPlayerFrameBackground:SetSize(114, 41)
+    cfPlayerBg:SetSize(114, 41)
 end)
 
 hooksecurefunc("PlayerFrame_UpdatePartyLeader", function()

@@ -2,11 +2,8 @@
 -- TargetFrame.lua
 -- =============================================================================
 
-function CfTargetFrame_OnLoad(self)
-    self:EnableMouse(false)
-end
-
 -- Cached globals
+local CreateFrame           = CreateFrame
 local UnitIsPlayer          = UnitIsPlayer
 local UnitIsConnected       = UnitIsConnected
 local UnitClass             = UnitClass
@@ -28,6 +25,23 @@ local TEX_LEADER    = "Interface\\GroupFrame\\UI-Group-LeaderIcon"
 local TEX_GUIDE     = "Interface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES"
 local TEX_QUEST     = "Interface\\TargetingFrame\\PortraitQuestBadge"
 local FONT_FRIZ     = "Fonts\\FRIZQT__.TTF"
+
+-- Frame creation
+local function CreateOverlayFrame(parent)
+    local frame = CreateFrame("Button", nil, parent)
+    frame:SetSize(232, 100)
+    frame:SetPoint("TOPLEFT", 20, -8)
+    frame:EnableMouse(false)
+
+    local bg = frame:CreateTexture(nil, "BACKGROUND")
+    bg:SetPoint("BOTTOMLEFT", 7, 35)
+    bg:SetColorTexture(0, 0, 0, 0.5)
+
+    return frame, bg
+end
+
+local _, cfTargetBg = CreateOverlayFrame(TargetFrame)
+local _, cfFocusBg  = CreateOverlayFrame(FocusFrame)
 
 -- Cache showTargetOfTarget CVar to avoid per-call registry lookup in the tot hook.
 -- CVarCallbackRegistry fires the callback with (event, value) on every change.
@@ -316,14 +330,10 @@ do
     local f = CreateFrame("Frame")
     f:RegisterEvent("PLAYER_ENTERING_WORLD")
     f:SetScript("OnEvent", function(self)
-        if CfTargetFrameBackground then
-            CfTargetFrameBackground:SetSize(120, 41)
-            CfTargetFrameBackground:SetPoint("BOTTOMLEFT", 6, 35)
-        end
-        if CfFocusFrameBackground then
-            CfFocusFrameBackground:SetSize(120, 41)
-            CfFocusFrameBackground:SetPoint("BOTTOMLEFT", 6, 35)
-        end
+        cfTargetBg:SetSize(120, 41)
+        cfTargetBg:SetPoint("BOTTOMLEFT", 6, 35)
+        cfFocusBg:SetSize(120, 41)
+        cfFocusBg:SetPoint("BOTTOMLEFT", 6, 35)
         self:UnregisterEvent("PLAYER_ENTERING_WORLD")
         self:SetScript("OnEvent", nil)
     end)

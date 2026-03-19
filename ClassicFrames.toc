@@ -6,12 +6,15 @@
 ## Version: 3.09
 ## Category: Unit Frames
 ## OptionalDeps: SexyMap
-embeds.xml
+libs\LibStub\LibStub.lua
+libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
+libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
+libs\LibDBIcon-1.0\LibDBIcon-1.0.lua
 skins\Minimap.lua
 skins\ObjectiveTracker.lua
 skins\unitframes\UnitFrame.lua
-skins\unitframes\PlayerFrame.xml
-skins\unitframes\TargetFrame.xml
+skins\unitframes\PlayerFrame.lua
+skins\unitframes\TargetFrame.lua
 skins\unitframes\CastBar.lua
 skins\unitframes\PetFrame.lua
 skins\unitframes\UnitFrameColor.lua
