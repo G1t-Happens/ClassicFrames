@@ -11,7 +11,7 @@ local hooksecurefunc = hooksecurefunc
 -- Cached texture paths
 local TEX_BORDER     = "Interface\\AddOns\\ClassicFrames\\textures\\MiniMap\\UI-Minimap-Border"
 local TEX_NORTH      = "Interface\\AddOns\\ClassicFrames\\textures\\MiniMap\\CompassNorthTag"
-local TEX_TRACK_BRD  = "Interface\\AddOns\\ClassicFrames\\icons\\MiniMap-TrackingBorder"
+local TEX_TRACK_BRD  = "Interface\\AddOns\\ClassicFrames\\textures\\icons\\MiniMap-TrackingBorder"
 local TEX_CLOCK_BG   = "Interface\\AddOns\\ClassicFrames\\textures\\MiniMap\\ClockBackground"
 local TEX_MM_BG      = "Interface\\Minimap\\UI-Minimap-Background"
 local TEX_ZOOM_HL    = "Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight"
