@@ -3,7 +3,7 @@
 ## Title: Classic Frames
 ## Notes: Restores the Pre-10.0 UI frames with a focus on PvP, minimalism, and performance.
 ## Author: G1t-Happens
-## Version: 3.10
+## Version: 3.11
 ## Category: Unit Frames
 ## OptionalDeps: SexyMap
 libs\LibStub\LibStub.lua
