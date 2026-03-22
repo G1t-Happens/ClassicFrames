@@ -50,11 +50,11 @@ CVarCallbackRegistry:RegisterCallback("showTargetOfTarget", function(_, value)
     showToT = (value == "1")
 end)
 
--- Pre-computed anchor point strings
-local ANCHOR = {
-    TOP    = { L = "TOPLEFT",    R = "TOPRIGHT"    },
-    BOTTOM = { L = "BOTTOMLEFT", R = "BOTTOMRIGHT" },
-}
+-- Anchor-point strings as direct upvalues (avoids table indirection in hot path)
+local TOP_L    = "TOPLEFT"
+local TOP_R    = "TOPRIGHT"
+local BOTTOM_L = "BOTTOMLEFT"
+local BOTTOM_R = "BOTTOMRIGHT"
 
 -- Helpers
 
@@ -339,59 +339,89 @@ do
     end)
 end
 
--- Aura anchor hooks (unified, zero string concat)
-local function UpdateAuraAnchor(self, buff, index, numOther, anchorBuff, anchorIndex, _, offsetX, offsetY, mirrorVertically, isBuff)
-    local a, startY, auraOffsetY
+-- Aura anchor hooks
+hooksecurefunc("TargetFrame_UpdateBuffAnchor", function(self, buff, index, numDebuffs, anchorBuff, anchorIndex, _, offsetX, offsetY, mirrorVertically)
+    local aL, aR, oppL, startY, auraOffsetY
 
     if mirrorVertically then
-        a        = ANCHOR.BOTTOM
-        startY   = -15
-        if self.threatNumericIndicator:IsShown() then
-            startY = startY + self.threatNumericIndicator:GetHeight()
+        aL          = BOTTOM_L
+        aR          = BOTTOM_R
+        oppL        = TOP_L
+        startY      = -15
+        local tni   = self.threatNumericIndicator
+        if tni:IsShown() then
+            startY = startY + tni:GetHeight()
         end
         offsetY     = -offsetY
         auraOffsetY = -3
     else
-        a        = ANCHOR.TOP
-        startY   = 32
+        aL          = TOP_L
+        aR          = TOP_R
+        oppL        = BOTTOM_L
+        startY      = 32
         auraOffsetY = 3
     end
 
-    local opp = (a == ANCHOR.TOP) and ANCHOR.BOTTOM or ANCHOR.TOP
+    buff:ClearAllPoints()
+
+    if index == 1 then
+        local ctx   = self.TargetFrameContent.TargetFrameContentContextual
+        local buffs = ctx.buffs
+
+        if UnitIsFriend("player", self.unit) or numDebuffs == 0 then
+            buff:SetPoint(aL, self.TargetFrameContainer.FrameTexture, oppL, 5, startY)
+        else
+            buff:SetPoint(aL, ctx.debuffs, oppL, 0, -offsetY)
+        end
+        buffs:SetPoint(aL, buff, aL, 0, 0)
+        buffs:SetPoint(oppL, buff, oppL, 0, -auraOffsetY)
+    elseif anchorIndex ~= (index - 1) then
+        buff:SetPoint(aL, anchorBuff, oppL, 0, -offsetY)
+        self.TargetFrameContent.TargetFrameContentContextual.buffs:SetPoint(oppL, buff, oppL, 0, -auraOffsetY)
+    else
+        buff:SetPoint(aL, anchorBuff, aR, offsetX, 0)
+    end
+end)
+
+hooksecurefunc("TargetFrame_UpdateDebuffAnchor", function(self, buff, index, numBuffs, anchorBuff, anchorIndex, _, offsetX, offsetY, mirrorVertically)
+    local aL, aR, oppL, startY, auraOffsetY
+
+    if mirrorVertically then
+        aL          = BOTTOM_L
+        aR          = BOTTOM_R
+        oppL        = TOP_L
+        startY      = -15
+        local tni   = self.threatNumericIndicator
+        if tni:IsShown() then
+            startY = startY + tni:GetHeight()
+        end
+        offsetY     = -offsetY
+        auraOffsetY = -3
+    else
+        aL          = TOP_L
+        aR          = TOP_R
+        oppL        = BOTTOM_L
+        startY      = 32
+        auraOffsetY = 3
+    end
 
     buff:ClearAllPoints()
 
-    local ctx   = self.TargetFrameContent.TargetFrameContentContextual
-    local own   = isBuff and ctx.buffs  or ctx.debuffs
-    local other = isBuff and ctx.debuffs or ctx.buffs
-
     if index == 1 then
-        local attachToFrame
-        if isBuff then
-            attachToFrame = UnitIsFriend("player", self.unit) or numOther == 0
-        else
-            attachToFrame = not (UnitIsFriend("player", self.unit) and numOther > 0)
-        end
+        local ctx     = self.TargetFrameContent.TargetFrameContentContextual
+        local debuffs = ctx.debuffs
 
-        if attachToFrame then
-            buff:SetPoint(a.L, self.TargetFrameContainer.FrameTexture, opp.L, 5, startY)
+        if not (UnitIsFriend("player", self.unit) and numBuffs > 0) then
+            buff:SetPoint(aL, self.TargetFrameContainer.FrameTexture, oppL, 5, startY)
         else
-            buff:SetPoint(a.L, other, opp.L, 0, -offsetY)
+            buff:SetPoint(aL, ctx.buffs, oppL, 0, -offsetY)
         end
-        own:SetPoint(a.L, buff, a.L, 0, 0)
-        own:SetPoint(opp.L, buff, opp.L, 0, -auraOffsetY)
+        debuffs:SetPoint(aL, buff, aL, 0, 0)
+        debuffs:SetPoint(oppL, buff, oppL, 0, -auraOffsetY)
     elseif anchorIndex ~= (index - 1) then
-        buff:SetPoint(a.L, anchorBuff, opp.L, 0, -offsetY)
-        own:SetPoint(opp.L, buff, opp.L, 0, -auraOffsetY)
+        buff:SetPoint(aL, anchorBuff, oppL, 0, -offsetY)
+        self.TargetFrameContent.TargetFrameContentContextual.debuffs:SetPoint(oppL, buff, oppL, 0, -auraOffsetY)
     else
-        buff:SetPoint(a.L, anchorBuff, a.R, offsetX, 0)
+        buff:SetPoint(aL, anchorBuff, aR, offsetX, 0)
     end
-end
-
-hooksecurefunc("TargetFrame_UpdateBuffAnchor", function(self, buff, index, numDebuffs, anchorBuff, anchorIndex, size, offsetX, offsetY, mirrorVertically)
-    UpdateAuraAnchor(self, buff, index, numDebuffs, anchorBuff, anchorIndex, size, offsetX, offsetY, mirrorVertically, true)
-end)
-
-hooksecurefunc("TargetFrame_UpdateDebuffAnchor", function(self, buff, index, numBuffs, anchorBuff, anchorIndex, size, offsetX, offsetY, mirrorVertically)
-    UpdateAuraAnchor(self, buff, index, numBuffs, anchorBuff, anchorIndex, size, offsetX, offsetY, mirrorVertically, false)
 end)
