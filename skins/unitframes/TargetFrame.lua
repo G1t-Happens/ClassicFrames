@@ -198,15 +198,15 @@ local function SkinFrame(frame)
     end
 
     -- Hook: CheckClassification
-    hooksecurefunc(frame, "CheckClassification", function(self)
-        local ft = self.TargetFrameContainer.FrameTexture
+    hooksecurefunc(frame, "CheckClassification", function()
+        local ft = container.FrameTexture
 
         ft:SetTexture(TEX_NOLEVEL)
         ft:SetTexCoord(0.09375, 1, 0, 0.78125)
         hb:SetStatusBarTexture(TEX_STATUSBAR)
         hb:SetStatusBarColor(0, 1, 0)
 
-        self.TargetFrameContainer.BossPortraitFrameTexture:Hide()
+        container.BossPortraitFrameTexture:Hide()
         ctx.BossIcon:Hide()
 
         ft:SetSize(235, 100)
@@ -222,7 +222,7 @@ local function SkinFrame(frame)
     -- Hook: CheckFaction
     hooksecurefunc(frame, "CheckFaction", function(self)
         if not self.nameBackground then
-            local bg = self.TargetFrameContainer:CreateTexture(nil, "BACKGROUND")
+            local bg = container:CreateTexture(nil, "BACKGROUND")
             bg:SetSize(120, 19)
             bg:SetPoint("TOPRIGHT", contentMain, "TOPRIGHT", -87, -31)
             bg:SetTexture(TEX_STATUSBAR)
