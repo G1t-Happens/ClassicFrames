@@ -224,7 +224,7 @@ local function SkinFrame(frame)
         if not self.nameBackground then
             local bg = container:CreateTexture(nil, "BACKGROUND")
             bg:SetSize(120, 19)
-            bg:SetPoint("TOPRIGHT", contentMain, "TOPRIGHT", -87, -31)
+            bg:SetPoint("TOPRIGHT", contentMain, "TOPRIGHT", -85, -31)
             bg:SetTexture(TEX_STATUSBAR)
             self.nameBackground = bg
         end
