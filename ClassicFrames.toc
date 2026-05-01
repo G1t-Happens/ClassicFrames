@@ -1,9 +1,9 @@
-## Interface: 120001
+## Interface: 120005
 ## IconTexture: Interface/Icons/INV_Sword_2H_AshbringerCorrupt
 ## Title: Classic Frames
 ## Notes: Restores the Pre-10.0 UI frames with a focus on PvP, minimalism, and performance.
 ## Author: G1t-Happens
-## Version: 3.15
+## Version: 3.20
 ## Category: Unit Frames
 ## OptionalDeps: SexyMap
 libs\LibStub\LibStub.lua
@@ -12,6 +12,7 @@ libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
 libs\LibDBIcon-1.0\LibDBIcon-1.0.lua
 skins\Minimap.lua
 skins\ObjectiveTracker.lua
+skins\FramerateFrame.lua
 skins\unitframes\UnitFrame.lua
 skins\unitframes\PlayerFrame.lua
 skins\unitframes\TargetFrame.lua
