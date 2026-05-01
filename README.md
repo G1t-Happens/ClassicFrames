@@ -1,4 +1,4 @@
-# ClassicFrames (Colored) - World of Warcraft AddOn (12.0.1)
+# ClassicFrames (Colored) - World of Warcraft AddOn (12.0.5)
 This retail AddOn restores the pre-10.0 UI.
 <br>This AddOn is inspired by the original [ClassicFrames](https://legacy.curseforge.com/wow/addons/classic-frames) AddOn by luckfore.
 <br>The focus of this AddOn is on PvP, performance, texture upscaling, and coloring name frame backgrounds.
