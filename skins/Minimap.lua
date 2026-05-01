@@ -2,6 +2,41 @@
 -- Minimap.lua
 -- =============================================================================
 
+local _, ns = ...
+
+-- =============================================================================
+-- Shared LibDBIcon helper (consumed by Minimap.lua and UnitFrameColor.lua).
+-- One callback registration; multiple consumer functions. Defined BEFORE the
+-- SexyMap early-return so UnitFrameColor.lua can use it regardless of SexyMap.
+-- =============================================================================
+do
+    local consumers = {}
+    local registered = false
+    local receiver = {}
+
+    local function Dispatch(_, button)
+        -- Snapshot length: a consumer registering during dispatch must not
+        -- also fire for the current button.
+        local n = #consumers
+        for i = 1, n do consumers[i](button) end
+    end
+
+    function ns.ForEachLDBIcon(fn)
+        -- Idempotent: passing the same fn twice is a no-op.
+        for i = 1, #consumers do
+            if consumers[i] == fn then return end
+        end
+        local ldbi = LibStub and LibStub:GetLibrary("LibDBIcon-1.0", true)
+        if not ldbi then return end
+        for _, button in next, ldbi.objects do fn(button) end
+        consumers[#consumers + 1] = fn
+        if not registered then
+            ldbi.RegisterCallback(receiver, "LibDBIcon_IconCreated", Dispatch)
+            registered = true
+        end
+    end
+end
+
 if C_AddOns.IsAddOnLoaded("SexyMap") then return end
 
 -- Cached globals
@@ -33,39 +68,26 @@ local craftIcon  = MiniMapCraftingOrderIcon
 
 -- LibDBIcon: apply classic border/icon styling to minimap buttons
 do
-    local ldbi = LibStub and LibStub:GetLibrary("LibDBIcon-1.0", true)
-    if ldbi then
-        local function StyleButton(button)
-            if not button then return end
-            if button.border then
-                button.border:SetTexture(TEX_TRACK_BRD)
-                button.border:SetSize(53, 53)
-                button.border:ClearAllPoints()
-                button.border:SetPoint("TOPLEFT")
-            end
-            if button.background then
-                button.background:SetSize(20, 20)
-                button.background:ClearAllPoints()
-                button.background:SetPoint("TOPLEFT", 7, -5)
-            end
-            if button.icon then
-                button.icon:SetSize(17, 17)
-                button.icon:ClearAllPoints()
-                button.icon:SetPoint("TOPLEFT", 7, -6)
-            end
+    local function StyleButton(button)
+        if not button then return end
+        if button.border then
+            button.border:SetTexture(TEX_TRACK_BRD)
+            button.border:SetSize(53, 53)
+            button.border:ClearAllPoints()
+            button.border:SetPoint("TOPLEFT")
         end
-
-        -- Style buttons created in the future via callback
-        local receiver = {}
-        ldbi.RegisterCallback(receiver, "LibDBIcon_IconCreated", function(_, button)
-            StyleButton(button)
-        end)
-
-        -- Style any buttons that already exist
-        for _, button in next, ldbi.objects do
-            StyleButton(button)
+        if button.background then
+            button.background:SetSize(20, 20)
+            button.background:ClearAllPoints()
+            button.background:SetPoint("TOPLEFT", 7, -5)
+        end
+        if button.icon then
+            button.icon:SetSize(17, 17)
+            button.icon:ClearAllPoints()
+            button.icon:SetPoint("TOPLEFT", 7, -6)
         end
     end
+    ns.ForEachLDBIcon(StyleButton)
 end
 
 -- Minimap cluster & map
@@ -95,7 +117,7 @@ mmBorder:SetTexCoord(0.25, 1, 0.125, 0.875)
 mmBorder:SetAllPoints(backdrop)
 mmBorder:SetDrawLayer("ARTWORK", 7)
 
-local northTag = backdrop:CreateTexture("MinimapNorthTag")
+local northTag = backdrop:CreateTexture(nil, "OVERLAY")
 northTag:SetSize(16, 16)
 northTag:SetTexture(TEX_NORTH)
 northTag:SetPoint("CENTER", minimap, "CENTER", 0, 80)
@@ -130,13 +152,13 @@ do
     bg:SetPoint("TOPLEFT", 2, -4)
     bg:SetAlpha(0.6)
 
-    local trackIcon = tracking:CreateTexture("MiniMapTrackingIcon", "ARTWORK")
+    local trackIcon = tracking:CreateTexture(nil, "ARTWORK")
     tracking.MiniMapTrackingIcon = trackIcon
     trackIcon:SetSize(20, 20)
     trackIcon:SetTexture(TEX_TRACK_NONE)
     trackIcon:SetPoint("TOPLEFT", 6, -6)
 
-    local trackOverlay = tracking:CreateTexture("MiniMapTrackingIconOverlay", "OVERLAY")
+    local trackOverlay = tracking:CreateTexture(nil, "OVERLAY")
     tracking.MiniMapTrackingIconOverlay = trackOverlay
     trackOverlay:SetSize(20, 20)
     trackOverlay:SetAllPoints(trackIcon)

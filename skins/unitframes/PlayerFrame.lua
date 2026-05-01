@@ -9,7 +9,7 @@ local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 local hooksecurefunc    = hooksecurefunc
 
 -- Cached texture paths
-local TEX_STATUSBAR = "Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar"
+local STATUSBAR_TEX = "Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar"
 local TEX_NOLEVEL   = "Interface\\AddOns\\ClassicFrames\\textures\\UI-TargetingFrameNoLevel"
 local TEX_GROUP_IND = "Interface\\CharacterFrame\\UI-CharacterFrame-GroupIndicator"
 local TEX_PORTRAIT  = "Interface\\CharacterFrame\\TempPortraitAlphaMask"
@@ -29,11 +29,9 @@ local hbContainer = pfMain.HealthBarsContainer
 local hb          = hbContainer.HealthBar
 local mb          = pfMain.ManaBarArea.ManaBar
 
--- Frame creation
-local cfPlayerFrame = CreateFrame("Button", nil, PlayerFrame)
+local cfPlayerFrame = CreateFrame("Frame", nil, PlayerFrame)
 cfPlayerFrame:SetSize(232, 100)
 cfPlayerFrame:SetPoint("TOPLEFT", -19, -8)
-cfPlayerFrame:EnableMouse(false)
 
 local cfPlayerBg = cfPlayerFrame:CreateTexture(nil, "BACKGROUND")
 cfPlayerBg:SetPoint("TOPLEFT", 106, -22)
@@ -126,7 +124,7 @@ if not PlayerFrame.nameBackground then
     nb:SetSize(118, 19)
     nb:ClearAllPoints()
     nb:SetPoint("CENTER", pfMain, 32, 9)
-    nb:SetTexture(TEX_STATUSBAR)
+    nb:SetTexture(STATUSBAR_TEX)
     local _, class = UnitClass("player")
     local color = RAID_CLASS_COLORS[class]
     if color then nb:SetVertexColor(color.r, color.g, color.b) end
@@ -138,6 +136,31 @@ do
     local rl = pfContextual.PlayerRestLoop
     rl:Hide()
     rl.PlayerRestLoopAnim:Stop()
+end
+
+-- Leader / Guide icons: Blizzard's PlayerFrame_UpdatePartyLeader only flips Show/Hide,
+-- so size/texture/position can be set once at load
+do
+    local li = pfContextual.LeaderIcon
+    li:SetSize(16, 16)
+    li:SetTexture(TEX_LEADER)
+    li:ClearAllPoints()
+    li:SetPoint("TOPLEFT", 21, -16)
+
+    local gi = pfContextual.GuideIcon
+    gi:SetSize(19, 19)
+    gi:SetTexture(TEX_GUIDE)
+    gi:SetTexCoord(0, 0.296875, 0.015625, 0.3125)
+    gi:ClearAllPoints()
+    gi:SetPoint("TOPLEFT", 21, -16)
+end
+
+-- PlayerName: width / justify / font are static, Blizzard's UpdatePlayerNameTextAnchor
+-- only changes SetPoint based on vehicle state
+do
+    PlayerName:SetWidth(100)
+    PlayerName:SetJustifyH("CENTER")
+    PlayerName:SetFont(FONT_FRIZ, 11, "OUTLINE")
 end
 
 -- =============================================================================
@@ -185,7 +208,7 @@ end
 
 local function HookBarEvaluate(bar, r, g, b)
     hooksecurefunc(bar, "EvaluateUnit", function(self)
-        self:SetStatusBarTexture(TEX_STATUSBAR)
+        self:SetStatusBarTexture(STATUSBAR_TEX)
         self:SetStatusBarColor(r, g, b)
         if self.PowerBarMask then self.PowerBarMask:Hide() end
     end)
@@ -234,7 +257,7 @@ if _G.MonkStaggerBar then
 
     -- MonkStaggerBar uses its own textures, not HookBarEvaluate
     hooksecurefunc(msb, "EvaluateUnit", function(self)
-        self:SetStatusBarTexture(TEX_STATUSBAR)
+        self:SetStatusBarTexture(STATUSBAR_TEX)
         self:SetStatusBarColor(0, 0, 1)
     end)
 end
@@ -284,11 +307,6 @@ local function SetPlayerFrameTexture(tex, x)
     tex:SetPoint("TOPLEFT", x, -8)
 end
 
-local function ApplyHealthBarSkin()
-    hb:SetStatusBarTexture(TEX_STATUSBAR)
-    hb:SetStatusBarColor(0, 1, 0)
-end
-
 -- =============================================================================
 -- Hooks
 -- =============================================================================
@@ -300,7 +318,8 @@ hooksecurefunc("PlayerFrame_ToPlayerArt", function()
     pfContainer.FrameFlash:Hide()
     pfMain.StatusTexture:Hide()
 
-    ApplyHealthBarSkin()
+    hb:SetStatusBarTexture(STATUSBAR_TEX)
+    hb:SetStatusBarColor(0, 1, 0)
 
     local hbMask = hbContainer.HealthBarMask
     hbMask:ClearAllPoints()
@@ -335,7 +354,8 @@ hooksecurefunc("PlayerFrame_ToVehicleArt", function()
     pfContainer.FrameFlash:Hide()
     pfMain.StatusTexture:Hide()
 
-    ApplyHealthBarSkin()
+    hb:SetStatusBarTexture(STATUSBAR_TEX)
+    hb:SetStatusBarColor(0, 1, 0)
 
     local hbMask = hbContainer.HealthBarMask
     hbMask:ClearAllPoints()
@@ -361,27 +381,9 @@ hooksecurefunc("PlayerFrame_ToVehicleArt", function()
     cfPlayerBg:SetSize(114, 41)
 end)
 
-hooksecurefunc("PlayerFrame_UpdatePartyLeader", function()
-    local li = pfContextual.LeaderIcon
-    li:SetSize(16, 16)
-    li:SetTexture(TEX_LEADER)
-    li:ClearAllPoints()
-    li:SetPoint("TOPLEFT", 21, -16)
-
-    local gi = pfContextual.GuideIcon
-    gi:SetSize(19, 19)
-    gi:SetTexture(TEX_GUIDE)
-    gi:SetTexCoord(0, 0.296875, 0.015625, 0.3125)
-    gi:ClearAllPoints()
-    gi:SetPoint("TOPLEFT", 21, -16)
-end)
-
 hooksecurefunc("PlayerFrame_UpdatePlayerNameTextAnchor", function()
-    PlayerName:SetWidth(100)
     PlayerName:ClearAllPoints()
     PlayerName:SetPoint("TOPLEFT", 97, -34)
-    PlayerName:SetJustifyH("CENTER")
-    PlayerName:SetFont(FONT_FRIZ, 11, "OUTLINE")
 end)
 
 hooksecurefunc("PlayerFrame_UpdatePlayerRestLoop", function()

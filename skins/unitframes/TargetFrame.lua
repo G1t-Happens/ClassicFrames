@@ -18,7 +18,7 @@ local FACTION_BAR_COLORS    = FACTION_BAR_COLORS
 local hooksecurefunc        = hooksecurefunc
 
 -- Cached texture paths
-local TEX_STATUSBAR = "Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar"
+local STATUSBAR_TEX = "Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar"
 local TEX_NOLEVEL   = "Interface\\AddOns\\ClassicFrames\\textures\\UI-TargetingFrameNoLevel"
 local TEX_TOT       = "Interface\\AddOns\\ClassicFrames\\textures\\UI-TargetofTargetFrame"
 local TEX_LEADER    = "Interface\\GroupFrame\\UI-Group-LeaderIcon"
@@ -26,12 +26,10 @@ local TEX_GUIDE     = "Interface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES"
 local TEX_QUEST     = "Interface\\TargetingFrame\\PortraitQuestBadge"
 local FONT_FRIZ     = "Fonts\\FRIZQT__.TTF"
 
--- Frame creation
 local function CreateOverlayFrame(parent)
-    local frame = CreateFrame("Button", nil, parent)
+    local frame = CreateFrame("Frame", nil, parent)
     frame:SetSize(232, 100)
     frame:SetPoint("TOPLEFT", 20, -8)
-    frame:EnableMouse(false)
 
     local bg = frame:CreateTexture(nil, "BACKGROUND")
     bg:SetPoint("BOTTOMLEFT", 7, 35)
@@ -203,7 +201,7 @@ local function SkinFrame(frame)
 
         ft:SetTexture(TEX_NOLEVEL)
         ft:SetTexCoord(0.09375, 1, 0, 0.78125)
-        hb:SetStatusBarTexture(TEX_STATUSBAR)
+        hb:SetStatusBarTexture(STATUSBAR_TEX)
         hb:SetStatusBarColor(0, 1, 0)
 
         container.BossPortraitFrameTexture:Hide()
@@ -225,7 +223,7 @@ local function SkinFrame(frame)
             local bg = container:CreateTexture(nil, "BACKGROUND")
             bg:SetSize(120, 19)
             bg:SetPoint("TOPRIGHT", contentMain, "TOPRIGHT", -85, -31)
-            bg:SetTexture(TEX_STATUSBAR)
+            bg:SetTexture(STATUSBAR_TEX)
             self.nameBackground = bg
         end
         SetVertexColorByUnit(self.nameBackground, self.unit)
@@ -248,7 +246,7 @@ local function SkinFrame(frame)
     if not tot then return end
 
     hooksecurefunc(tot, "Update", function(self)
-        if UnitIsUnit(frame.unit, "player") or not showToT then
+        if not showToT or UnitIsUnit(frame.unit, "player") then
             return
         end
         if self.unit and self.HealthBar then
@@ -287,7 +285,7 @@ local function SkinFrame(frame)
     totName:SetFont(FONT_FRIZ, 8, "OUTLINE")
 
     local totHB = tot.HealthBar
-    totHB:SetStatusBarTexture(TEX_STATUSBAR)
+    totHB:SetStatusBarTexture(STATUSBAR_TEX)
     totHB:SetSize(47, 8)
     totHB:ClearAllPoints()
     totHB:SetPoint("BOTTOMRIGHT", tot, "TOPLEFT", 91, -22)

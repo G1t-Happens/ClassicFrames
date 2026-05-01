@@ -7,7 +7,7 @@ if not petFrame then return end
 
 -- Cached texture/font paths
 local STATUSBAR_TEX = "Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar"
-local FONT_PATH     = "Fonts\\FRIZQT__.TTF"
+local FONT_FRIZ     = "Fonts\\FRIZQT__.TTF"
 local TEX_FRAME     = "Interface\\AddOns\\ClassicFrames\\textures\\UI-SmallTargetingFrame"
 local TEX_FLASH     = "Interface\\TargetingFrame\\UI-PartyFrame-Flash"
 local TEX_ATTACK    = "Interface\\TargetingFrame\\UI-Player-AttackStatus"
@@ -28,6 +28,8 @@ local hpTextRight    = PetFrameHealthBarTextRight
 local mpText         = PetFrameManaBarText
 local mpTextLeft     = PetFrameManaBarTextLeft
 local mpTextRight    = PetFrameManaBarTextRight
+local hpMask         = PetFrameHealthBarMask
+local mpMask         = PetFrameManaBarMask
 
 -- Frame sizing
 petFrame:SetSize(128, 53)
@@ -40,7 +42,7 @@ portrait:SetPoint("TOPLEFT", 7, -6)
 petName:ClearAllPoints()
 petName:SetPoint("BOTTOMLEFT", 53, 33)
 petName:SetJustifyH("LEFT")
-petName:SetFont(FONT_PATH, 10, "OUTLINE")
+petName:SetFont(FONT_FRIZ, 10, "OUTLINE")
 
 -- Frame texture
 frameTex:SetSize(128, 64)
@@ -62,14 +64,14 @@ healthBar:SetStatusBarColor(0, 1, 0)
 healthBar:ClearAllPoints()
 healthBar:SetPoint("TOPLEFT", 46, -22)
 healthBar:SetFrameLevel(1)
-PetFrameHealthBarMask:Hide()
+hpMask:Hide()
 
 -- Mana bar
 manaBar:SetSize(68, 8)
 manaBar:ClearAllPoints()
 manaBar:SetPoint("TOPLEFT", 46, -29)
 manaBar:SetFrameLevel(1)
-PetFrameManaBarMask:Hide()
+mpMask:Hide()
 
 -- Reparent & reposition bar texts
 hpText:SetParent(petFrame)

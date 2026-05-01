@@ -16,7 +16,7 @@ local BORDER_SMALL_TEX = "Interface\\AddOns\\ClassicFrames\\textures\\CastingBar
 local SHIELD_TEX       = "Interface\\AddOns\\ClassicFrames\\textures\\CastingBar\\UI-CastingBar-Small-Shield"
 local FLASH_TEX        = "Interface\\AddOns\\ClassicFrames\\textures\\CastingBar\\UI-CastingBar-Flash"
 local FLASH_SMALL_TEX  = "Interface\\CastingBar\\UI-CastingBar-Flash-Small"
-local FONT_PATH        = "Fonts\\FRIZQT__.TTF"
+local FONT_FRIZ        = "Fonts\\FRIZQT__.TTF"
 
 -- Cache color objects locally (avoid table lookups in hot paths)
 local colorStandard        = CreateColor(1.0, 0.7, 0.0, 1)
@@ -104,7 +104,7 @@ local function SkinPlayerCastbar(self)
         textBorder:Hide()
         text:ClearAllPoints()
         text:SetPoint("CENTER", self, "CENTER", 0, 1)
-        text:SetFont(FONT_PATH, 10, "OUTLINE")
+        text:SetFont(FONT_FRIZ, 10, "OUTLINE")
         if self.channeling then
             spark:Hide()
         end
@@ -180,7 +180,7 @@ local function SetLook(self)
     text:SetHeight(16)
     text:ClearAllPoints()
     text:SetPoint("CENTER", self, "CENTER", 0, 1)
-    text:SetFont(FONT_PATH, 9, "OUTLINE")
+    text:SetFont(FONT_FRIZ, 9, "OUTLINE")
 
     self.TextBorder:Hide()
 

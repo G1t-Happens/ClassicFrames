@@ -2,7 +2,10 @@
 -- UnitFrameColor.lua
 -- =============================================================================
 
-local CreateFrame = CreateFrame
+local _, ns = ...
+
+local CreateFrame    = CreateFrame
+local hooksecurefunc = hooksecurefunc
 
 local TINT_R, TINT_G, TINT_B = 0.6, 0.6, 0.6
 
@@ -94,22 +97,15 @@ f:SetScript("OnEvent", function(self)
         Tint(emb.LeftBorder)
     end
 
-    -- Totem borders
     local tf = TotemFrame
-    if tf and tf.totemPool then
-        for totem in tf.totemPool:EnumerateActive() do
-            Tint(totem.Border)
+    if tf then
+        local function TintActiveTotems(self)
+            if not self.totemPool then return end
+            for totem in self.totemPool:EnumerateActive() do Tint(totem.Border) end
         end
+        TintActiveTotems(tf)
+        hooksecurefunc(tf, "Update", TintActiveTotems)
     end
 
-    -- LibDBIcon minimap button borders (frame doubles as callback receiver)
-    local ldbi = LibStub and LibStub:GetLibrary("LibDBIcon-1.0", true)
-    if ldbi then
-        for _, button in next, ldbi.objects do
-            Tint(button.border)
-        end
-        ldbi.RegisterCallback(self, "LibDBIcon_IconCreated", function(_, button)
-            Tint(button.border)
-        end)
-    end
+    ns.ForEachLDBIcon(function(button) Tint(button.border) end)
 end)
