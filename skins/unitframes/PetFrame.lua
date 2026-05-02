@@ -53,6 +53,7 @@ frameTex:SetPoint("TOPLEFT", 0, -2)
 -- Flash
 frameFlash:SetSize(128, 64)
 frameFlash:SetTexture(TEX_FLASH)
+frameFlash:ClearAllPoints()
 frameFlash:SetPoint("TOPLEFT", -4, 11)
 frameFlash:SetTexCoord(0, 1, 1, 0)
 frameFlash:SetDrawLayer("BACKGROUND")

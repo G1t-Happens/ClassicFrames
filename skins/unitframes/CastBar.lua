@@ -76,6 +76,8 @@ local function SetLookReplacementPlayer(self)
     shield:SetSize(280, 70)
 
     self.Icon:Hide()
+
+    self.Text:SetFont(FONT_FRIZ, 10, "OUTLINE")
 end
 
 local function SkinPlayerCastbar(self)
@@ -104,7 +106,6 @@ local function SkinPlayerCastbar(self)
         textBorder:Hide()
         text:ClearAllPoints()
         text:SetPoint("CENTER", self, "CENTER", 0, 1)
-        text:SetFont(FONT_FRIZ, 10, "OUTLINE")
         if self.channeling then
             spark:Hide()
         end

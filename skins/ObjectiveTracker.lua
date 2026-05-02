@@ -5,5 +5,7 @@
 local tracker = ObjectiveTrackerFrame
 if not tracker then return end
 
-tracker.Header:Hide()
+local header = tracker.Header
+header:HookScript("OnShow", header.Hide)
+header:Hide()
 tracker:SetScale(0.7)
