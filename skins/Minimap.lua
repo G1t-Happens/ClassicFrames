@@ -4,39 +4,6 @@
 
 local _, ns = ...
 
--- =============================================================================
--- Shared LibDBIcon helper (consumed by Minimap.lua and UnitFrameColor.lua).
--- One callback registration; multiple consumer functions. Defined BEFORE the
--- SexyMap early-return so UnitFrameColor.lua can use it regardless of SexyMap.
--- =============================================================================
-do
-    local consumers = {}
-    local registered = false
-    local receiver = {}
-
-    local function Dispatch(_, button)
-        -- Snapshot length: a consumer registering during dispatch must not
-        -- also fire for the current button.
-        local n = #consumers
-        for i = 1, n do consumers[i](button) end
-    end
-
-    function ns.ForEachLDBIcon(fn)
-        -- Idempotent: passing the same fn twice is a no-op.
-        for i = 1, #consumers do
-            if consumers[i] == fn then return end
-        end
-        local ldbi = LibStub and LibStub:GetLibrary("LibDBIcon-1.0", true)
-        if not ldbi then return end
-        for _, button in next, ldbi.objects do fn(button) end
-        consumers[#consumers + 1] = fn
-        if not registered then
-            ldbi.RegisterCallback(receiver, "LibDBIcon_IconCreated", Dispatch)
-            registered = true
-        end
-    end
-end
-
 if C_AddOns.IsAddOnLoaded("SexyMap") then return end
 
 -- Cached globals
