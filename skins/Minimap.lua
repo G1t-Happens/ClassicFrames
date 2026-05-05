@@ -157,9 +157,7 @@ do
     indicator:SetFrameStrata("LOW")
     indicator:SetFrameLevel(4)
 
-    -- Mail
-    mailFrame:ClearAllPoints()
-    mailFrame:SetPoint("TOPRIGHT", minimap, "TOPRIGHT", 24, -37)
+    -- Mail (anchor handled by IndicatorFrame:Layout hook below)
     mailFrame:SetSize(33, 33)
     mailFrame:SetFrameStrata("LOW")
     mailFrame:SetFrameLevel(6)
