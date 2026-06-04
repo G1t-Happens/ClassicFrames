@@ -12,6 +12,7 @@ local FONT_FRIZ = "Fonts\\FRIZQT__.TTF"
 local function SetupFrameratePosition()
     local f = FramerateFrame
     if not f then return end
+    if not f:IsShown() then f:Toggle() end
 
     f.FramerateText:SetFont(FONT_FRIZ, 14, "OUTLINE")
     f.Label:SetFont(FONT_FRIZ, 14, "OUTLINE")
