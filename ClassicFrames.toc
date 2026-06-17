@@ -14,6 +14,7 @@ skins\Shared.lua
 skins\Minimap.lua
 skins\ObjectiveTracker.lua
 skins\FramerateFrame.lua
+skins\RaidFrame.lua
 skins\unitframes\UnitFrame.lua
 skins\unitframes\PlayerFrame.lua
 skins\unitframes\TargetFrame.lua
