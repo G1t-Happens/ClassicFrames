@@ -61,10 +61,10 @@ local function tick()
     end
 
     local nextIn
-    if r > 10 then
-        nextIn = r - ceil(r) + 1
-    else
+    if r < 1 or (TENTHS and r < 10) then
         nextIn = 0.1
+    else
+        nextIn = r - ceil(r) + 1
     end
     timer = NewTimer(nextIn, tick)
 end
@@ -97,9 +97,10 @@ end
 
 local function show(i, d)
     local shown = F:IsShown()
-    -- Dedupe: same aura already on screen -> ignore "noise" UPDATEs, no swipe/pop restart.
-    if shown and auraID == d.auraInstanceID then return end
-    auraID = d.auraInstanceID
+    local aid = d.auraInstanceID
+
+    if shown and aid ~= nil and auraID == aid then return end
+    auraID = aid
 
     icon:SetTexture(d.iconTexture or FALLBACK_ICON)
 
