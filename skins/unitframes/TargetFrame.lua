@@ -48,10 +48,6 @@ CVarCallbackRegistry:RegisterCallback("showTargetOfTarget", function(_, value)
     showToT = (value == "1")
 end)
 
--- Anchor-point strings as direct upvalues (avoids table indirection in hot path)
-local TOP_L    = "TOPLEFT"
-local BOTTOM_L = "BOTTOMLEFT"
-
 -- Helpers
 
 --- Returns (colorTable, r, g, b).  Exactly one of the two is non-nil.
@@ -339,11 +335,11 @@ end
 hooksecurefunc("TargetFrame_UpdateBuffAnchor", function(self, buff, index, numDebuffs)
     if index ~= 1 or not (UnitIsFriend("player", self.unit) or numDebuffs == 0) then return end
     buff:ClearAllPoints()
-    buff:SetPoint(TOP_L, self.TargetFrameContainer.FrameTexture, BOTTOM_L, 5, 32)
+    buff:SetPoint("TOPLEFT", self.TargetFrameContainer.FrameTexture, "BOTTOMLEFT", 5, 32)
 end)
 
 hooksecurefunc("TargetFrame_UpdateDebuffAnchor", function(self, buff, index, numBuffs)
     if index ~= 1 or (UnitIsFriend("player", self.unit) and numBuffs > 0) then return end
     buff:ClearAllPoints()
-    buff:SetPoint(TOP_L, self.TargetFrameContainer.FrameTexture, BOTTOM_L, 5, 32)
+    buff:SetPoint("TOPLEFT", self.TargetFrameContainer.FrameTexture, "BOTTOMLEFT", 5, 32)
 end)
