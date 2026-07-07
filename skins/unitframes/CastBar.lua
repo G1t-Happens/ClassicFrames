@@ -8,6 +8,14 @@ local CreateColor = CreateColor
 local CreateFrame = CreateFrame
 local UnitCastingInfo = UnitCastingInfo
 local UnitChannelInfo = UnitChannelInfo
+local UnitShouldDisplaySpellTargetName = UnitShouldDisplaySpellTargetName
+local UnitSpellTargetName = UnitSpellTargetName
+local UnitSpellTargetClass = UnitSpellTargetClass
+local UnitCanAttack = UnitCanAttack
+local UnitName = UnitName
+local UnitClassBase = UnitClassBase
+local GetClassColorObj = C_ClassColor.GetClassColor
+local WrapTextInColor = C_ColorUtil.WrapTextInColor
 
 -- Cache texture/font path strings
 local STATUSBAR_TEX    = "Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar"
@@ -195,15 +203,44 @@ local function SkinTargetCastbar(self)
     SetLook(self)
 
     local spark = self.Spark
-
-    -- Upvalue locals for the flash texture created on first finish.
-    -- Avoids self.NewFlash / self.NewFlashAnim table lookups on every subsequent cast
+    local text = self.Text
+    local unit = self.unit
+    local tot = unit .. "target"
     local newFlash, newFlashAnim
 
     hooksecurefunc(self, "UpdateShownState", function()
         self:SetStatusBarTexture(STATUSBAR_TEX)
-        if self.channeling then
+        local channeling = self.channeling
+        if channeling then
             spark:Hide()
+        end
+
+        local casting = self.casting
+        if casting or channeling then
+            local _, spell
+            if casting and not self.reverseChanneling then
+                _, spell = UnitCastingInfo(unit)
+            else
+                _, spell = UnitChannelInfo(unit)
+            end
+            if spell then
+                local name, class
+                if UnitShouldDisplaySpellTargetName(unit) then
+                    name = UnitSpellTargetName(unit)
+                    class = UnitSpellTargetClass(unit)
+                elseif UnitCanAttack("player", unit) then
+                    name = UnitName(tot)
+                    class = UnitClassBase(tot)
+                end
+                if name then
+                    local color = class and GetClassColorObj(class)
+                    if color then
+                        text:SetText(spell .. ": " .. WrapTextInColor(name, color))
+                    else
+                        text:SetText(spell .. ": " .. name)
+                    end
+                end
+            end
         end
     end)
 
