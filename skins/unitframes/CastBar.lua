@@ -182,11 +182,13 @@ local function SetLook(self)
     shield:SetPoint("TOPRIGHT", 21, 21)
 
     local text = self.Text
-    text:SetWidth(0)
+    text:SetWidth(146)
     text:SetHeight(16)
     text:ClearAllPoints()
     text:SetPoint("CENTER", self, "CENTER", 0, 1)
     text:SetFont(FONT_FRIZ, 9, "OUTLINE")
+    text:SetWordWrap(false)
+    text:SetJustifyH("CENTER")
 
     self.TextBorder:Hide()
 
