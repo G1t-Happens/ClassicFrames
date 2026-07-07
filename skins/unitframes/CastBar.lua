@@ -11,9 +11,6 @@ local UnitChannelInfo = UnitChannelInfo
 local UnitShouldDisplaySpellTargetName = UnitShouldDisplaySpellTargetName
 local UnitSpellTargetName = UnitSpellTargetName
 local UnitSpellTargetClass = UnitSpellTargetClass
-local UnitCanAttack = UnitCanAttack
-local UnitName = UnitName
-local UnitClassBase = UnitClassBase
 local GetClassColorObj = C_ClassColor.GetClassColor
 local WrapTextInColor = C_ColorUtil.WrapTextInColor
 
@@ -205,39 +202,35 @@ local function SkinTargetCastbar(self)
     local spark = self.Spark
     local text = self.Text
     local unit = self.unit
-    local tot = unit .. "target"
+    local setStatusBarTexture = self.SetStatusBarTexture
+    local sparkHide = spark.Hide
+    local setText = text.SetText
     local newFlash, newFlashAnim
 
     hooksecurefunc(self, "UpdateShownState", function()
-        self:SetStatusBarTexture(STATUSBAR_TEX)
+        setStatusBarTexture(self, STATUSBAR_TEX)
         local channeling = self.channeling
         if channeling then
-            spark:Hide()
+            sparkHide(spark)
         end
 
         local casting = self.casting
-        if casting or channeling then
-            local _, spell
-            if casting and not self.reverseChanneling then
-                _, spell = UnitCastingInfo(unit)
-            else
-                _, spell = UnitChannelInfo(unit)
-            end
-            if spell then
-                local name, class
-                if UnitShouldDisplaySpellTargetName(unit) then
-                    name = UnitSpellTargetName(unit)
-                    class = UnitSpellTargetClass(unit)
-                elseif UnitCanAttack("player", unit) then
-                    name = UnitName(tot)
-                    class = UnitClassBase(tot)
+        if (casting or channeling) and UnitShouldDisplaySpellTargetName(unit) then
+            local name = UnitSpellTargetName(unit)
+            if name then
+                local _, spell
+                if casting and not self.reverseChanneling then
+                    _, spell = UnitCastingInfo(unit)
+                else
+                    _, spell = UnitChannelInfo(unit)
                 end
-                if name then
+                if spell then
+                    local class = UnitSpellTargetClass(unit)
                     local color = class and GetClassColorObj(class)
                     if color then
-                        text:SetText(spell .. ": " .. WrapTextInColor(name, color))
+                        setText(text, spell .. ": " .. WrapTextInColor(name, color))
                     else
-                        text:SetText(spell .. ": " .. name)
+                        setText(text, spell .. ": " .. name)
                     end
                 end
             end
@@ -245,7 +238,7 @@ local function SkinTargetCastbar(self)
     end)
 
     hooksecurefunc(self, "PlayFinishAnim", function()
-        self:SetStatusBarTexture(STATUSBAR_TEX)
+        setStatusBarTexture(self, STATUSBAR_TEX)
 
         if not newFlash then
             local flashParent = self.Flash:GetParent()
