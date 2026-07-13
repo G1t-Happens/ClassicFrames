@@ -418,18 +418,18 @@ UIErrorsFrame:SetAlpha(0)
 PlayerFrame:UnregisterEvent("UNIT_COMBAT")
 
 -- Permanently disable animated health loss bar (red trailing bar on damage)
-do
-    local nop = function() end
-    local animLoss = hbContainer.PlayerFrameHealthBarAnimatedLoss
-    if animLoss then
-        animLoss:SetScript("OnUpdate", nil)
-        animLoss:Hide()
-        -- Prevent Blizzard from ever re-linking or re-showing this bar
-        animLoss.Show              = nop
-        animLoss.SetUnitHealthBar  = nop
-        animLoss.UpdateLossAnimation = nop
-        animLoss.OnLoad            = nop
-        -- Clear existing reference
-        hb.AnimatedLossBar = nil
-    end
-end
+-- do
+--     local nop = function() end
+--     local animLoss = hbContainer.PlayerFrameHealthBarAnimatedLoss
+--     if animLoss then
+--         animLoss:SetScript("OnUpdate", nil)
+--         animLoss:Hide()
+--         -- Prevent Blizzard from ever re-linking or re-showing this bar
+--         animLoss.Show              = nop
+--         animLoss.SetUnitHealthBar  = nop
+--         animLoss.UpdateLossAnimation = nop
+--         animLoss.OnLoad            = nop
+--         -- Clear existing reference
+--         hb.AnimatedLossBar = nil
+--     end
+-- end
