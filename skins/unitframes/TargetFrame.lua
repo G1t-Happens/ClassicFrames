@@ -6,13 +6,11 @@
 local CreateFrame           = CreateFrame
 local UnitIsPlayer          = UnitIsPlayer
 local UnitIsConnected       = UnitIsConnected
-local UnitClass             = UnitClass
-local UnitExists            = UnitExists
+local UnitClassBase         = UnitClassBase
 local UnitPlayerControlled  = UnitPlayerControlled
 local UnitIsTapDenied       = UnitIsTapDenied
 local UnitReaction          = UnitReaction
 local UnitIsFriend          = UnitIsFriend
-local UnitIsUnit            = UnitIsUnit
 local RAID_CLASS_COLORS     = RAID_CLASS_COLORS
 local FACTION_BAR_COLORS    = FACTION_BAR_COLORS
 local hooksecurefunc        = hooksecurefunc
@@ -41,55 +39,52 @@ end
 local _, cfTargetBg = CreateOverlayFrame(TargetFrame)
 local _, cfFocusBg  = CreateOverlayFrame(FocusFrame)
 
--- Cache showTargetOfTarget CVar to avoid per-call registry lookup in the tot hook.
--- CVarCallbackRegistry fires the callback with (event, value) on every change.
-local showToT = CVarCallbackRegistry:GetCVarValueBool("showTargetOfTarget")
-CVarCallbackRegistry:RegisterCallback("showTargetOfTarget", function(_, value)
-    showToT = (value == "1")
-end)
-
 -- Helpers
 
---- Returns (colorTable, r, g, b).  Exactly one of the two is non-nil.
---- Faithfully preserves original fall-through semantics.
-local function GetUnitColor(unit)
+--- Fused color appliers
+local function SetBarColorByUnit(bar, unit)
     if UnitIsPlayer(unit) then
         if UnitIsConnected(unit) then
-            local _, class = UnitClass(unit)
-            if class then
-                return RAID_CLASS_COLORS[class]
+            local class = UnitClassBase(unit)
+            local color = class and RAID_CLASS_COLORS[class]
+            if color then
+                bar:SetStatusBarColor(color.r, color.g, color.b)
             end
-            return nil
+        else
+            bar:SetStatusBarColor(.5, .5, .5)
         end
-        return nil, .5, .5, .5
-    end
-    if not UnitExists(unit) then return nil end
-    local tapDenied = UnitIsTapDenied(unit)
-    if not UnitPlayerControlled(unit) and tapDenied then
-        return nil, .5, .5, .5
-    end
-    if not tapDenied then
-        return FACTION_BAR_COLORS[UnitReaction(unit, "player")]
-    end
-    return nil
-end
-
---- Direct-call helpers – no dynamic dispatch overhead.
-local function SetBarColorByUnit(bar, unit)
-    local color, r, g, b = GetUnitColor(unit)
-    if color then
-        bar:SetStatusBarColor(color.r, color.g, color.b)
-    elseif r then
-        bar:SetStatusBarColor(r, g, b)
+    elseif UnitIsTapDenied(unit) then
+        if not UnitPlayerControlled(unit) then
+            bar:SetStatusBarColor(.5, .5, .5)
+        end
+    else
+        local color = FACTION_BAR_COLORS[UnitReaction(unit, "player")]
+        if color then
+            bar:SetStatusBarColor(color.r, color.g, color.b)
+        end
     end
 end
 
 local function SetVertexColorByUnit(tex, unit)
-    local color, r, g, b = GetUnitColor(unit)
-    if color then
-        tex:SetVertexColor(color.r, color.g, color.b)
-    elseif r then
-        tex:SetVertexColor(r, g, b)
+    if UnitIsPlayer(unit) then
+        if UnitIsConnected(unit) then
+            local class = UnitClassBase(unit)
+            local color = class and RAID_CLASS_COLORS[class]
+            if color then
+                tex:SetVertexColor(color.r, color.g, color.b)
+            end
+        else
+            tex:SetVertexColor(.5, .5, .5)
+        end
+    elseif UnitIsTapDenied(unit) then
+        if not UnitPlayerControlled(unit) then
+            tex:SetVertexColor(.5, .5, .5)
+        end
+    else
+        local color = FACTION_BAR_COLORS[UnitReaction(unit, "player")]
+        if color then
+            tex:SetVertexColor(color.r, color.g, color.b)
+        end
     end
 end
 
@@ -239,21 +234,14 @@ local function SkinFrame(frame)
     local tot = frame.totFrame
     if not tot then return end
 
-    hooksecurefunc(tot, "Update", function(self)
-        if not showToT or UnitIsUnit(frame.unit, "player") then
-            return
-        end
-        if self.unit and self.HealthBar then
-            SetBarColorByUnit(self.HealthBar, self.unit)
-        end
-    end)
+    local totHB = tot.HealthBar
 
     tot:SetFrameStrata("HIGH")
     tot:ClearAllPoints()
     tot:SetPoint("TOPLEFT", frame, "BOTTOMRIGHT", -87, 23)
 
     if not tot.Background then
-        local bg = tot.HealthBar:CreateTexture(nil, "BACKGROUND")
+        local bg = totHB:CreateTexture(nil, "BACKGROUND")
         bg:SetSize(46, 15)
         bg:SetColorTexture(0, 0, 0, 0.5)
         bg:ClearAllPoints()
@@ -278,7 +266,6 @@ local function SkinFrame(frame)
     totName:SetPoint("BOTTOMLEFT", 42, 6)
     totName:SetFont(FONT_FRIZ, 8, "OUTLINE")
 
-    local totHB = tot.HealthBar
     totHB:SetStatusBarTexture(STATUSBAR_TEX)
     totHB:SetSize(47, 8)
     totHB:ClearAllPoints()
@@ -316,6 +303,42 @@ end
 -- Apply to TargetFrame & FocusFrame
 SkinFrame(TargetFrame)
 SkinFrame(FocusFrame)
+
+-- ToT recolor drivers. Zero per-frame work!
+do
+    local tTot = TargetFrame.totFrame
+    local fTot = FocusFrame.totFrame
+    if tTot and fTot then
+        local tHB, fHB = tTot.HealthBar, fTot.HealthBar
+        local tVis, fVis = tTot:IsVisible(), fTot:IsVisible()
+
+        tTot:HookScript("OnShow", function()
+            tVis = true
+            SetBarColorByUnit(tHB, "targettarget")
+        end)
+        tTot:HookScript("OnHide", function() tVis = false end)
+
+        fTot:HookScript("OnShow", function()
+            fVis = true
+            SetBarColorByUnit(fHB, "focustarget")
+        end)
+        fTot:HookScript("OnHide", function() fVis = false end)
+
+        local tWatcher = CreateFrame("Frame")
+        tWatcher:RegisterEvent("PLAYER_TARGET_CHANGED")
+        tWatcher:RegisterUnitEvent("UNIT_TARGET", "target")
+        tWatcher:SetScript("OnEvent", function()
+            if tVis then SetBarColorByUnit(tHB, "targettarget") end
+        end)
+
+        local fWatcher = CreateFrame("Frame")
+        fWatcher:RegisterEvent("PLAYER_FOCUS_CHANGED")
+        fWatcher:RegisterUnitEvent("UNIT_TARGET", "focus")
+        fWatcher:SetScript("OnEvent", function()
+            if fVis then SetBarColorByUnit(fHB, "focustarget") end
+        end)
+    end
+end
 
 -- Background sizing (one-shot)
 do
