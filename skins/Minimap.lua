@@ -221,11 +221,6 @@ do
         AddonCompartmentFrame:HookScript("OnShow", HideOnShow)
         AddonCompartmentFrame:Hide()
     end
-
-    if ExpansionLandingPageMinimapButton then
-        ExpansionLandingPageMinimapButton:HookScript("OnShow", HideOnShow)
-        ExpansionLandingPageMinimapButton:Hide()
-    end
 end
 
 -- Clock setup (one-shot)
@@ -282,3 +277,8 @@ do
         qsb.cfBorder = qBorder
     end
 end
+
+-- Expansion landing page button (Omnium Folio)
+hooksecurefunc(ExpansionLandingPageMinimapButton, "UpdateIcon", function(self)
+    self:SetPoint("TOPLEFT", 40, -115)
+end)
