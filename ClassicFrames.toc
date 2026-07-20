@@ -17,6 +17,7 @@ skins\FramerateFrame.lua
 skins\RaidFrame.lua
 skins\CompactRaidFrameManager.lua
 skins\LossOfControlFrame.lua
+skins\ActionBarText.lua
 skins\unitframes\UnitFrame.lua
 skins\unitframes\PlayerFrame.lua
 skins\unitframes\TargetFrame.lua
