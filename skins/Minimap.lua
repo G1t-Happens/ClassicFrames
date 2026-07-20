@@ -265,7 +265,7 @@ do
         self:SetParent(backdrop)
         self:ClearAllPoints()
         self:SetScale(0.6)
-        self:SetPoint("BOTTOMLEFT", 65, 110)
+        self:SetPoint("BOTTOMLEFT", 32, 200)
         self:SetFrameLevel(6)
     end)
 
