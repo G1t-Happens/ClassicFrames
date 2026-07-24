@@ -332,8 +332,12 @@ hooksecurefunc("PlayerFrame_ToPlayerArt", function()
     mbMask:SetPoint("BOTTOMRIGHT", mb, "BOTTOMRIGHT", -1, -2)
 
     hb.TextString:SetPoint("CENTER", hb, "CENTER", 0, -5)
-    hb.LeftText:SetPoint("LEFT", hb, "LEFT", 6, -5)
-    hb.RightText:SetPoint("RIGHT", hb, "RIGHT", -4, -5)
+    hb.LeftText:SetPoint("LEFT", hb, "LEFT", 4, -5)
+    hb.RightText:SetPoint("RIGHT", hb, "RIGHT", -2, -5)
+
+    mb.TextString:SetPoint("CENTER", mb, "CENTER", 0, -1)
+    mb.LeftText:SetPoint("LEFT", mb, "LEFT", 4, -1)
+    mb.RightText:SetPoint("RIGHT", mb, "RIGHT", -2, -1)
 
     pfContextual.GroupIndicator:ClearAllPoints()
     pfContextual.GroupIndicator:SetPoint("BOTTOMLEFT", cfPlayerFrame, "TOPLEFT", 97, -24)
@@ -370,6 +374,12 @@ hooksecurefunc("PlayerFrame_ToVehicleArt", function()
     mbMask:ClearAllPoints()
     mbMask:SetPoint("TOPLEFT", mb, "TOPLEFT", 7, 2)
     mbMask:SetPoint("BOTTOMRIGHT", mb, "BOTTOMRIGHT", -5, -2)
+
+    -- mbMask insets 7 left / 5 right here, so the visible fill is 1px right of mb's centre.
+    -- Offsets track the fill edges with Blizzard's 2px padding; revert to 0/2/-2 for its raw values.
+    mb.TextString:SetPoint("CENTER", mb, "CENTER", 1, 0)
+    mb.LeftText:SetPoint("LEFT", mb, "LEFT", 9, 0)
+    mb.RightText:SetPoint("RIGHT", mb, "RIGHT", -7, 0)
 
     pfContextual.GroupIndicator:ClearAllPoints()
     pfContextual.GroupIndicator:SetPoint("BOTTOMLEFT", cfPlayerFrame, "TOPLEFT", 97, -17)
