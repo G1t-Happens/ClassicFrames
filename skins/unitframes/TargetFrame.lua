@@ -155,9 +155,9 @@ local function SkinFrame(frame)
     mb.RightText:SetParent(container)
     mb.LeftText:SetParent(container)
 
-    mb.TextString:SetPoint("CENTER", mb, "CENTER", 0, 0)
-    mb.LeftText:SetPoint("LEFT", mb, "LEFT", 1, 0)
-    mb.RightText:SetPoint("RIGHT", mb, "RIGHT", -2, 0)
+    mb.TextString:SetPoint("CENTER", mb, "CENTER", 0, -1)
+    mb.LeftText:SetPoint("LEFT", mb, "LEFT", 1, -1)
+    mb.RightText:SetPoint("RIGHT", mb, "RIGHT", -2, -1)
 
     contentMain.ReputationColor:Hide()
 
