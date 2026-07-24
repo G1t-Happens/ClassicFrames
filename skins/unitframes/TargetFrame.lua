@@ -143,16 +143,21 @@ local function SkinFrame(frame)
 
     hb.TextString:SetPoint("CENTER", hb, "CENTER", 0, -5)
     hbContainer.LeftText:SetPoint("LEFT", hb, "LEFT", 4, -5)
-    hbContainer.RightText:SetPoint("RIGHT", hb, "RIGHT", -7, -5)
+    hbContainer.RightText:SetPoint("RIGHT", hb, "RIGHT", -4, -5)
     hbContainer.DeadText:SetPoint("CENTER", hb, "CENTER", 0, -5)
     hbContainer.UnconsciousText:SetPoint("CENTER", hb, "CENTER", 0, -5)
 
     -- Mana bar
     mb:SetWidth(121)
     mb:SetPoint("TOPRIGHT", hbContainer, "BOTTOMRIGHT", -2, -1)
+
     mb.TextString:SetParent(container)
     mb.RightText:SetParent(container)
     mb.LeftText:SetParent(container)
+
+    mb.TextString:SetPoint("CENTER", mb, "CENTER", 0, 0)
+    mb.LeftText:SetPoint("LEFT", mb, "LEFT", 1, 0)
+    mb.RightText:SetPoint("RIGHT", mb, "RIGHT", -2, 0)
 
     contentMain.ReputationColor:Hide()
 
