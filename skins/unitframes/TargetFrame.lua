@@ -11,6 +11,9 @@ local UnitPlayerControlled  = UnitPlayerControlled
 local UnitIsTapDenied       = UnitIsTapDenied
 local UnitReaction          = UnitReaction
 local UnitIsFriend          = UnitIsFriend
+local UnitIsUnit            = UnitIsUnit
+local GetArenaOpponentSpec  = GetArenaOpponentSpec
+local GetSpecNameForSpecID  = GetSpecializationNameForSpecID
 local RAID_CLASS_COLORS     = RAID_CLASS_COLORS
 local FACTION_BAR_COLORS    = FACTION_BAR_COLORS
 local hooksecurefunc        = hooksecurefunc
@@ -23,6 +26,10 @@ local TEX_LEADER    = "Interface\\GroupFrame\\UI-Group-LeaderIcon"
 local TEX_GUIDE     = "Interface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES"
 local TEX_QUEST     = "Interface\\TargetingFrame\\PortraitQuestBadge"
 local FONT_FRIZ     = "Fonts\\FRIZQT__.TTF"
+
+-- Arena spec state
+local inArena      = false  -- refreshed once per zone, never per target change
+local specNameByID = {}     -- specID -> localised name; static data, never invalidated
 
 local function CreateOverlayFrame(parent)
     local frame = CreateFrame("Frame", nil, parent)
@@ -90,6 +97,7 @@ end
 
 -- SkinFrame (called once per frame: TargetFrame, FocusFrame)
 local function SkinFrame(frame)
+    local unit        = frame.unit
     local ctx         = frame.TargetFrameContent.TargetFrameContentContextual
     local contentMain = frame.TargetFrameContent.TargetFrameContentMain
     local container   = frame.TargetFrameContainer
@@ -189,7 +197,8 @@ local function SkinFrame(frame)
         ComboFrame:SetPoint("TOPRIGHT", TargetFrame, "TOPRIGHT", -24, -17)
     end
 
-    -- Hook: CheckClassification
+    local SetName = name.SetText
+
     hooksecurefunc(frame, "CheckClassification", function()
         local ft = container.FrameTexture
 
@@ -209,6 +218,27 @@ local function SkinFrame(frame)
         mask:ClearAllPoints()
         mask:SetPoint("TOPLEFT", hb, "TOPLEFT", 0, -5)
         mask:SetPoint("BOTTOMRIGHT", hb, "BOTTOMRIGHT", 2, -4)
+
+        if inArena then
+            local id, gender
+            if UnitIsUnit(unit, "arena1") then       id, gender = GetArenaOpponentSpec(1)
+            elseif UnitIsUnit(unit, "arena2") then   id, gender = GetArenaOpponentSpec(2)
+            elseif UnitIsUnit(unit, "arena3") then   id, gender = GetArenaOpponentSpec(3)
+            end
+
+            if id then
+                local s = specNameByID[id]
+                if s then
+                    SetName(name, s)
+                else
+                    s = GetSpecNameForSpecID(id, gender)
+                    if s then
+                        specNameByID[id] = s
+                        SetName(name, s)
+                    end
+                end
+            end
+        end
     end)
 
     -- Hook: CheckFaction
@@ -345,17 +375,20 @@ do
     end
 end
 
--- Background sizing (one-shot)
+-- Background sizing (one-shot) + arena state
 do
+    local sized = false
     local f = CreateFrame("Frame")
     f:RegisterEvent("PLAYER_ENTERING_WORLD")
-    f:SetScript("OnEvent", function(self)
-        cfTargetBg:SetSize(120, 41)
-        cfTargetBg:SetPoint("BOTTOMLEFT", 6, 35)
-        cfFocusBg:SetSize(120, 41)
-        cfFocusBg:SetPoint("BOTTOMLEFT", 6, 35)
-        self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-        self:SetScript("OnEvent", nil)
+    f:SetScript("OnEvent", function()
+        if not sized then
+            sized = true
+            cfTargetBg:SetSize(120, 41)
+            cfTargetBg:SetPoint("BOTTOMLEFT", 6, 35)
+            cfFocusBg:SetSize(120, 41)
+            cfFocusBg:SetPoint("BOTTOMLEFT", 6, 35)
+        end
+        inArena = (GetArenaOpponentSpec ~= nil) and C_PvP.IsArena()
     end)
 end
 
