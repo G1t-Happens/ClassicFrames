@@ -297,11 +297,9 @@ local function SkinFrame(frame)
     tot.Portrait:ClearAllPoints()
     tot.Portrait:SetPoint("TOPLEFT", tot, "TOPLEFT", 4, -4)
 
-    local totName = tot.Name
-    totName:SetWidth(60)
-    totName:ClearAllPoints()
-    totName:SetPoint("BOTTOMLEFT", 42, 6)
-    totName:SetFont(FONT_FRIZ, 8, "OUTLINE")
+    tot.Name:Hide()
+    tot.name = nil
+    tot:UnregisterEvent("UNIT_NAME_UPDATE")
 
     totHB:SetStatusBarTexture(STATUSBAR_TEX)
     totHB:SetSize(47, 8)
