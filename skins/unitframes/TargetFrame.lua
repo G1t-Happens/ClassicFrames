@@ -199,25 +199,27 @@ local function SkinFrame(frame)
 
     local SetName = name.SetText
 
-    hooksecurefunc(frame, "CheckClassification", function()
-        local ft = container.FrameTexture
+    local ft   = container.FrameTexture
+    local mask = hbContainer.HealthBarMask
 
+    ft:ClearAllPoints()
+    ft:SetPoint("TOPLEFT", 20, -8)
+
+    mask:ClearAllPoints()
+    mask:SetPoint("TOPLEFT", hb, "TOPLEFT", 0, -5)
+    mask:SetPoint("BOTTOMRIGHT", hb, "BOTTOMRIGHT", 2, -4)
+
+    container.BossPortraitFrameTexture:SetAlpha(0)
+    ctx.BossIcon:SetAlpha(0)
+
+    -- Hook: CheckClassification
+    hooksecurefunc(frame, "CheckClassification", function()
         ft:SetTexture(TEX_NOLEVEL)
         ft:SetTexCoord(0.09375, 1, 0, 0.78125)
+        ft:SetSize(235, 100)
         hb:SetStatusBarTexture(STATUSBAR_TEX)
         hb:SetStatusBarColor(0, 1, 0)
-
-        container.BossPortraitFrameTexture:Hide()
-        ctx.BossIcon:Hide()
-
-        ft:SetSize(235, 100)
-        ft:ClearAllPoints()
-        ft:SetPoint("TOPLEFT", 20, -8)
-
-        local mask = hbContainer.HealthBarMask
-        mask:ClearAllPoints()
         mask:SetPoint("TOPLEFT", hb, "TOPLEFT", 0, -5)
-        mask:SetPoint("BOTTOMRIGHT", hb, "BOTTOMRIGHT", 2, -4)
 
         if inArena then
             local id, gender
@@ -226,7 +228,7 @@ local function SkinFrame(frame)
             elseif UnitIsUnit(unit, "arena3") then   id, gender = GetArenaOpponentSpec(3)
             end
 
-            if id then
+            if id and id > 0 then
                 local s = specNameByID[id]
                 if s then
                     SetName(name, s)
