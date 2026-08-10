@@ -30,6 +30,8 @@ local FONT_FRIZ     = "Fonts\\FRIZQT__.TTF"
 -- Arena spec state
 local inArena      = false  -- refreshed once per zone, never per target change
 local specNameByID = {}     -- specID -> localised name; static data, never invalidated
+local labelByIdx   = {}     -- arena index -> "1 Affliction"; built once per slot
+local specIDByIdx  = {}     -- arena index -> specID its label was built from
 
 local function CreateOverlayFrame(parent)
     local frame = CreateFrame("Frame", nil, parent)
@@ -222,23 +224,29 @@ local function SkinFrame(frame)
         mask:SetPoint("TOPLEFT", hb, "TOPLEFT", 0, -5)
 
         if inArena then
-            local id, gender
-            if UnitIsUnit(unit, "arena1") then       id, gender = GetArenaOpponentSpec(1)
-            elseif UnitIsUnit(unit, "arena2") then   id, gender = GetArenaOpponentSpec(2)
-            elseif UnitIsUnit(unit, "arena3") then   id, gender = GetArenaOpponentSpec(3)
+            local idx, id, gender
+            if UnitIsUnit(unit, "arena1") then       idx = 1; id, gender = GetArenaOpponentSpec(1)
+            elseif UnitIsUnit(unit, "arena2") then   idx = 2; id, gender = GetArenaOpponentSpec(2)
+            elseif UnitIsUnit(unit, "arena3") then   idx = 3; id, gender = GetArenaOpponentSpec(3)
             end
 
             if id and id > 0 then
-                local s = specNameByID[id]
-                if s then
-                    SetName(name, s)
-                else
-                    s = GetSpecNameForSpecID(id, gender)
-                    if s then
-                        specNameByID[id] = s
-                        SetName(name, s)
+                local s = labelByIdx[idx]
+                if s == nil or specIDByIdx[idx] ~= id then
+                    s = nil
+                    local n = specNameByID[id]
+                    if not n then
+                        n = GetSpecNameForSpecID(id, gender)
+                        if n then specNameByID[id] = n end
+                    end
+                    if n then
+                        s = n .. " " .. idx
+                        labelByIdx[idx]  = s
+                        specIDByIdx[idx] = id
                     end
                 end
+
+                if s then SetName(name, s) end
             end
         end
     end)
