@@ -132,7 +132,7 @@ local function SkinFrame(frame)
     name:SetParent(ctx)
     name:SetWidth(100)
     name:ClearAllPoints()
-    name:SetPoint("TOPLEFT", 36, -34)
+    name:SetPoint("TOPLEFT", 37, -34)
     name:SetJustifyH("CENTER")
     name:SetFont(FONT_FRIZ, 11, "OUTLINE")
 
