@@ -48,7 +48,7 @@ f:SetScript("OnEvent", function(self)
 
     -- Target frame
     local tfc = TargetFrame and TargetFrame.TargetFrameContainer
-    if tfc then Tint(tfc.FrameTexture) end
+    if tfc then Tint(tfc.cfFrameArt) end
 
     local ttot = TargetFrameToT
     if ttot then Tint(ttot.FrameTexture) end
@@ -63,7 +63,7 @@ f:SetScript("OnEvent", function(self)
 
     -- Focus frame
     local ffc = FocusFrame and FocusFrame.TargetFrameContainer
-    if ffc then Tint(ffc.FrameTexture) end
+    if ffc then Tint(ffc.cfFrameArt) end
 
     local ftot = FocusFrameToT
     if ftot then Tint(ftot.FrameTexture) end

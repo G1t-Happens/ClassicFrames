@@ -10,11 +10,10 @@ local UnitClassBase         = UnitClassBase
 local UnitPlayerControlled  = UnitPlayerControlled
 local UnitIsTapDenied       = UnitIsTapDenied
 local UnitReaction          = UnitReaction
-local UnitIsFriend          = UnitIsFriend
 local UnitIsUnit            = UnitIsUnit
 local GetArenaOpponentSpec  = GetArenaOpponentSpec
 local GetSpecNameForSpecID  = GetSpecializationNameForSpecID
-local RAID_CLASS_COLORS     = RAID_CLASS_COLORS
+local GetClassColor         = C_ClassColor.GetClassColor
 local FACTION_BAR_COLORS    = FACTION_BAR_COLORS
 local hooksecurefunc        = hooksecurefunc
 
@@ -55,7 +54,7 @@ local function SetBarColorByUnit(bar, unit)
     if UnitIsPlayer(unit) then
         if UnitIsConnected(unit) then
             local class = UnitClassBase(unit)
-            local color = class and RAID_CLASS_COLORS[class]
+            local color = class and GetClassColor(class)
             if color then
                 bar:SetStatusBarColor(color.r, color.g, color.b)
             end
@@ -78,7 +77,7 @@ local function SetVertexColorByUnit(tex, unit)
     if UnitIsPlayer(unit) then
         if UnitIsConnected(unit) then
             local class = UnitClassBase(unit)
-            local color = class and RAID_CLASS_COLORS[class]
+            local color = class and GetClassColor(class)
             if color then
                 tex:SetVertexColor(color.r, color.g, color.b)
             end
@@ -204,8 +203,25 @@ local function SkinFrame(frame)
     local ft   = container.FrameTexture
     local mask = hbContainer.HealthBarMask
 
+    -- 12.1: Blizzard anchors the (forbidden) AuraContainer to FrameTexture BOTTOMLEFT +(5, 9),
+    -- and nothing else in the whole 12.1 tree anchors to this texture. So it becomes a purely
+    -- invisible 235x77 anchor rectangle: a 23 px higher bottom edge puts the auras back on
+    -- their old position. The visible art moves into our own texture, which Blizzard never
+    -- touches -> set up once here, never again in the hook.
+    ft:SetAlpha(0)
     ft:ClearAllPoints()
     ft:SetPoint("TOPLEFT", 20, -8)
+    ft:SetHeight(77)
+
+    if not container.cfFrameArt then
+        -- BACKGROUND / subLevel 2 = exactly the layer and sublevel of Blizzard's FrameTexture
+        local art = container:CreateTexture(nil, "BACKGROUND", nil, 2)
+        art:SetTexture(TEX_NOLEVEL)
+        art:SetTexCoord(0.09375, 1, 0, 0.78125)
+        art:SetSize(235, 100)
+        art:SetPoint("TOPLEFT", 20, -8)
+        container.cfFrameArt = art
+    end
 
     mask:ClearAllPoints()
     mask:SetPoint("TOPLEFT", hb, "TOPLEFT", 0, -5)
@@ -216,9 +232,7 @@ local function SkinFrame(frame)
 
     -- Hook: CheckClassification
     hooksecurefunc(frame, "CheckClassification", function()
-        ft:SetTexture(TEX_NOLEVEL)
-        ft:SetTexCoord(0.09375, 1, 0, 0.78125)
-        ft:SetSize(235, 100)
+        ft:SetHeight(77)   -- Blizzard's SetAtlas(..., UseAtlasSize) resets the height every time
         hb:SetStatusBarTexture(STATUSBAR_TEX)
         hb:SetStatusBarColor(0, 1, 0)
         mask:SetPoint("TOPLEFT", hb, "TOPLEFT", 0, -5)
@@ -399,16 +413,3 @@ do
         inArena = (GetArenaOpponentSpec ~= nil) and C_PvP.IsArena()
     end)
 end
-
--- Aura anchor hooks
-hooksecurefunc("TargetFrame_UpdateBuffAnchor", function(self, buff, index, numDebuffs)
-    if index ~= 1 or not (UnitIsFriend("player", self.unit) or numDebuffs == 0) then return end
-    buff:ClearAllPoints()
-    buff:SetPoint("TOPLEFT", self.TargetFrameContainer.FrameTexture, "BOTTOMLEFT", 5, 32)
-end)
-
-hooksecurefunc("TargetFrame_UpdateDebuffAnchor", function(self, buff, index, numBuffs)
-    if index ~= 1 or (UnitIsFriend("player", self.unit) and numBuffs > 0) then return end
-    buff:ClearAllPoints()
-    buff:SetPoint("TOPLEFT", self.TargetFrameContainer.FrameTexture, "BOTTOMLEFT", 5, 32)
-end)

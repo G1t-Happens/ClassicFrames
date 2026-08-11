@@ -137,25 +137,13 @@ end
 -- Target & Focus Castbar
 --------------------------------------------------------------------------------
 
+-- 12.1: parent.auraRows is permanently 0 and parent.spellbarAnchor / parent.haveElite
+-- no longer exist, so only these two branches were ever reachable. Fixed classic
+-- positions: 1 field read + 1 branch, no API calls, cannot error.
 local function AdjustPosition(self)
     local parent = self:GetParent()
-    local buffsOnTop = parent.buffsOnTop
-    local auraRows = parent.auraRows
-
     if parent.haveToT then
-        if buffsOnTop or auraRows <= 1 then
-            self:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 45, -24)
-        else
-            self:SetPoint("TOPLEFT", parent.spellbarAnchor, "BOTTOMLEFT", 22, -12)
-        end
-    elseif parent.haveElite then
-        if buffsOnTop or auraRows <= 1 then
-            self:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 45, -9)
-        else
-            self:SetPoint("TOPLEFT", parent.spellbarAnchor, "BOTTOMLEFT", 22, -12)
-        end
-    elseif (not buffsOnTop) and auraRows > 0 then
-        self:SetPoint("TOPLEFT", parent.spellbarAnchor, "BOTTOMLEFT", 22, -12)
+        self:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 45, -24)
     else
         self:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 45, 3)
     end
@@ -292,14 +280,12 @@ initFrame:SetScript("OnEvent", function(frame)
     local targetBar = TargetFrame and TargetFrame.spellbar
     if targetBar then
         hooksecurefunc(targetBar, "AdjustPosition", AdjustPosition)
-        targetBar:HookScript("OnShow", AdjustPosition)
         SkinTargetCastbar(targetBar)
     end
 
     local focusBar = FocusFrame and FocusFrame.spellbar
     if focusBar then
         hooksecurefunc(focusBar, "AdjustPosition", AdjustPosition)
-        focusBar:HookScript("OnShow", AdjustPosition)
         SkinTargetCastbar(focusBar)
     end
 end)
