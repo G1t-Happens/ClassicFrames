@@ -341,8 +341,6 @@ local function SkinFrame(frame)
     totMB:SetPoint("BOTTOMRIGHT", tot, "TOPLEFT", 90, -31)
     totMB:SetFrameLevel(1)
 
-    -- The ToT is the hottest mana bar in the game: its Update is an OnUpdate script, so
-    -- anything left in the UnitFrameManaBar_UpdateType hook runs once per frame per ToT
     local totSpark = totMB.Spark
     if totSpark then totSpark:SetAlpha(0) end
 
