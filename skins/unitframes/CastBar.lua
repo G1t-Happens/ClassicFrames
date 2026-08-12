@@ -39,25 +39,35 @@ CfCastBarColors = {
 -- Shared hooks (identical logic reused across player/target/focus)
 --------------------------------------------------------------------------------
 
-local function OnGetTypeInfo(self)
-    local unit = self.unit
-    local name, _, _, _, _, _, _, notInterruptible = UnitCastingInfo(unit)
-    if name then
-        self:GetStatusBarTexture():SetVertexColorFromBoolean(notInterruptible, colorUninterruptable, colorStandard)
-        return
-    end
-    local cName, _, _, _, _, _, notInterruptibleC = UnitChannelInfo(unit)
-    if cName then
-        self:GetStatusBarTexture():SetVertexColorFromBoolean(notInterruptibleC, colorUninterruptable, colorChannel)
-    end
-end
-
 local function OnPlayInterruptAnims(self)
     self:SetStatusBarTexture(STATUSBAR_TEX)
     self:SetStatusBarColor(1, 0, 0, 1)
     self:SetValue(self.maxValue)
     local spark = self.Spark
     if spark then spark:Hide() end
+end
+
+local function HookBarFill(self)
+    local setBarTexture = self.SetStatusBarTexture
+    setBarTexture(self, STATUSBAR_TEX)
+    local barTex    = self:GetStatusBarTexture()
+    local setVertex = barTex.SetVertexColorFromBoolean
+    local unit      = self.unit
+    local lastFlag, lastColor = false, colorStandard
+
+    hooksecurefunc(self, "UpdateBarFillTexture", function()
+        setBarTexture(self, STATUSBAR_TEX)
+        local name, _, _, _, _, _, _, notInterruptible = UnitCastingInfo(unit)
+        if name then
+            lastFlag, lastColor = notInterruptible, colorStandard
+        else
+            local cName, _, _, _, _, _, cNotInterruptible = UnitChannelInfo(unit)
+            if cName then
+                lastFlag, lastColor = cNotInterruptible, colorChannel
+            end
+        end
+        setVertex(barTex, lastFlag, colorUninterruptable, lastColor)
+    end)
 end
 
 --------------------------------------------------------------------------------
@@ -130,24 +140,12 @@ local function SkinPlayerCastbar(self)
     end)
 
     hooksecurefunc(self, "PlayInterruptAnims", OnPlayInterruptAnims)
-    hooksecurefunc(self, "GetTypeInfo", OnGetTypeInfo)
+    HookBarFill(self)
 end
 
 --------------------------------------------------------------------------------
 -- Target & Focus Castbar
 --------------------------------------------------------------------------------
-
--- 12.1: parent.auraRows is permanently 0 and parent.spellbarAnchor / parent.haveElite
--- no longer exist, so only these two branches were ever reachable. Fixed classic
--- positions: 1 field read + 1 branch, no API calls, cannot error.
-local function AdjustPosition(self)
-    local parent = self:GetParent()
-    if parent.haveToT then
-        self:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 45, -24)
-    else
-        self:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 45, 3)
-    end
-end
 
 local function SetLook(self)
     self:SetScale(1.1)
@@ -254,7 +252,7 @@ local function SkinTargetCastbar(self)
     end)
 
     hooksecurefunc(self, "PlayInterruptAnims", OnPlayInterruptAnims)
-    hooksecurefunc(self, "GetTypeInfo", OnGetTypeInfo)
+    HookBarFill(self)
 end
 
 --------------------------------------------------------------------------------
@@ -279,13 +277,11 @@ initFrame:SetScript("OnEvent", function(frame)
 
     local targetBar = TargetFrame and TargetFrame.spellbar
     if targetBar then
-        hooksecurefunc(targetBar, "AdjustPosition", AdjustPosition)
         SkinTargetCastbar(targetBar)
     end
 
     local focusBar = FocusFrame and FocusFrame.spellbar
     if focusBar then
-        hooksecurefunc(focusBar, "AdjustPosition", AdjustPosition)
         SkinTargetCastbar(focusBar)
     end
 end)
