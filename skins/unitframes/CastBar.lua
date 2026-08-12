@@ -113,6 +113,7 @@ local function SetLookReplacementPlayer(self)
     self.EnergyGlow:SetTexture(nil)
     self.Flakes01:SetTexture(nil)
     self.Flakes02:SetTexture(nil)
+    self.Flakes03:SetTexture(nil)
     self.TextBorder:SetTexture(nil)
 end
 
