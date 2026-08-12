@@ -60,15 +60,17 @@ local function HookBarFill(self)
     local unit      = self.unit
     local lastFlag, lastColor = false, colorStandard
 
-    hooksecurefunc(self, "UpdateBarFillTexture", function()
+    hooksecurefunc(self, "UpdateBarFillTexture", function(_, isFull)
         setBarTexture(self, STATUSBAR_TEX)
-        local name, _, _, _, _, _, _, notInterruptible = UnitCastingInfo(unit)
-        if name then
-            lastFlag, lastColor = notInterruptible, colorStandard
-        else
-            local cName, _, _, _, _, _, cNotInterruptible = UnitChannelInfo(unit)
-            if cName then
-                lastFlag, lastColor = cNotInterruptible, colorChannel
+        if not isFull then
+            local name, _, _, _, _, _, _, notInterruptible = UnitCastingInfo(unit)
+            if name then
+                lastFlag, lastColor = notInterruptible, colorStandard
+            else
+                local cName, _, _, _, _, _, cNotInterruptible = UnitChannelInfo(unit)
+                if cName then
+                    lastFlag, lastColor = cNotInterruptible, colorChannel
+                end
             end
         end
         setVertex(barTex, lastFlag, colorUninterruptable, lastColor)
