@@ -11,7 +11,9 @@ local UnitPlayerControlled  = UnitPlayerControlled
 local UnitIsTapDenied       = UnitIsTapDenied
 local UnitReaction          = UnitReaction
 local UnitIsUnit            = UnitIsUnit
+local IsInInstance          = IsInInstance
 local GetArenaOpponentSpec  = GetArenaOpponentSpec
+local GetNumArenaSpecs      = GetNumArenaOpponentSpecs
 local GetSpecNameForSpecID  = GetSpecializationNameForSpecID
 local GetClassColor         = C_ClassColor.GetClassColor
 local FACTION_BAR_COLORS    = FACTION_BAR_COLORS
@@ -28,24 +30,10 @@ local FONT_FRIZ     = "Fonts\\FRIZQT__.TTF"
 
 -- Arena spec state
 local inArena      = false  -- refreshed once per zone, never per target change
+local nOpponents   = 3      -- bracket size; 3 until the starting box proves it smaller
 local specNameByID = {}     -- specID -> localised name; static data, never invalidated
 local labelByIdx   = {}     -- arena index -> "1 Affliction"; built once per slot
 local specIDByIdx  = {}     -- arena index -> specID its label was built from
-
-local function CreateOverlayFrame(parent)
-    local frame = CreateFrame("Frame", nil, parent)
-    frame:SetSize(232, 100)
-    frame:SetPoint("TOPLEFT", 20, -8)
-
-    local bg = frame:CreateTexture(nil, "BACKGROUND")
-    bg:SetPoint("BOTTOMLEFT", 7, 35)
-    bg:SetColorTexture(0, 0, 0, 0.5)
-
-    return frame, bg
-end
-
-local _, cfTargetBg = CreateOverlayFrame(TargetFrame)
-local _, cfFocusBg  = CreateOverlayFrame(FocusFrame)
 
 -- Helpers
 
@@ -105,6 +93,15 @@ local function SkinFrame(frame)
     local hbContainer = contentMain.HealthBarsContainer
     local hb          = hbContainer.HealthBar
     local mb          = contentMain.ManaBar
+
+    local overlay = CreateFrame("Frame", nil, frame)
+    overlay:SetSize(232, 100)
+    overlay:SetPoint("TOPLEFT", 20, -8)
+
+    local overlayBg = overlay:CreateTexture(nil, "BACKGROUND")
+    overlayBg:SetSize(120, 41)
+    overlayBg:SetPoint("BOTTOMLEFT", 6, 35)
+    overlayBg:SetColorTexture(0, 0, 0, 0.5)
 
     -- Strata
     ctx:SetFrameStrata("MEDIUM")
@@ -250,9 +247,11 @@ local function SkinFrame(frame)
 
         if inArena then
             local idx, id, gender
+            -- nOpponents skips the third probe in 2v2, where it can never hit:
+            -- an upvalue test instead of a ~291 ns UnitIsUnit
             if UnitIsUnit(unit, "arena1") then       idx = 1; id, gender = GetArenaOpponentSpec(1)
             elseif UnitIsUnit(unit, "arena2") then   idx = 2; id, gender = GetArenaOpponentSpec(2)
-            elseif UnitIsUnit(unit, "arena3") then   idx = 3; id, gender = GetArenaOpponentSpec(3)
+            elseif nOpponents > 2 and UnitIsUnit(unit, "arena3") then idx = 3; id, gender = GetArenaOpponentSpec(3)
             end
 
             if id and id > 0 then
@@ -389,19 +388,34 @@ do
     end
 end
 
--- Background sizing (one-shot) + arena state
+-- Arena state
 do
-    local sized = false
     local f = CreateFrame("Frame")
     f:RegisterEvent("PLAYER_ENTERING_WORLD")
-    f:SetScript("OnEvent", function()
-        if not sized then
-            sized = true
-            cfTargetBg:SetSize(120, 41)
-            cfTargetBg:SetPoint("BOTTOMLEFT", 6, 35)
-            cfFocusBg:SetSize(120, 41)
-            cfFocusBg:SetPoint("BOTTOMLEFT", 6, 35)
+    f:SetScript("OnEvent", function(self, event)
+        if event ~= "PLAYER_ENTERING_WORLD" then
+            local n = GetNumArenaSpecs and GetNumArenaSpecs()
+            if n and n > 0 then
+                nOpponents = n
+                self:UnregisterEvent("ARENA_PREP_OPPONENT_SPECIALIZATIONS")
+            end
+            return
         end
-        inArena = (GetArenaOpponentSpec ~= nil) and C_PvP.IsArena()
+
+        local _, instanceType = IsInInstance()
+        inArena    = (GetArenaOpponentSpec ~= nil) and instanceType == "arena"
+        nOpponents = 3
+
+        if not inArena then
+            self:UnregisterEvent("ARENA_PREP_OPPONENT_SPECIALIZATIONS")
+            return
+        end
+
+        local n = GetNumArenaSpecs and GetNumArenaSpecs()
+        if n and n > 0 then
+            nOpponents = n
+        else
+            self:RegisterEvent("ARENA_PREP_OPPONENT_SPECIALIZATIONS")
+        end
     end)
 end
