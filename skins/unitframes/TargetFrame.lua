@@ -230,6 +230,17 @@ local function SkinFrame(frame)
     container.BossPortraitFrameTexture:SetAlpha(0)
     ctx.BossIcon:SetAlpha(0)
 
+    contentMain.LevelText:SetAlpha(0)
+    ctx.HighLevelTexture:SetAlpha(0)
+    ctx.PvpIcon:SetAlpha(0)
+    ctx.PrestigePortrait:SetAlpha(0)
+    ctx.PrestigeBadge:SetAlpha(0)
+
+    local nameBg = container:CreateTexture(nil, "BACKGROUND")
+    nameBg:SetSize(120, 19)
+    nameBg:SetPoint("TOPRIGHT", contentMain, "TOPRIGHT", -85, -31)
+    nameBg:SetTexture(STATUSBAR_TEX)
+
     -- Hook: CheckClassification
     hooksecurefunc(frame, "CheckClassification", function()
         ft:SetHeight(77)   -- Blizzard's SetAtlas(..., UseAtlasSize) resets the height every time
@@ -266,27 +277,8 @@ local function SkinFrame(frame)
     end)
 
     -- Hook: CheckFaction
-    hooksecurefunc(frame, "CheckFaction", function(self)
-        if not self.nameBackground then
-            local bg = container:CreateTexture(nil, "BACKGROUND")
-            bg:SetSize(120, 19)
-            bg:SetPoint("TOPRIGHT", contentMain, "TOPRIGHT", -85, -31)
-            bg:SetTexture(STATUSBAR_TEX)
-            self.nameBackground = bg
-        end
-        SetVertexColorByUnit(self.nameBackground, self.unit)
-
-        if self.showPVP then
-            ctx.PvpIcon:Hide()
-            ctx.PrestigePortrait:Hide()
-            ctx.PrestigeBadge:Hide()
-        end
-    end)
-
-    -- Hook: CheckLevel
-    hooksecurefunc(frame, "CheckLevel", function()
-        contentMain.LevelText:Hide()
-        ctx.HighLevelTexture:Hide()
+    hooksecurefunc(frame, "CheckFaction", function()
+        SetVertexColorByUnit(nameBg, unit)
     end)
 
     -- Target-of-Target
