@@ -147,6 +147,17 @@ end
 -- Target & Focus Castbar
 --------------------------------------------------------------------------------
 
+local CASTBAR_X_NUDGE = 4
+
+local function NudgeCastbarX(bar)
+    local adjustOffset = bar.AdjustPointsOffset
+    local function Nudge()
+        adjustOffset(bar, CASTBAR_X_NUDGE, 0)
+    end
+    hooksecurefunc(bar, "AdjustPosition", Nudge)
+    bar:HookScript("OnShow", Nudge)
+end
+
 local function SetLook(self)
     self:SetScale(1.1)
     self.Background:SetColorTexture(0, 0, 0, 0.5)
@@ -278,10 +289,12 @@ initFrame:SetScript("OnEvent", function(frame)
     local targetBar = TargetFrame and TargetFrame.spellbar
     if targetBar then
         SkinTargetCastbar(targetBar)
+        NudgeCastbarX(targetBar)
     end
 
     local focusBar = FocusFrame and FocusFrame.spellbar
     if focusBar then
         SkinTargetCastbar(focusBar)
+        NudgeCastbarX(focusBar)
     end
 end)
