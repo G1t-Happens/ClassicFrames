@@ -10,8 +10,12 @@ local UnitClassBase         = UnitClassBase
 local UnitPlayerControlled  = UnitPlayerControlled
 local UnitIsTapDenied       = UnitIsTapDenied
 local UnitReaction          = UnitReaction
-local UnitIsFriend          = UnitIsFriend
-local RAID_CLASS_COLORS     = RAID_CLASS_COLORS
+local UnitIsUnit            = UnitIsUnit
+local IsInInstance          = IsInInstance
+local GetArenaOpponentSpec  = GetArenaOpponentSpec
+local GetNumArenaSpecs      = GetNumArenaOpponentSpecs
+local GetSpecNameForSpecID  = GetSpecializationNameForSpecID
+local GetClassColor         = C_ClassColor.GetClassColor
 local FACTION_BAR_COLORS    = FACTION_BAR_COLORS
 local hooksecurefunc        = hooksecurefunc
 
@@ -24,20 +28,12 @@ local TEX_GUIDE     = "Interface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES"
 local TEX_QUEST     = "Interface\\TargetingFrame\\PortraitQuestBadge"
 local FONT_FRIZ     = "Fonts\\FRIZQT__.TTF"
 
-local function CreateOverlayFrame(parent)
-    local frame = CreateFrame("Frame", nil, parent)
-    frame:SetSize(232, 100)
-    frame:SetPoint("TOPLEFT", 20, -8)
-
-    local bg = frame:CreateTexture(nil, "BACKGROUND")
-    bg:SetPoint("BOTTOMLEFT", 7, 35)
-    bg:SetColorTexture(0, 0, 0, 0.5)
-
-    return frame, bg
-end
-
-local _, cfTargetBg = CreateOverlayFrame(TargetFrame)
-local _, cfFocusBg  = CreateOverlayFrame(FocusFrame)
+-- Arena spec state
+local inArena      = false  -- refreshed once per zone, never per target change
+local nOpponents   = 3      -- bracket size; 3 until the starting box proves it smaller
+local specNameByID = {}     -- specID -> localised name; static data, never invalidated
+local labelByIdx   = {}     -- arena index -> "1 Affliction"; built once per slot
+local specIDByIdx  = {}     -- arena index -> specID its label was built from
 
 -- Helpers
 
@@ -46,7 +42,7 @@ local function SetBarColorByUnit(bar, unit)
     if UnitIsPlayer(unit) then
         if UnitIsConnected(unit) then
             local class = UnitClassBase(unit)
-            local color = class and RAID_CLASS_COLORS[class]
+            local color = class and GetClassColor(class)
             if color then
                 bar:SetStatusBarColor(color.r, color.g, color.b)
             end
@@ -69,7 +65,7 @@ local function SetVertexColorByUnit(tex, unit)
     if UnitIsPlayer(unit) then
         if UnitIsConnected(unit) then
             local class = UnitClassBase(unit)
-            local color = class and RAID_CLASS_COLORS[class]
+            local color = class and GetClassColor(class)
             if color then
                 tex:SetVertexColor(color.r, color.g, color.b)
             end
@@ -90,6 +86,7 @@ end
 
 -- SkinFrame (called once per frame: TargetFrame, FocusFrame)
 local function SkinFrame(frame)
+    local unit        = frame.unit
     local ctx         = frame.TargetFrameContent.TargetFrameContentContextual
     local contentMain = frame.TargetFrameContent.TargetFrameContentMain
     local container   = frame.TargetFrameContainer
@@ -97,10 +94,21 @@ local function SkinFrame(frame)
     local hb          = hbContainer.HealthBar
     local mb          = contentMain.ManaBar
 
+    local overlay = CreateFrame("Frame", nil, frame)
+    overlay:SetSize(232, 100)
+    overlay:SetPoint("TOPLEFT", 20, -8)
+
+    local overlayBg = overlay:CreateTexture(nil, "BACKGROUND")
+    overlayBg:SetSize(120, 41)
+    overlayBg:SetPoint("BOTTOMLEFT", 6, 35)
+    overlayBg:SetColorTexture(0, 0, 0, 0.5)
+
     -- Strata
     ctx:SetFrameStrata("MEDIUM")
     container:SetFrameStrata("MEDIUM")
+
     container.Flash:Hide()
+    container.Flash:SetAlpha(0)
 
     -- Portrait
     local portrait = container.Portrait
@@ -122,7 +130,7 @@ local function SkinFrame(frame)
     name:SetParent(ctx)
     name:SetWidth(100)
     name:ClearAllPoints()
-    name:SetPoint("TOPLEFT", 36, -34)
+    name:SetPoint("TOPLEFT", 37, -34)
     name:SetJustifyH("CENTER")
     name:SetFont(FONT_FRIZ, 11, "OUTLINE")
 
@@ -150,6 +158,9 @@ local function SkinFrame(frame)
     -- Mana bar
     mb:SetWidth(121)
     mb:SetPoint("TOPRIGHT", hbContainer, "BOTTOMRIGHT", -2, -1)
+
+    local mbSpark = mb.Spark
+    if mbSpark then mbSpark:SetAlpha(0) end
 
     mb.TextString:SetParent(container)
     mb.RightText:SetParent(container)
@@ -189,50 +200,87 @@ local function SkinFrame(frame)
         ComboFrame:SetPoint("TOPRIGHT", TargetFrame, "TOPRIGHT", -24, -17)
     end
 
+    local SetName = name.SetText
+
+    local ft   = container.FrameTexture
+    local mask = hbContainer.HealthBarMask
+
+    ft:SetAlpha(0)
+    ft:ClearAllPoints()
+    ft:SetPoint("TOPLEFT",     container, "TOPLEFT", 20,  -8)
+    ft:SetPoint("BOTTOMRIGHT", container, "TOPLEFT", 255, -85)
+
+    if not container.cfFrameArt then
+        -- BACKGROUND / subLevel 2 = exactly the layer and sublevel of Blizzard's FrameTexture
+        local art = container:CreateTexture(nil, "BACKGROUND", nil, 2)
+        art:SetTexture(TEX_NOLEVEL)
+        art:SetTexCoord(0.09375, 1, 0, 0.78125)
+        art:SetSize(235, 100)
+        art:SetPoint("TOPLEFT", 20, -8)
+        container.cfFrameArt = art
+    end
+
+    mask:ClearAllPoints()
+    mask:SetPoint("TOPLEFT", hb, "TOPLEFT", 0, -5)
+    mask:SetPoint("BOTTOMRIGHT", hb, "BOTTOMRIGHT", 2, -4)
+
+    container.BossPortraitFrameTexture:SetAlpha(0)
+    ctx.BossIcon:SetAlpha(0)
+
+    contentMain.LevelText:SetAlpha(0)
+    ctx.HighLevelTexture:SetAlpha(0)
+    ctx.PvpIcon:SetAlpha(0)
+    ctx.PrestigePortrait:SetAlpha(0)
+    ctx.PrestigeBadge:SetAlpha(0)
+
+    local nameBg = container:CreateTexture(nil, "BACKGROUND")
+    nameBg:SetSize(120, 19)
+    nameBg:SetPoint("TOPRIGHT", contentMain, "TOPRIGHT", -85, -31)
+    nameBg:SetTexture(STATUSBAR_TEX)
+
+    local setHbTexture     = hb.SetStatusBarTexture
+    local setHbColor       = hb.SetStatusBarColor
+    local setMaskPoint     = mask.SetPoint
+
     -- Hook: CheckClassification
     hooksecurefunc(frame, "CheckClassification", function()
-        local ft = container.FrameTexture
+        setHbTexture(hb, STATUSBAR_TEX)
+        setHbColor(hb, 0, 1, 0)
+        setMaskPoint(mask, "TOPLEFT", hb, "TOPLEFT", 0, -5)
 
-        ft:SetTexture(TEX_NOLEVEL)
-        ft:SetTexCoord(0.09375, 1, 0, 0.78125)
-        hb:SetStatusBarTexture(STATUSBAR_TEX)
-        hb:SetStatusBarColor(0, 1, 0)
+        if inArena then
+            local idx, id, gender
+            -- nOpponents skips the third probe in 2v2, where it can never hit:
+            -- an upvalue test instead of a ~291 ns UnitIsUnit
+            if UnitIsUnit(unit, "arena1") then       idx = 1; id, gender = GetArenaOpponentSpec(1)
+            elseif UnitIsUnit(unit, "arena2") then   idx = 2; id, gender = GetArenaOpponentSpec(2)
+            elseif nOpponents > 2 and UnitIsUnit(unit, "arena3") then idx = 3; id, gender = GetArenaOpponentSpec(3)
+            end
 
-        container.BossPortraitFrameTexture:Hide()
-        ctx.BossIcon:Hide()
+            if id and id > 0 then
+                local s = labelByIdx[idx]
+                if s == nil or specIDByIdx[idx] ~= id then
+                    s = nil
+                    local n = specNameByID[id]
+                    if not n then
+                        n = GetSpecNameForSpecID(id, gender)
+                        if n then specNameByID[id] = n end
+                    end
+                    if n then
+                        s = n .. " " .. idx
+                        labelByIdx[idx]  = s
+                        specIDByIdx[idx] = id
+                    end
+                end
 
-        ft:SetSize(235, 100)
-        ft:ClearAllPoints()
-        ft:SetPoint("TOPLEFT", 20, -8)
-
-        local mask = hbContainer.HealthBarMask
-        mask:ClearAllPoints()
-        mask:SetPoint("TOPLEFT", hb, "TOPLEFT", 0, -5)
-        mask:SetPoint("BOTTOMRIGHT", hb, "BOTTOMRIGHT", 2, -4)
+                if s then SetName(name, s) end
+            end
+        end
     end)
 
     -- Hook: CheckFaction
-    hooksecurefunc(frame, "CheckFaction", function(self)
-        if not self.nameBackground then
-            local bg = container:CreateTexture(nil, "BACKGROUND")
-            bg:SetSize(120, 19)
-            bg:SetPoint("TOPRIGHT", contentMain, "TOPRIGHT", -85, -31)
-            bg:SetTexture(STATUSBAR_TEX)
-            self.nameBackground = bg
-        end
-        SetVertexColorByUnit(self.nameBackground, self.unit)
-
-        if self.showPVP then
-            ctx.PvpIcon:Hide()
-            ctx.PrestigePortrait:Hide()
-            ctx.PrestigeBadge:Hide()
-        end
-    end)
-
-    -- Hook: CheckLevel
-    hooksecurefunc(frame, "CheckLevel", function()
-        contentMain.LevelText:Hide()
-        ctx.HighLevelTexture:Hide()
+    hooksecurefunc(frame, "CheckFaction", function()
+        SetVertexColorByUnit(nameBg, unit)
     end)
 
     -- Target-of-Target
@@ -265,11 +313,9 @@ local function SkinFrame(frame)
     tot.Portrait:ClearAllPoints()
     tot.Portrait:SetPoint("TOPLEFT", tot, "TOPLEFT", 4, -4)
 
-    local totName = tot.Name
-    totName:SetWidth(60)
-    totName:ClearAllPoints()
-    totName:SetPoint("BOTTOMLEFT", 42, 6)
-    totName:SetFont(FONT_FRIZ, 8, "OUTLINE")
+    tot.Name:Hide()
+    tot.name = nil
+    tot:UnregisterEvent("UNIT_NAME_UPDATE")
 
     totHB:SetStatusBarTexture(STATUSBAR_TEX)
     totHB:SetSize(47, 8)
@@ -295,6 +341,9 @@ local function SkinFrame(frame)
     totMB:SetPoint("BOTTOMRIGHT", tot, "TOPLEFT", 90, -31)
     totMB:SetFrameLevel(1)
 
+    local totSpark = totMB.Spark
+    if totSpark then totSpark:SetAlpha(0) end
+
     local prefix = tot:GetName() .. "Debuff"
     for i = 1, 4 do
         local icon = _G[prefix .. i]
@@ -308,6 +357,14 @@ end
 -- Apply to TargetFrame & FocusFrame
 SkinFrame(TargetFrame)
 SkinFrame(FocusFrame)
+
+-- Boss frames get no skin, but they inherit TargetFrameTemplate and so carry the same mana bar spark
+for i = 1, 5 do
+    local boss = _G["Boss" .. i .. "TargetFrame"]
+    local bossMB = boss and boss.manabar
+    local bossSpark = bossMB and bossMB.Spark
+    if bossSpark then bossSpark:SetAlpha(0) end
+end
 
 -- ToT recolor drivers. Zero per-frame work!
 do
@@ -345,29 +402,34 @@ do
     end
 end
 
--- Background sizing (one-shot)
+-- Arena state
 do
     local f = CreateFrame("Frame")
     f:RegisterEvent("PLAYER_ENTERING_WORLD")
-    f:SetScript("OnEvent", function(self)
-        cfTargetBg:SetSize(120, 41)
-        cfTargetBg:SetPoint("BOTTOMLEFT", 6, 35)
-        cfFocusBg:SetSize(120, 41)
-        cfFocusBg:SetPoint("BOTTOMLEFT", 6, 35)
-        self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-        self:SetScript("OnEvent", nil)
+    f:SetScript("OnEvent", function(self, event)
+        if event ~= "PLAYER_ENTERING_WORLD" then
+            local n = GetNumArenaSpecs and GetNumArenaSpecs()
+            if n and n > 0 then
+                nOpponents = n
+                self:UnregisterEvent("ARENA_PREP_OPPONENT_SPECIALIZATIONS")
+            end
+            return
+        end
+
+        local _, instanceType = IsInInstance()
+        inArena    = (GetArenaOpponentSpec ~= nil) and instanceType == "arena"
+        nOpponents = 3
+
+        if not inArena then
+            self:UnregisterEvent("ARENA_PREP_OPPONENT_SPECIALIZATIONS")
+            return
+        end
+
+        local n = GetNumArenaSpecs and GetNumArenaSpecs()
+        if n and n > 0 then
+            nOpponents = n
+        else
+            self:RegisterEvent("ARENA_PREP_OPPONENT_SPECIALIZATIONS")
+        end
     end)
 end
-
--- Aura anchor hooks
-hooksecurefunc("TargetFrame_UpdateBuffAnchor", function(self, buff, index, numDebuffs)
-    if index ~= 1 or not (UnitIsFriend("player", self.unit) or numDebuffs == 0) then return end
-    buff:ClearAllPoints()
-    buff:SetPoint("TOPLEFT", self.TargetFrameContainer.FrameTexture, "BOTTOMLEFT", 5, 32)
-end)
-
-hooksecurefunc("TargetFrame_UpdateDebuffAnchor", function(self, buff, index, numBuffs)
-    if index ~= 1 or (UnitIsFriend("player", self.unit) and numBuffs > 0) then return end
-    buff:ClearAllPoints()
-    buff:SetPoint("TOPLEFT", self.TargetFrameContainer.FrameTexture, "BOTTOMLEFT", 5, 32)
-end)

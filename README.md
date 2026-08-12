@@ -1,4 +1,4 @@
-# ClassicFrames (Colored) - World of Warcraft AddOn (12.0.7)
+# ClassicFrames (Colored) - World of Warcraft AddOn (12.1.0)
 This retail AddOn restores the pre-10.0 UI.
 <br>This AddOn is inspired by the original [ClassicFrames](https://legacy.curseforge.com/wow/addons/classic-frames) AddOn by luckfore.
 <br>The focus of this AddOn is on PvP, performance, texture upscaling, and coloring name frame backgrounds.
@@ -27,5 +27,5 @@ The default path for your interface folder is `C:\Program Files (x86)\World of W
 <br>I'm doing my best to keep the addon up to date, but it's challenging with all the recent changes from Blizzard :(
 <br><br>
 
-## Bugs? Open an issue here on GitHub or message me on Bnet: Yarubi#21692
+## Bugs? Open an issue here on GitHub
 

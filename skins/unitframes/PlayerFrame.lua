@@ -66,6 +66,9 @@ hb.TextString:SetParent(pfContainer)
 hb.LeftText:SetParent(pfContainer)
 hb.RightText:SetParent(pfContainer)
 
+local mbSpark = mb.Spark
+if mbSpark then mbSpark:SetAlpha(0) end
+
 -- Mana bar full-power frame
 local fpf = mb.FullPowerFrame
 fpf:SetSize(119, 12)

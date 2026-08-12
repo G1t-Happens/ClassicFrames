@@ -19,8 +19,6 @@ hooksecurefunc("UnitFrameManaBar_UpdateType", function(manaBar)
     local info = PowerBarColor[manaBar.powerToken]
     if info then
         manaBar:SetStatusBarColor(info.r, info.g, info.b)
-        local spark = manaBar.Spark
-        if spark then spark:SetAlpha(0) end
     else
         local powerType, _, altR, altG, altB = UnitPowerType(manaBar.unit)
         if altR then

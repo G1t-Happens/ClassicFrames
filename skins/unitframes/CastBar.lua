@@ -39,25 +39,42 @@ CfCastBarColors = {
 -- Shared hooks (identical logic reused across player/target/focus)
 --------------------------------------------------------------------------------
 
-local function OnGetTypeInfo(self)
-    local unit = self.unit
-    local name, _, _, _, _, _, _, notInterruptible = UnitCastingInfo(unit)
-    if name then
-        self:GetStatusBarTexture():SetVertexColorFromBoolean(notInterruptible, colorUninterruptable, colorStandard)
-        return
-    end
-    local cName, _, _, _, _, _, notInterruptibleC = UnitChannelInfo(unit)
-    if cName then
-        self:GetStatusBarTexture():SetVertexColorFromBoolean(notInterruptibleC, colorUninterruptable, colorChannel)
-    end
+local function HookInterruptAnims(self)
+    local setStatusBarColor = self.SetStatusBarColor
+    local setValue          = self.SetValue
+    local spark             = self.Spark
+    local hideSpark         = spark.Hide
+
+    hooksecurefunc(self, "PlayInterruptAnims", function()
+        setStatusBarColor(self, 1, 0, 0, 1)
+        setValue(self, self.maxValue)
+        hideSpark(spark)
+    end)
 end
 
-local function OnPlayInterruptAnims(self)
-    self:SetStatusBarTexture(STATUSBAR_TEX)
-    self:SetStatusBarColor(1, 0, 0, 1)
-    self:SetValue(self.maxValue)
-    local spark = self.Spark
-    if spark then spark:Hide() end
+local function HookBarFill(self)
+    local setBarTexture = self.SetStatusBarTexture
+    setBarTexture(self, STATUSBAR_TEX)
+    local barTex    = self:GetStatusBarTexture()
+    local setVertex = barTex.SetVertexColorFromBoolean
+    local unit      = self.unit
+    local lastFlag, lastColor = false, colorStandard
+
+    hooksecurefunc(self, "UpdateBarFillTexture", function(_, isFull)
+        setBarTexture(self, STATUSBAR_TEX)
+        if not isFull then
+            local name, _, _, _, _, _, _, notInterruptible = UnitCastingInfo(unit)
+            if name then
+                lastFlag, lastColor = notInterruptible, colorStandard
+            else
+                local cName, _, _, _, _, _, cNotInterruptible = UnitChannelInfo(unit)
+                if cName then
+                    lastFlag, lastColor = cNotInterruptible, colorChannel
+                end
+            end
+        end
+        setVertex(barTex, lastFlag, colorUninterruptable, lastColor)
+    end)
 end
 
 --------------------------------------------------------------------------------
@@ -83,82 +100,67 @@ local function SetLookReplacementPlayer(self)
     self.Icon:Hide()
 
     self.Text:SetFont(FONT_FRIZ, 10, "OUTLINE")
+
+    local flash = self.Flash
+    flash:SetSize(280, 70)
+    flash:ClearAllPoints()
+    flash:SetPoint("TOP", 0, 30.5)
+    flash:SetBlendMode("ADD")
+
+    self.StandardGlow:SetTexture(nil)
+    self.ChannelShadow:SetTexture(nil)
+    self.CraftGlow:SetTexture(nil)
+    self.EnergyGlow:SetTexture(nil)
+    self.Flakes01:SetTexture(nil)
+    self.Flakes02:SetTexture(nil)
+    self.Flakes03:SetTexture(nil)
+    self.TextBorder:SetTexture(nil)
 end
 
 local function SkinPlayerCastbar(self)
     SetLookReplacementPlayer(self)
 
-    -- Cache all frame children accessed in hooks as upvalues
+    -- Cache every frame child and method the hooks touch, so a fire does no hash lookups
     local text       = self.Text
-    local textBorder = self.TextBorder
     local spark      = self.Spark
     local flash      = self.Flash
-    local energyGlow = self.EnergyGlow
-    local flakes01   = self.Flakes01
-    local flakes02   = self.Flakes02
-
-    hooksecurefunc(self, "ShowSpark", function(s)
-        local sg = s.StandardGlow
-        if sg then sg:Hide() end
-        local cg = s.CraftingGlow
-        if cg then cg:Hide() end
-        local cs = s.ChannelShadow
-        if cs then cs:Hide() end
-    end)
+    local getStatusBarColor  = self.GetStatusBarColor
+    local clearTextPoints    = text.ClearAllPoints
+    local setTextPoint       = text.SetPoint
+    local hideSpark          = spark.Hide
+    local setFlashVertexColor = flash.SetVertexColor
+    local setFlashTexture     = flash.SetTexture
 
     hooksecurefunc(self, "UpdateShownState", function()
-        self:SetStatusBarTexture(STATUSBAR_TEX)
-        textBorder:Hide()
-        text:ClearAllPoints()
-        text:SetPoint("CENTER", self, "CENTER", 0, 1)
+        clearTextPoints(text)
+        setTextPoint(text, "CENTER", self, "CENTER", 0, 1)
         if self.channeling then
-            spark:Hide()
+            hideSpark(spark)
         end
     end)
 
     hooksecurefunc(self, "PlayFinishAnim", function()
-        self:SetStatusBarTexture(STATUSBAR_TEX)
-        flash:SetVertexColor(self:GetStatusBarColor())
-        flash:SetSize(280, 70)
-        flash:SetTexture(FLASH_TEX)
-        flash:ClearAllPoints()
-        flash:SetPoint("TOP", 0, 30.5)
-        flash:SetBlendMode("ADD")
-        energyGlow:Hide()
-        flakes01:Hide()
-        flakes02:Hide()
+        setFlashVertexColor(flash, getStatusBarColor(self))
+        setFlashTexture(flash, FLASH_TEX)
     end)
 
-    hooksecurefunc(self, "PlayInterruptAnims", OnPlayInterruptAnims)
-    hooksecurefunc(self, "GetTypeInfo", OnGetTypeInfo)
+    HookInterruptAnims(self)
+    HookBarFill(self)
 end
 
 --------------------------------------------------------------------------------
 -- Target & Focus Castbar
 --------------------------------------------------------------------------------
 
-local function AdjustPosition(self)
-    local parent = self:GetParent()
-    local buffsOnTop = parent.buffsOnTop
-    local auraRows = parent.auraRows
+local CASTBAR_X_NUDGE = 4
 
-    if parent.haveToT then
-        if buffsOnTop or auraRows <= 1 then
-            self:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 45, -24)
-        else
-            self:SetPoint("TOPLEFT", parent.spellbarAnchor, "BOTTOMLEFT", 22, -12)
-        end
-    elseif parent.haveElite then
-        if buffsOnTop or auraRows <= 1 then
-            self:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 45, -9)
-        else
-            self:SetPoint("TOPLEFT", parent.spellbarAnchor, "BOTTOMLEFT", 22, -12)
-        end
-    elseif (not buffsOnTop) and auraRows > 0 then
-        self:SetPoint("TOPLEFT", parent.spellbarAnchor, "BOTTOMLEFT", 22, -12)
-    else
-        self:SetPoint("TOPLEFT", parent, "BOTTOMLEFT", 45, 3)
+local function NudgeCastbarX(bar)
+    local adjustOffset = bar.AdjustPointsOffset
+    local function Nudge()
+        adjustOffset(bar, CASTBAR_X_NUDGE, 0)
     end
+    hooksecurefunc(bar, "AdjustPosition", Nudge)
+    bar:HookScript("OnShow", Nudge)
 end
 
 local function SetLook(self)
@@ -204,13 +206,30 @@ local function SkinTargetCastbar(self)
     local spark = self.Spark
     local text = self.Text
     local unit = self.unit
-    local setStatusBarTexture = self.SetStatusBarTexture
     local sparkHide = spark.Hide
     local setText = text.SetText
-    local newFlash, newFlashAnim
+    local getStatusBarColor = self.GetStatusBarColor
+
+    local newFlash = self.Flash:GetParent():CreateTexture(nil, "OVERLAY")
+    newFlash:SetSize(0, 49)
+    newFlash:SetTexture(FLASH_SMALL_TEX)
+    newFlash:ClearAllPoints()
+    newFlash:SetPoint("TOPLEFT", -25, 20)
+    newFlash:SetPoint("TOPRIGHT", 25, 20)
+    newFlash:SetBlendMode("ADD")
+    newFlash:SetAlpha(0)
+
+    local newFlashAnim = newFlash:CreateAnimationGroup()
+    newFlashAnim:SetToFinalAlpha(true)
+    local anim = newFlashAnim:CreateAnimation("Alpha")
+    anim:SetDuration(0.5)
+    anim:SetFromAlpha(1)
+    anim:SetToAlpha(0)
+
+    local playFlashAnim = newFlashAnim.Play
+    local setNewFlashColor = newFlash.SetVertexColor
 
     hooksecurefunc(self, "UpdateShownState", function()
-        setStatusBarTexture(self, STATUSBAR_TEX)
         local channeling = self.channeling
         if channeling then
             sparkHide(spark)
@@ -240,33 +259,12 @@ local function SkinTargetCastbar(self)
     end)
 
     hooksecurefunc(self, "PlayFinishAnim", function()
-        setStatusBarTexture(self, STATUSBAR_TEX)
-
-        if not newFlash then
-            local flashParent = self.Flash:GetParent()
-            newFlash = flashParent:CreateTexture(nil, "OVERLAY")
-            newFlash:SetSize(0, 49)
-            newFlash:SetTexture(FLASH_SMALL_TEX)
-            newFlash:ClearAllPoints()
-            newFlash:SetPoint("TOPLEFT", -25, 20)
-            newFlash:SetPoint("TOPRIGHT", 25, 20)
-            newFlash:SetBlendMode("ADD")
-            newFlash:SetAlpha(0)
-
-            newFlashAnim = newFlash:CreateAnimationGroup()
-            newFlashAnim:SetToFinalAlpha(true)
-            local anim = newFlashAnim:CreateAnimation("Alpha")
-            anim:SetDuration(0.5)
-            anim:SetFromAlpha(1)
-            anim:SetToAlpha(0)
-        end
-
-        newFlashAnim:Play()
-        newFlash:SetVertexColor(self:GetStatusBarColor())
+        playFlashAnim(newFlashAnim)
+        setNewFlashColor(newFlash, getStatusBarColor(self))
     end)
 
-    hooksecurefunc(self, "PlayInterruptAnims", OnPlayInterruptAnims)
-    hooksecurefunc(self, "GetTypeInfo", OnGetTypeInfo)
+    HookInterruptAnims(self)
+    HookBarFill(self)
 end
 
 --------------------------------------------------------------------------------
@@ -283,7 +281,6 @@ initFrame:SetScript("OnEvent", function(frame)
     if pcb then
         pcb.BaseGlow:Hide()
         pcb.WispGlow:Hide()
-        pcb.EnergyGlow:Hide()
         pcb.Sparkles01:Hide()
         pcb.Sparkles02:Hide()
         SkinPlayerCastbar(pcb)
@@ -291,15 +288,13 @@ initFrame:SetScript("OnEvent", function(frame)
 
     local targetBar = TargetFrame and TargetFrame.spellbar
     if targetBar then
-        hooksecurefunc(targetBar, "AdjustPosition", AdjustPosition)
-        targetBar:HookScript("OnShow", AdjustPosition)
         SkinTargetCastbar(targetBar)
+        NudgeCastbarX(targetBar)
     end
 
     local focusBar = FocusFrame and FocusFrame.spellbar
     if focusBar then
-        hooksecurefunc(focusBar, "AdjustPosition", AdjustPosition)
-        focusBar:HookScript("OnShow", AdjustPosition)
         SkinTargetCastbar(focusBar)
+        NudgeCastbarX(focusBar)
     end
 end)
