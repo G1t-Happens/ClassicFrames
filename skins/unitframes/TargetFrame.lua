@@ -207,8 +207,8 @@ local function SkinFrame(frame)
 
     ft:SetAlpha(0)
     ft:ClearAllPoints()
-    ft:SetPoint("TOPLEFT", 20, -8)
-    ft:SetHeight(77)
+    ft:SetPoint("TOPLEFT",     container, "TOPLEFT", 20,  -8)
+    ft:SetPoint("BOTTOMRIGHT", container, "TOPLEFT", 255, -85)
 
     if not container.cfFrameArt then
         -- BACKGROUND / subLevel 2 = exactly the layer and sublevel of Blizzard's FrameTexture
@@ -238,14 +238,12 @@ local function SkinFrame(frame)
     nameBg:SetPoint("TOPRIGHT", contentMain, "TOPRIGHT", -85, -31)
     nameBg:SetTexture(STATUSBAR_TEX)
 
-    local setFtHeight      = ft.SetHeight
     local setHbTexture     = hb.SetStatusBarTexture
     local setHbColor       = hb.SetStatusBarColor
     local setMaskPoint     = mask.SetPoint
 
     -- Hook: CheckClassification
     hooksecurefunc(frame, "CheckClassification", function()
-        setFtHeight(ft, 77)
         setHbTexture(hb, STATUSBAR_TEX)
         setHbColor(hb, 0, 1, 0)
         setMaskPoint(mask, "TOPLEFT", hb, "TOPLEFT", 0, -5)
