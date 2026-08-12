@@ -159,6 +159,9 @@ local function SkinFrame(frame)
     mb:SetWidth(121)
     mb:SetPoint("TOPRIGHT", hbContainer, "BOTTOMRIGHT", -2, -1)
 
+    local mbSpark = mb.Spark
+    if mbSpark then mbSpark:SetAlpha(0) end
+
     mb.TextString:SetParent(container)
     mb.RightText:SetParent(container)
     mb.LeftText:SetParent(container)
@@ -338,6 +341,11 @@ local function SkinFrame(frame)
     totMB:SetPoint("BOTTOMRIGHT", tot, "TOPLEFT", 90, -31)
     totMB:SetFrameLevel(1)
 
+    -- The ToT is the hottest mana bar in the game: its Update is an OnUpdate script, so
+    -- anything left in the UnitFrameManaBar_UpdateType hook runs once per frame per ToT
+    local totSpark = totMB.Spark
+    if totSpark then totSpark:SetAlpha(0) end
+
     local prefix = tot:GetName() .. "Debuff"
     for i = 1, 4 do
         local icon = _G[prefix .. i]
@@ -351,6 +359,14 @@ end
 -- Apply to TargetFrame & FocusFrame
 SkinFrame(TargetFrame)
 SkinFrame(FocusFrame)
+
+-- Boss frames get no skin, but they inherit TargetFrameTemplate and so carry the same mana bar spark
+for i = 1, 5 do
+    local boss = _G["Boss" .. i .. "TargetFrame"]
+    local bossMB = boss and boss.manabar
+    local bossSpark = bossMB and bossMB.Spark
+    if bossSpark then bossSpark:SetAlpha(0) end
+end
 
 -- ToT recolor drivers. Zero per-frame work!
 do
