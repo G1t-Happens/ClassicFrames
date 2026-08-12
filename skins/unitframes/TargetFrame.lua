@@ -109,7 +109,9 @@ local function SkinFrame(frame)
     -- Strata
     ctx:SetFrameStrata("MEDIUM")
     container:SetFrameStrata("MEDIUM")
+
     container.Flash:Hide()
+    container.Flash:SetAlpha(0)
 
     -- Portrait
     local portrait = container.Portrait
@@ -236,12 +238,17 @@ local function SkinFrame(frame)
     nameBg:SetPoint("TOPRIGHT", contentMain, "TOPRIGHT", -85, -31)
     nameBg:SetTexture(STATUSBAR_TEX)
 
+    local setFtHeight      = ft.SetHeight
+    local setHbTexture     = hb.SetStatusBarTexture
+    local setHbColor       = hb.SetStatusBarColor
+    local setMaskPoint     = mask.SetPoint
+
     -- Hook: CheckClassification
     hooksecurefunc(frame, "CheckClassification", function()
-        ft:SetHeight(77)   -- Blizzard's SetAtlas(..., UseAtlasSize) resets the height every time
-        hb:SetStatusBarTexture(STATUSBAR_TEX)
-        hb:SetStatusBarColor(0, 1, 0)
-        mask:SetPoint("TOPLEFT", hb, "TOPLEFT", 0, -5)
+        setFtHeight(ft, 77)
+        setHbTexture(hb, STATUSBAR_TEX)
+        setHbColor(hb, 0, 1, 0)
+        setMaskPoint(mask, "TOPLEFT", hb, "TOPLEFT", 0, -5)
 
         if inArena then
             local idx, id, gender
