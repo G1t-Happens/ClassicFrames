@@ -203,11 +203,6 @@ local function SkinFrame(frame)
     local ft   = container.FrameTexture
     local mask = hbContainer.HealthBarMask
 
-    -- 12.1: Blizzard anchors the (forbidden) AuraContainer to FrameTexture BOTTOMLEFT +(5, 9),
-    -- and nothing else in the whole 12.1 tree anchors to this texture. So it becomes a purely
-    -- invisible 235x77 anchor rectangle: a 23 px higher bottom edge puts the auras back on
-    -- their old position. The visible art moves into our own texture, which Blizzard never
-    -- touches -> set up once here, never again in the hook.
     ft:SetAlpha(0)
     ft:ClearAllPoints()
     ft:SetPoint("TOPLEFT", 20, -8)
