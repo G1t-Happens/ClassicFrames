@@ -115,21 +115,16 @@ local function SkinPlayerCastbar(self)
 
     -- Cache every frame child and method the hooks touch, so a fire does no hash lookups
     local text       = self.Text
-    local spark      = self.Spark
     local flash      = self.Flash
     local getStatusBarColor  = self.GetStatusBarColor
     local clearTextPoints    = text.ClearAllPoints
     local setTextPoint       = text.SetPoint
-    local hideSpark          = spark.Hide
     local setFlashVertexColor = flash.SetVertexColor
     local setFlashTexture     = flash.SetTexture
 
     hooksecurefunc(self, "UpdateShownState", function()
         clearTextPoints(text)
         setTextPoint(text, "CENTER", self, "CENTER", 0, 1)
-        if self.channeling then
-            hideSpark(spark)
-        end
     end)
 
     hooksecurefunc(self, "PlayFinishAnim", function()
@@ -196,10 +191,8 @@ end
 local function SkinTargetCastbar(self)
     SetLook(self)
 
-    local spark = self.Spark
     local text = self.Text
     local unit = self.unit
-    local sparkHide = spark.Hide
     local setText = text.SetText
     local getStatusBarColor = self.GetStatusBarColor
 
@@ -223,13 +216,8 @@ local function SkinTargetCastbar(self)
     local setNewFlashColor = newFlash.SetVertexColor
 
     hooksecurefunc(self, "UpdateShownState", function()
-        local channeling = self.channeling
-        if channeling then
-            sparkHide(spark)
-        end
-
         local casting = self.casting
-        if (casting or channeling) and UnitShouldDisplaySpellTargetName(unit) then
+        if (casting or self.channeling) and UnitShouldDisplaySpellTargetName(unit) then
             local name = UnitSpellTargetName(unit)
             if name then
                 local _, spell
