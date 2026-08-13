@@ -207,8 +207,8 @@ local function SkinFrame(frame)
 
     ft:SetAlpha(0)
     ft:ClearAllPoints()
-    ft:SetPoint("TOPLEFT",     container, "TOPLEFT", 20,  -8)
-    ft:SetPoint("BOTTOMRIGHT", container, "TOPLEFT", 255, -85)
+    ft:SetPoint("TOPLEFT",     container, "TOPLEFT", 22.5, -8)
+    ft:SetPoint("BOTTOMRIGHT", container, "TOPLEFT", 255,  -85)
 
     if not container.cfFrameArt then
         -- BACKGROUND / subLevel 2 = exactly the layer and sublevel of Blizzard's FrameTexture

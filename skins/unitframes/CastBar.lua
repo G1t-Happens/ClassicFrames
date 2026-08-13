@@ -92,7 +92,10 @@ local function SetLookReplacementPlayer(self)
 
     self.Icon:Hide()
 
-    self.Text:SetFont(FONT_FRIZ, 10, "OUTLINE")
+    local text = self.Text
+    text:ClearAllPoints()
+    text:SetPoint("CENTER", self, "CENTER", 0, 1)
+    text:SetFont(FONT_FRIZ, 10, "OUTLINE")
 
     local flash = self.Flash
     flash:SetSize(280, 70)
@@ -114,22 +117,22 @@ local function SkinPlayerCastbar(self)
     SetLookReplacementPlayer(self)
 
     -- Cache every frame child and method the hooks touch, so a fire does no hash lookups
-    local text       = self.Text
-    local flash      = self.Flash
-    local getStatusBarColor  = self.GetStatusBarColor
-    local clearTextPoints    = text.ClearAllPoints
-    local setTextPoint       = text.SetPoint
+    local flash               = self.Flash
+    local getStatusBarColor   = self.GetStatusBarColor
     local setFlashVertexColor = flash.SetVertexColor
     local setFlashTexture     = flash.SetTexture
+    local standardFinish      = self.StandardFinish
+    local channelFinish       = self.ChannelFinish
+    local stopStandardFinish  = standardFinish.Stop
+    local stopChannelFinish   = channelFinish.Stop
 
-    hooksecurefunc(self, "UpdateShownState", function()
-        clearTextPoints(text)
-        setTextPoint(text, "CENTER", self, "CENTER", 0, 1)
-    end)
+    hooksecurefunc(self, "SetLook", SetLookReplacementPlayer)
 
     hooksecurefunc(self, "PlayFinishAnim", function()
         setFlashVertexColor(flash, getStatusBarColor(self))
         setFlashTexture(flash, FLASH_TEX)
+        stopStandardFinish(standardFinish)
+        stopChannelFinish(channelFinish)
     end)
 
     HookInterruptAnims(self)
@@ -140,7 +143,7 @@ end
 -- Target & Focus Castbar
 --------------------------------------------------------------------------------
 
-local CASTBAR_X_NUDGE = 4
+local CASTBAR_X_NUDGE = 5
 
 local function NudgeCastbarX(bar)
     local adjustOffset = bar.AdjustPointsOffset
@@ -152,6 +155,7 @@ local function NudgeCastbarX(bar)
 end
 
 local function SetLook(self)
+    -- Coupled to TargetFrame.lua's ft offset: F = 25*scale - 5. Change one, change both!
     self:SetScale(1.1)
     self.Background:SetColorTexture(0, 0, 0, 0.5)
 
