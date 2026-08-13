@@ -214,8 +214,10 @@ do
     cluster.ZoneTextButton:Hide()
     MinimapZoneText:Hide()
     GameTimeFrame:Hide()
-    minimap.ZoomIn:SetAlpha(0)
-    minimap.ZoomOut:SetAlpha(0)
+    local zoomHolder = CreateFrame("Frame")
+    zoomHolder:Hide()
+    minimap.ZoomIn:SetParent(zoomHolder)
+    minimap.ZoomOut:SetParent(zoomHolder)
 
     if AddonCompartmentFrame then
         AddonCompartmentFrame:HookScript("OnShow", HideOnShow)
@@ -279,6 +281,9 @@ do
 end
 
 -- Expansion landing page button (Omnium Folio)
-hooksecurefunc(ExpansionLandingPageMinimapButton, "UpdateIcon", function(self)
-    self:SetPoint("TOPLEFT", 40, -115)
-end)
+local landingButton = ExpansionLandingPageMinimapButton
+if landingButton and landingButton.UpdateIcon then
+    hooksecurefunc(landingButton, "UpdateIcon", function(self)
+        self:SetPoint("TOPLEFT", 40, -115)
+    end)
+end

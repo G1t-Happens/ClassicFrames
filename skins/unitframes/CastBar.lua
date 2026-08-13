@@ -28,13 +28,6 @@ local colorStandard        = CreateColor(1.0, 0.7, 0.0, 1)
 local colorChannel         = CreateColor(0.0, 1.0, 0.0, 1)
 local colorUninterruptable = CreateColor(0.7, 0.7, 0.7, 1)
 
--- Expose globally for external access
-CfCastBarColors = {
-    Standard        = colorStandard,
-    Channel         = colorChannel,
-    Uninterruptable = colorUninterruptable,
-}
-
 --------------------------------------------------------------------------------
 -- Shared hooks (identical logic reused across player/target/focus)
 --------------------------------------------------------------------------------
