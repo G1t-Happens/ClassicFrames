@@ -214,8 +214,10 @@ do
     cluster.ZoneTextButton:Hide()
     MinimapZoneText:Hide()
     GameTimeFrame:Hide()
-    minimap.ZoomIn:SetAlpha(0)
-    minimap.ZoomOut:SetAlpha(0)
+    local zoomHolder = CreateFrame("Frame")
+    zoomHolder:Hide()
+    minimap.ZoomIn:SetParent(zoomHolder)
+    minimap.ZoomOut:SetParent(zoomHolder)
 
     if AddonCompartmentFrame then
         AddonCompartmentFrame:HookScript("OnShow", HideOnShow)

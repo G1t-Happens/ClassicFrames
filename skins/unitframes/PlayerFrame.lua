@@ -158,6 +158,22 @@ do
     gi:SetPoint("TOPLEFT", 21, -16)
 end
 
+do
+    local hidden = CreateFrame("Frame")
+    hidden:Hide()
+
+    pfContextual.RoleIcon:SetParent(hidden)
+    PlayerLevelText:SetParent(hidden)
+
+    pfContextual.AttackIcon:SetParent(hidden)
+    pfContextual.PlayerPortraitCornerIcon:SetParent(hidden)
+
+    pfContextual.PrestigePortrait:SetParent(hidden)
+    pfContextual.PrestigeBadge:SetParent(hidden)
+    pfContextual.PVPIcon:SetParent(hidden)
+    PlayerPVPTimerText:SetParent(hidden)
+end
+
 -- PlayerName: width / justify / font are static, Blizzard's UpdatePlayerNameTextAnchor
 -- only changes SetPoint based on vehicle state
 do
@@ -403,21 +419,7 @@ hooksecurefunc("PlayerFrame_UpdatePlayerRestLoop", function()
     rl.PlayerRestLoopAnim:Stop()
 end)
 
-hooksecurefunc("PlayerFrame_UpdatePvPStatus", function()
-    pfContextual.PrestigePortrait:Hide()
-    pfContextual.PrestigeBadge:Hide()
-    pfContextual.PVPIcon:Hide()
-    PlayerPVPTimerText:SetAlpha(0)
-end)
-
-hooksecurefunc("PlayerFrame_UpdateRolesAssigned", function()
-    pfContextual.RoleIcon:Hide()
-    PlayerLevelText:Hide()
-end)
-
 hooksecurefunc("PlayerFrame_UpdateStatus", function()
-    pfContextual.AttackIcon:Hide()
-    pfContextual.PlayerPortraitCornerIcon:Hide()
     pfMain.StatusTexture:Hide()
 end)
 
@@ -427,6 +429,10 @@ end)
 C_CVar.SetCVar("threatWarning", 0)
 UIErrorsFrame:SetAlpha(0)
 PlayerFrame:UnregisterEvent("UNIT_COMBAT")
+
+if PlayerFrame.SetOnUpdateMode and Enum.OnUpdateMode then
+    PlayerFrame:SetOnUpdateMode(Enum.OnUpdateMode.Disabled)
+end
 
 -- Permanently disable animated health loss bar (red trailing bar on damage)
 -- do
