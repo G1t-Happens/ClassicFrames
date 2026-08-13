@@ -281,6 +281,9 @@ do
 end
 
 -- Expansion landing page button (Omnium Folio)
-hooksecurefunc(ExpansionLandingPageMinimapButton, "UpdateIcon", function(self)
-    self:SetPoint("TOPLEFT", 40, -115)
-end)
+local landingButton = ExpansionLandingPageMinimapButton
+if landingButton and landingButton.UpdateIcon then
+    hooksecurefunc(landingButton, "UpdateIcon", function(self)
+        self:SetPoint("TOPLEFT", 40, -115)
+    end)
+end
