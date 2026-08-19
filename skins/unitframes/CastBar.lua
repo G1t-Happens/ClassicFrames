@@ -94,7 +94,7 @@ local function SetLookReplacementPlayer(self)
 
     local text = self.Text
     text:ClearAllPoints()
-    text:SetPoint("CENTER", self, "CENTER", 0, 1)
+    text:SetPoint("CENTER", self, "CENTER", 0, 0.5)
     text:SetFont(FONT_FRIZ, 10, "OUTLINE")
 
     local flash = self.Flash
