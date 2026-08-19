@@ -268,6 +268,7 @@ initFrame:SetScript("OnEvent", function(frame)
         pcb.WispGlow:Hide()
         pcb.Sparkles01:Hide()
         pcb.Sparkles02:Hide()
+        pcb.Shine:Hide()
         SkinPlayerCastbar(pcb)
     end
 
