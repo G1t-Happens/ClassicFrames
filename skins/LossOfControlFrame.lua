@@ -7,4 +7,5 @@ if frame then
     if frame.RedLineTop then frame.RedLineTop:Hide() end
     if frame.RedLineBottom then frame.RedLineBottom:Hide() end
     if frame.blackBg then frame.blackBg:Hide() end
+    if frame.Cooldown then frame.Cooldown:SetSwipeColor(0, 0, 0, 0.7) end
 end
