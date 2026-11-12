@@ -113,3 +113,10 @@ attackMode:SetPoint("TOPLEFT", 6, -9)
 -- Hit indicator
 hitIndicator:ClearAllPoints()
 hitIndicator:SetPoint("CENTER", petFrame, "TOPLEFT", 28, -27)
+
+-- Pet happiness
+local happiness = PetFrameHappiness
+if happiness then
+    happiness:ClearAllPoints()
+    happiness:SetPoint("LEFT", petFrame, "RIGHT", -7, -4)
+end

@@ -108,11 +108,15 @@ local function SkinFrame(frame)
     container.Flash:Hide()
     container.Flash:SetAlpha(0)
 
+    container:ClearAllPoints()
+    container:SetPoint("TOPLEFT", 2, 0)
+    container:SetPoint("BOTTOMRIGHT", 2, 0)
+
     -- Portrait
     local portrait = container.Portrait
     portrait:SetSize(64, 64)
     portrait:ClearAllPoints()
-    portrait:SetPoint("TOPRIGHT", -22, -20)
+    portrait:SetPoint("TOPRIGHT", -24, -20)
 
     -- Threat indicator
     ctx.NumericalThreat:SetParent(frame)
@@ -137,25 +141,27 @@ local function SkinFrame(frame)
     oag:SetParent(ctx)
     oag:RemoveMaskTexture(hbContainer.HealthBarMask)
     oag:ClearAllPoints()
-    oag:SetPoint("TOPLEFT", hb, "TOPRIGHT", -10, -9)
-    oag:SetPoint("BOTTOMLEFT", hb, "BOTTOMRIGHT", -10, -1)
+    oag:SetPoint("TOPLEFT", hb, "TOPRIGHT", -10, -8)
+    oag:SetPoint("BOTTOMLEFT", hb, "BOTTOMRIGHT", -10, 0)
 
     -- Health bar text re-parenting
+    local rightText = hbContainer.RightText
     hb.TextString:SetParent(container)
-    hbContainer.RightText:SetParent(container)
+    rightText:SetParent(container)
     hbContainer.LeftText:SetParent(container)
     hbContainer.DeadText:SetParent(container)
     hbContainer.UnconsciousText:SetParent(container)
 
-    hb.TextString:SetPoint("CENTER", hb, "CENTER", 0, -5)
-    hbContainer.LeftText:SetPoint("LEFT", hb, "LEFT", 4, -5)
-    hbContainer.RightText:SetPoint("RIGHT", hb, "RIGHT", -4, -5)
-    hbContainer.DeadText:SetPoint("CENTER", hb, "CENTER", 0, -5)
-    hbContainer.UnconsciousText:SetPoint("CENTER", hb, "CENTER", 0, -5)
+    hb.TextString:SetPoint("CENTER", hb, "CENTER", 0, -4)
+    hbContainer.LeftText:SetPoint("LEFT", hb, "LEFT", 4, -4)
+    rightText:SetPoint("RIGHT", hb, "RIGHT", -4, -4)
+    hbContainer.DeadText:SetPoint("CENTER", hb, "CENTER", 0, -4)
+    hbContainer.UnconsciousText:SetPoint("CENTER", hb, "CENTER", 0, -4)
 
     -- Mana bar
     mb:SetWidth(121)
-    mb:SetPoint("TOPRIGHT", hbContainer, "BOTTOMRIGHT", -2, -1)
+    mb:SetPoint("TOPRIGHT", hbContainer, "BOTTOMRIGHT", -2, -2)
+    mb:GetStatusBarTexture():RemoveMaskTexture(mb.ManaBarMask)
 
     local mbSpark = mb.Spark
     if mbSpark then mbSpark:SetAlpha(0) end
@@ -193,9 +199,8 @@ local function SkinFrame(frame)
     qi:SetPoint("TOP", 32, -20)
 
     -- Combo points (classic)
-    if ComboFrame then
-        ComboFrame:ClearAllPoints()
-        ComboFrame:SetPoint("TOPRIGHT", TargetFrame, "TOPRIGHT", -24, -17)
+    if ComboFrame and frame == TargetFrame then
+        ComboFrame:SetFrameLevel(ctx:GetFrameLevel() + 1)
     end
 
     local SetName = name.SetText
@@ -205,8 +210,8 @@ local function SkinFrame(frame)
 
     ft:SetAlpha(0)
     ft:ClearAllPoints()
-    ft:SetPoint("TOPLEFT",     container, "TOPLEFT", 22.5, -8)
-    ft:SetPoint("BOTTOMRIGHT", container, "TOPLEFT", 255,  -85)
+    ft:SetPoint("TOPLEFT",     container, "TOPLEFT", 20.5, -8)
+    ft:SetPoint("BOTTOMRIGHT", container, "TOPLEFT", 253,  -85)
 
     if not container.cfFrameArt then
         -- BACKGROUND / subLevel 2 = exactly the layer and sublevel of Blizzard's FrameTexture
@@ -214,20 +219,22 @@ local function SkinFrame(frame)
         art:SetTexture(TEX_NOLEVEL)
         art:SetTexCoord(0.09375, 1, 0, 0.78125)
         art:SetSize(235, 100)
-        art:SetPoint("TOPLEFT", 20, -8)
+        art:SetPoint("TOPLEFT", 18, -8)
         container.cfFrameArt = art
     end
 
     mask:ClearAllPoints()
-    mask:SetPoint("TOPLEFT", hb, "TOPLEFT", 0, -5)
-    mask:SetPoint("BOTTOMRIGHT", hb, "BOTTOMRIGHT", 2, -4)
+    mask:SetPoint("TOPLEFT", hb, "TOPLEFT", -3.133, 1.236)
+    mask:SetPoint("BOTTOMRIGHT", hb, "BOTTOMRIGHT", 3.133, -6.918)
 
     container.BossPortraitFrameTexture:SetAlpha(0)
     ctx.BossIcon:SetAlpha(0)
 
     contentMain.LevelText:SetAlpha(0)
+    contentMain.LevelBackgroundCircle:SetAlpha(0)
     ctx.HighLevelTexture:SetAlpha(0)
     ctx.PvpIcon:SetAlpha(0)
+    ctx.PvpBackgroundIcon:SetAlpha(0)
     ctx.PrestigePortrait:SetAlpha(0)
     ctx.PrestigeBadge:SetAlpha(0)
 
@@ -239,12 +246,14 @@ local function SkinFrame(frame)
     local setHbTexture     = hb.SetStatusBarTexture
     local setHbColor       = hb.SetStatusBarColor
     local setMaskPoint     = mask.SetPoint
+    local setRightPoint    = rightText.SetPoint
 
     -- Hook: CheckClassification
     hooksecurefunc(frame, "CheckClassification", function()
         setHbTexture(hb, STATUSBAR_TEX)
         setHbColor(hb, 0, 1, 0)
-        setMaskPoint(mask, "TOPLEFT", hb, "TOPLEFT", 0, -5)
+        setMaskPoint(mask, "TOPLEFT", hb, "TOPLEFT", -3.133, 1.236)
+        setRightPoint(rightText, "RIGHT", hb, "RIGHT", -4, -4)
 
         if inArena then
             local idx, id, gender
@@ -318,6 +327,7 @@ local function SkinFrame(frame)
     totHB:ClearAllPoints()
     totHB:SetPoint("BOTTOMRIGHT", tot, "TOPLEFT", 91, -22)
     totHB:SetFrameLevel(1)
+    totHB:GetStatusBarTexture():RemoveMaskTexture(totHB.HealthBarMask)
 
     local totDead = totHB.DeadText
     totDead:SetParent(tot)

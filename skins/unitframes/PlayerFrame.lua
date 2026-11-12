@@ -7,6 +7,7 @@ local CreateFrame       = CreateFrame
 local UnitClass         = UnitClass
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 local hooksecurefunc    = hooksecurefunc
+local PlayerFrame       = PlayerFrame
 
 -- Cached texture paths
 local STATUSBAR_TEX = "Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar"
@@ -28,6 +29,8 @@ local pfContextual = pfContent.PlayerFrameContentContextual
 local hbContainer = pfMain.HealthBarsContainer
 local hb          = hbContainer.HealthBar
 local mb          = pfMain.ManaBarArea.ManaBar
+local hbMask      = hbContainer.HealthBarMask
+local mbMask      = mb.ManaBarMask
 
 local cfPlayerFrame = CreateFrame("Frame", nil, PlayerFrame)
 cfPlayerFrame:SetSize(232, 100)
@@ -42,6 +45,10 @@ cfPlayerBg:SetColorTexture(0, 0, 0, 0.5)
 -- =============================================================================
 pfContainer:SetFrameStrata("MEDIUM")
 pfContextual:SetFrameStrata("MEDIUM")
+
+pfMain:ClearAllPoints()
+pfMain:SetPoint("TOPLEFT", -2, 0)
+pfMain:SetPoint("BOTTOMRIGHT", -2, 0)
 
 -- Portrait
 local portrait = pfContainer.PlayerPortrait
@@ -58,8 +65,8 @@ local oag = hb.OverAbsorbGlow
 oag:SetParent(pfContainer)
 oag:RemoveMaskTexture(hbContainer.HealthBarMask)
 oag:ClearAllPoints()
-oag:SetPoint("TOPLEFT", hb, "TOPRIGHT", -10, -8)
-oag:SetPoint("BOTTOMLEFT", hb, "BOTTOMRIGHT", -10, -1)
+oag:SetPoint("TOPLEFT", hb, "TOPRIGHT", -10, -6)
+oag:SetPoint("BOTTOMLEFT", hb, "BOTTOMRIGHT", -10, 2)
 
 -- Health bar text
 hb.TextString:SetParent(pfContainer)
@@ -83,7 +90,7 @@ mb.RightText:SetParent(pfContainer)
 local hitInd = pfMain.HitIndicator
 hitInd:SetParent(pfContextual)
 hitInd.HitText:ClearAllPoints()
-hitInd.HitText:SetPoint("CENTER", hitInd, "TOPLEFT", 54, -50)
+hitInd.HitText:SetPoint("CENTER", hitInd, "TOPLEFT", 56, -50)
 
 -- Group indicator
 do
@@ -126,7 +133,7 @@ if not PlayerFrame.nameBackground then
     local nb = pfMain:CreateTexture(nil, "BACKGROUND")
     nb:SetSize(118, 19)
     nb:ClearAllPoints()
-    nb:SetPoint("CENTER", pfMain, 32, 9)
+    nb:SetPoint("CENTER", pfMain, 34, 9)
     nb:SetTexture(STATUSBAR_TEX)
     local _, class = UnitClass("player")
     local color = RAID_CLASS_COLORS[class]
@@ -164,6 +171,8 @@ do
 
     pfContextual.RoleIcon:SetParent(hidden)
     PlayerLevelText:SetParent(hidden)
+    pfMain.LevelBackgroundCircle:SetParent(hidden)
+    pfMain.PvpBackgroundIcon:SetParent(hidden)
 
     pfContextual.AttackIcon:SetParent(hidden)
     pfContextual.PlayerPortraitCornerIcon:SetParent(hidden)
@@ -238,7 +247,7 @@ if _G.AlternatePowerBar then
     local apb = AlternatePowerBar
     apb:SetSize(104, 12)
     apb:ClearAllPoints()
-    apb:SetPoint("BOTTOMLEFT", 95, 20)
+    apb:SetPoint("BOTTOMLEFT", 97, 20)
 
     AlternatePowerBarText:SetPoint("CENTER", 0, -1)
     apb.LeftText:SetPoint("LEFT", 0, -1)
@@ -340,19 +349,16 @@ hooksecurefunc("PlayerFrame_ToPlayerArt", function()
     hb:SetStatusBarTexture(STATUSBAR_TEX)
     hb:SetStatusBarColor(0, 1, 0)
 
-    local hbMask = hbContainer.HealthBarMask
-    hbMask:ClearAllPoints()
-    hbMask:SetPoint("TOPLEFT", hb, "TOPLEFT", 1, -4)
-    hbMask:SetPoint("BOTTOMRIGHT", hb, "BOTTOMRIGHT", -1, -4)
+    hbMask:SetPoint("TOPLEFT", hb, "TOPLEFT", -1.033, 2.356)
+    hbMask:SetPoint("BOTTOMRIGHT", hb, "BOTTOMRIGHT", 1.033, -5.798)
 
-    local mbMask = mb.ManaBarMask
-    mbMask:ClearAllPoints()
+    if not PlayerFrame.activeAlternatePowerBar then mbMask:SetAtlas("Unit_BarMask") end
     mbMask:SetPoint("TOPLEFT", mb, "TOPLEFT", 1, 2)
     mbMask:SetPoint("BOTTOMRIGHT", mb, "BOTTOMRIGHT", -1, -2)
 
-    hb.TextString:SetPoint("CENTER", hb, "CENTER", 0, -5)
-    hb.LeftText:SetPoint("LEFT", hb, "LEFT", 4, -5)
-    hb.RightText:SetPoint("RIGHT", hb, "RIGHT", -2, -5)
+    hb.TextString:SetPoint("CENTER", hb, "CENTER", 0, -2.5)
+    hb.LeftText:SetPoint("LEFT", hb, "LEFT", 4, -2.5)
+    hb.RightText:SetPoint("RIGHT", hb, "RIGHT", -2, -2.5)
 
     mb.TextString:SetPoint("CENTER", mb, "CENTER", 0, -1)
     mb.LeftText:SetPoint("LEFT", mb, "LEFT", 4, -1)
@@ -380,22 +386,19 @@ hooksecurefunc("PlayerFrame_ToVehicleArt", function()
     hb:SetStatusBarTexture(STATUSBAR_TEX)
     hb:SetStatusBarColor(0, 1, 0)
 
-    local hbMask = hbContainer.HealthBarMask
-    hbMask:ClearAllPoints()
-    hbMask:SetPoint("TOPLEFT", hb, "TOPLEFT", 7, -3)
-    hbMask:SetPoint("BOTTOMRIGHT", hb, "BOTTOMRIGHT", -10, -3)
+    hbMask:SetPoint("TOPLEFT", hb, "TOPLEFT", 11.317, 4.904)
+    hbMask:SetPoint("BOTTOMRIGHT", hb, "BOTTOMRIGHT", -8.317, -5.865)
 
-    hb.TextString:SetPoint("CENTER", hb, "CENTER", -2, -5)
-    hb.LeftText:SetPoint("LEFT", hb, "LEFT", 8, -6)
-    hb.RightText:SetPoint("RIGHT", hb, "RIGHT", -12, -6)
+    hb.TextString:SetPoint("CENTER", hb, "CENTER", 1, -2)
+    hb.LeftText:SetPoint("LEFT", hb, "LEFT", 14, -3)
+    hb.RightText:SetPoint("RIGHT", hb, "RIGHT", -12, -3)
 
-    local mbMask = mb.ManaBarMask
-    mbMask:ClearAllPoints()
-    mbMask:SetPoint("TOPLEFT", mb, "TOPLEFT", 7, 2)
+    if not PlayerFrame.activeAlternatePowerBar then mbMask:SetAtlas("Unit_BarMask") end
+    mbMask:SetPoint("TOPLEFT", mb, "TOPLEFT", 13, 2)
     mbMask:SetPoint("BOTTOMRIGHT", mb, "BOTTOMRIGHT", -5, -2)
 
-    mb.TextString:SetPoint("CENTER", mb, "CENTER", 1, 0)
-    mb.LeftText:SetPoint("LEFT", mb, "LEFT", 8, 0)
+    mb.TextString:SetPoint("CENTER", mb, "CENTER", 4, 0)
+    mb.LeftText:SetPoint("LEFT", mb, "LEFT", 14, 0)
     mb.RightText:SetPoint("RIGHT", mb, "RIGHT", -7, 0)
 
     pfContextual.GroupIndicator:ClearAllPoints()
@@ -410,7 +413,7 @@ end)
 
 hooksecurefunc("PlayerFrame_UpdatePlayerNameTextAnchor", function()
     PlayerName:ClearAllPoints()
-    PlayerName:SetPoint("TOPLEFT", 97, -34)
+    PlayerName:SetPoint("TOPLEFT", 99, -34)
 end)
 
 hooksecurefunc("PlayerFrame_UpdatePlayerRestLoop", function()

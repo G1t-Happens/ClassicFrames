@@ -19,7 +19,7 @@ local TEX_MM_BG      = "Interface\\Minimap\\UI-Minimap-Background"
 local TEX_ZOOM_HL    = "Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight"
 local TEX_TRACK_NONE = "Interface\\Minimap\\Tracking\\None"
 local TEX_MAIL_ICON  = "Interface\\Icons\\INV_Letter_15"
-local TEX_CRAFT_ICON = "Interface\\Icons\\INV_Hammer_12"
+local TEX_MASK       = "Interface\\CharacterFrame\\TempPortraitAlphaMask"
 
 -- Cached frame references
 local cluster    = MinimapCluster
@@ -28,10 +28,8 @@ local backdrop   = MinimapBackdrop
 local tracking   = cluster.Tracking
 local indicator  = cluster.IndicatorFrame
 local mailFrame  = indicator.MailFrame
-local craftFrame = indicator.CraftingOrderFrame
 local trackBtn   = tracking.Button
 local mailIcon   = MiniMapMailIcon
-local craftIcon  = MiniMapCraftingOrderIcon
 
 -- LibDBIcon: apply classic border/icon styling to minimap buttons
 do
@@ -66,6 +64,7 @@ minimap:SetParent(cluster)
 minimap:SetSize(165, 165)
 minimap:ClearAllPoints()
 minimap:SetPoint("CENTER", cluster, "TOP", 20, -80)
+minimap:SetMaskTexture(TEX_MASK)
 
 -- Backdrop & border
 backdrop:SetSize(225, 225)
@@ -102,6 +101,11 @@ hooksecurefunc(cluster, "Layout", function(self)
     end
 end)
 
+hooksecurefunc(cluster, "UpdateMinimapConfig", function()
+    backdrop:SetSize(225, 225)
+    minimap:SetMaskTexture(TEX_MASK)
+end)
+
 -- =============================================================================
 -- Tracking frame
 -- =============================================================================
@@ -136,8 +140,8 @@ do
     trackBtn:ClearAllPoints()
     trackBtn:SetPoint("TOPLEFT")
 
-    trackBtn:GetNormalTexture():SetTexture(nil)
-    trackBtn:GetPushedTexture():SetTexture(nil)
+    trackBtn.StateTexture:Hide()
+    trackBtn.AddTexture:SetTexture(nil)
 
     trackBtn:SetHighlightTexture(TEX_ZOOM_HL, "ADD")
 
@@ -148,7 +152,7 @@ do
     trackBtnBorder:SetPoint("TOPLEFT")
 end
 
--- Indicator frame (mail & crafting)
+-- Indicator frame (mail)
 do
     indicator:SetParent(cluster)
     indicator:SetSize(33, 33)
@@ -174,25 +178,6 @@ do
     mailBorder:SetPoint("TOPLEFT")
     mailBorder:SetDrawLayer("OVERLAY", 0)
 
-    -- Crafting
-    craftFrame:SetSize(33, 33)
-    craftFrame:ClearAllPoints()
-    craftFrame:SetPoint("TOPLEFT")
-    craftFrame:SetFrameStrata("LOW")
-    craftFrame:SetFrameLevel(5)
-
-    craftIcon:SetSize(18, 18)
-    craftIcon:SetTexture(TEX_CRAFT_ICON)
-    craftIcon:ClearAllPoints()
-    craftIcon:SetPoint("TOPLEFT", craftFrame, "TOPLEFT", 7, -6)
-    craftIcon:SetDrawLayer("ARTWORK", 0)
-
-    local craftBorder = craftFrame:CreateTexture("MiniMapCraftingBorder", "OVERLAY")
-    craftBorder:SetSize(52, 52)
-    craftBorder:SetTexture(TEX_TRACK_BRD)
-    craftBorder:SetPoint("TOPLEFT")
-    craftBorder:SetDrawLayer("OVERLAY", 0)
-
     -- Layout hook
     hooksecurefunc(indicator, "Layout", function(self)
         if self:GetWidth() ~= 33 or self:GetHeight() ~= 33 then
@@ -200,8 +185,6 @@ do
         end
         mailFrame:ClearAllPoints()
         mailFrame:SetPoint("TOPRIGHT", minimap, "TOPRIGHT", 5, -5)
-        craftFrame:ClearAllPoints()
-        craftFrame:SetPoint("TOPLEFT")
     end)
 end
 
@@ -209,15 +192,21 @@ end
 do
     local function HideOnShow(self) self:Hide() end
 
-    cluster.InstanceDifficulty:Hide()
-    cluster.BorderTop:Hide()
     cluster.ZoneTextButton:Hide()
     MinimapZoneText:Hide()
     GameTimeFrame:Hide()
-    local zoomHolder = CreateFrame("Frame")
-    zoomHolder:Hide()
-    minimap.ZoomIn:SetParent(zoomHolder)
-    minimap.ZoomOut:SetParent(zoomHolder)
+
+    local diel = cluster.DielFrame
+    if diel then
+        diel:Hide()
+        diel:UnregisterAllEvents()
+    end
+
+    local hidden = CreateFrame("Frame")
+    hidden:Hide()
+    minimap.ZoomIn:SetParent(hidden)
+    minimap.ZoomOut:SetParent(hidden)
+    MinimapCompassTextureUnderlay:SetParent(hidden)
 
     if AddonCompartmentFrame then
         AddonCompartmentFrame:HookScript("OnShow", HideOnShow)
@@ -263,12 +252,22 @@ end
 do
     local qsb = QueueStatusButton
 
-    hooksecurefunc(qsb, "UpdatePosition", function(self)
-        self:SetParent(backdrop)
-        self:ClearAllPoints()
-        self:SetScale(0.6)
-        self:SetPoint("BOTTOMLEFT", 32, 200)
-        self:SetFrameLevel(6)
+    local clearAllPoints = qsb.ClearAllPointsBase
+    local setPoint       = qsb.SetPointBase
+    local setScale       = qsb.SetScaleBase
+
+    qsb:SetParent(backdrop)
+    qsb:SetFrameLevel(6)
+    clearAllPoints(qsb)
+    setScale(qsb, 0.6)
+    setPoint(qsb, "BOTTOMLEFT", 32, 200)
+
+    hooksecurefunc(qsb, "SetPointBase", function(self)
+        clearAllPoints(self)
+        setPoint(self, "BOTTOMLEFT", 32, 200)
+    end)
+    hooksecurefunc(qsb, "SetScaleBase", function(self)
+        setScale(self, 0.6)
     end)
 
     if not qsb.cfBorder then
