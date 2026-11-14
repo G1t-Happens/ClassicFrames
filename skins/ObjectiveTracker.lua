@@ -2,10 +2,10 @@
 -- ObjectiveTracker.lua
 -- =============================================================================
 
+local _, ns = ...
+
 local tracker = ObjectiveTrackerFrame
 if not tracker then return end
 
-local header = tracker.Header
-header:HookScript("OnShow", header.Hide)
-header:Hide()
+tracker.Header:SetParent(ns.hidden)
 tracker:SetScale(0.7)

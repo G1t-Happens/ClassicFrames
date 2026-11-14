@@ -2,8 +2,9 @@
 -- CompactRaidFrameManager.lua
 -- =============================================================================
 
+local _, ns = ...
+
 local mgr = CompactRaidFrameManager
 if mgr then
-    mgr:HookScript("OnShow", mgr.Hide)
-    mgr:Hide()
+    mgr:SetParent(ns.hidden)
 end

@@ -202,8 +202,7 @@ do
         diel:UnregisterAllEvents()
     end
 
-    local hidden = CreateFrame("Frame")
-    hidden:Hide()
+    local hidden = ns.hidden
     minimap.ZoomIn:SetParent(hidden)
     minimap.ZoomOut:SetParent(hidden)
     MinimapCompassTextureUnderlay:SetParent(hidden)

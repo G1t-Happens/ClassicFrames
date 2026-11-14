@@ -2,12 +2,15 @@
 -- PlayerFrame.lua
 -- =============================================================================
 
+local _, ns = ...
+
 -- Cached globals
 local CreateFrame       = CreateFrame
 local UnitClass         = UnitClass
 local RAID_CLASS_COLORS = RAID_CLASS_COLORS
 local hooksecurefunc    = hooksecurefunc
 local PlayerFrame       = PlayerFrame
+local PlayerName        = PlayerName
 
 -- Cached texture paths
 local STATUSBAR_TEX = "Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar"
@@ -17,7 +20,6 @@ local TEX_PORTRAIT  = "Interface\\CharacterFrame\\TempPortraitAlphaMask"
 local TEX_LEADER    = "Interface\\GroupFrame\\UI-Group-LeaderIcon"
 local TEX_GUIDE     = "Interface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES"
 local TEX_VEHICLE   = "Interface\\Vehicles\\UI-Vehicle-Frame"
-local TEX_MONK_MANA = "Interface\\PlayerFrame\\MonkManaBar"
 local FONT_FRIZ     = "Fonts\\FRIZQT__.TTF"
 
 -- Local frame references
@@ -141,11 +143,21 @@ if not PlayerFrame.nameBackground then
     PlayerFrame.nameBackground = nb
 end
 
--- Rest loop: stop once
+-- Rest loop
 do
-    local rl = pfContextual.PlayerRestLoop
-    rl:Hide()
-    rl.PlayerRestLoopAnim:Stop()
+    local rl     = pfContextual.PlayerRestLoop
+    local rlAnim = rl.PlayerRestLoopAnim
+    local hideRl = rl.Hide
+    local stopRl = rlAnim.Stop
+    hideRl(rl)
+    stopRl(rlAnim)
+
+    hooksecurefunc("PlayerFrame_UpdatePlayerRestLoop", function(state)
+        if state then
+            hideRl(rl)
+            stopRl(rlAnim)
+        end
+    end)
 end
 
 -- Leader / Guide icons: Blizzard's PlayerFrame_UpdatePartyLeader only flips Show/Hide,
@@ -166,9 +178,9 @@ do
 end
 
 do
-    local hidden = CreateFrame("Frame")
-    hidden:Hide()
+    local hidden = ns.hidden
 
+    pfMain.StatusTexture:SetParent(hidden)
     pfContextual.RoleIcon:SetParent(hidden)
     PlayerLevelText:SetParent(hidden)
     pfMain.LevelBackgroundCircle:SetParent(hidden)
@@ -234,14 +246,6 @@ local function CreateBarBorders(bar, borderOffsetY)
     end
 end
 
-local function HookBarEvaluate(bar, r, g, b)
-    hooksecurefunc(bar, "EvaluateUnit", function(self)
-        self:SetStatusBarTexture(STATUSBAR_TEX)
-        self:SetStatusBarColor(r, g, b)
-        if self.PowerBarMask then self.PowerBarMask:Hide() end
-    end)
-end
-
 -- AlternatePowerBar
 if _G.AlternatePowerBar then
     local apb = AlternatePowerBar
@@ -254,72 +258,16 @@ if _G.AlternatePowerBar then
     apb.RightText:SetPoint("RIGHT", 0, -1)
 
     CreateBarBorders(apb, -0.5)
-    HookBarEvaluate(apb, 0, 0, 1)
-end
 
--- MonkStaggerBar
-if _G.MonkStaggerBar then
-    local msb = MonkStaggerBar
-    msb:SetSize(94, 12)
-    msb:ClearAllPoints()
-    msb:SetPoint("TOPLEFT", PlayerFrameAlternatePowerBarArea, "TOPLEFT", 100, -73)
-    msb.PowerBarMask:Hide()
-
-    if not msb.Background then
-        local bg = msb:CreateTexture(nil, "BACKGROUND")
-        bg:SetSize(128, 16)
-        bg:SetTexture(TEX_MONK_MANA)
-        bg:SetTexCoord(0, 1, 0.5, 1)
-        bg:SetPoint("TOPLEFT", -17, 0)
-        msb.Background = bg
+    local setTexture = apb.SetStatusBarTexture
+    local setColor   = apb.SetStatusBarColor
+    local function ApplyArt()
+        setTexture(apb, STATUSBAR_TEX)
+        setColor(apb, 0, 0, 1)
     end
-
-    if not msb.Border then
-        local b = msb:CreateTexture(nil, "OVERLAY")
-        b:SetSize(128, 16)
-        b:SetTexture(TEX_MONK_MANA)
-        b:SetTexCoord(0, 1, 0, 0.5)
-        b:SetPoint("TOPLEFT", -17, 0)
-        msb.Border = b
-    end
-
-    -- MonkStaggerBar uses its own textures, not HookBarEvaluate
-    hooksecurefunc(msb, "EvaluateUnit", function(self)
-        self:SetStatusBarTexture(STATUSBAR_TEX)
-        self:SetStatusBarColor(0, 0, 1)
-    end)
-end
-
--- EvokerEbonMightBar
-if _G.EvokerEbonMightBar then
-    local emb = EvokerEbonMightBar
-    emb:SetSize(104, 12)
-    emb:ClearAllPoints()
-    emb:SetPoint("BOTTOMLEFT", 95, 19)
-
-    EvokerEbonMightBarText:SetPoint("CENTER", 0, -1)
-    emb.LeftText:SetPoint("LEFT", 0, -1)
-    emb.RightText:SetPoint("RIGHT", 0, -1)
-
-    CreateBarBorders(emb, 0)
-    HookBarEvaluate(emb, 1, 0.5, 0.25)
-end
-
--- DemonHunterSoulFragmentsBar
-if _G.DemonHunterSoulFragmentsBar then
-    local dhb = DemonHunterSoulFragmentsBar
-    dhb:SetSize(104, 12)
-    dhb:ClearAllPoints()
-    dhb:SetPoint("BOTTOMLEFT", 95, 15)
-
-    -- Anchor atlas-based overlay textures to the custom bar size
-    if dhb.Glow then dhb.Glow:SetAllPoints(dhb) end
-    if dhb.Ready then dhb.Ready:SetAllPoints(dhb) end
-    if dhb.Deplete then dhb.Deplete:SetAllPoints(dhb) end
-    if dhb.CollapsingStarDepleteFin then dhb.CollapsingStarDepleteFin:SetAllPoints(dhb) end
-    if dhb.CollapsingStarBackground then dhb.CollapsingStarBackground:SetAllPoints(dhb) end
-
-    CreateBarBorders(dhb, 0)
+    apb.PowerBarMask:Hide()
+    ApplyArt()
+    hooksecurefunc(apb, "UpdateArt", ApplyArt)
 end
 
 -- =============================================================================
@@ -344,7 +292,6 @@ hooksecurefunc("PlayerFrame_ToPlayerArt", function()
     SetPlayerFrameTexture(pfContainer.AlternatePowerFrameTexture, -21.5)
 
     pfContainer.FrameFlash:Hide()
-    pfMain.StatusTexture:Hide()
 
     hb:SetStatusBarTexture(STATUSBAR_TEX)
     hb:SetStatusBarColor(0, 1, 0)
@@ -381,7 +328,6 @@ hooksecurefunc("PlayerFrame_ToVehicleArt", function()
     vft:SetPoint("TOPLEFT", -3, 2)
 
     pfContainer.FrameFlash:Hide()
-    pfMain.StatusTexture:Hide()
 
     hb:SetStatusBarTexture(STATUSBAR_TEX)
     hb:SetStatusBarColor(0, 1, 0)
@@ -416,21 +362,16 @@ hooksecurefunc("PlayerFrame_UpdatePlayerNameTextAnchor", function()
     PlayerName:SetPoint("TOPLEFT", 99, -34)
 end)
 
-hooksecurefunc("PlayerFrame_UpdatePlayerRestLoop", function()
-    local rl = pfContextual.PlayerRestLoop
-    rl:Hide()
-    rl.PlayerRestLoopAnim:Stop()
-end)
-
-hooksecurefunc("PlayerFrame_UpdateStatus", function()
-    pfMain.StatusTexture:Hide()
-end)
-
 -- =============================================================================
 -- CVars & cleanup
 -- =============================================================================
 C_CVar.SetCVar("threatWarning", 0)
-UIErrorsFrame:SetAlpha(0)
+do
+    local errors = UIErrorsFrame
+    errors:SetAlpha(0)
+    errors:UnregisterEvent("UI_ERROR_MESSAGE")
+    errors:UnregisterEvent("SYSMSG")
+end
 PlayerFrame:UnregisterEvent("UNIT_COMBAT")
 
 if PlayerFrame.SetOnUpdateMode and Enum.OnUpdateMode then

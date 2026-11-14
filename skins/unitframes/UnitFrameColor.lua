@@ -13,6 +13,20 @@ local function Tint(tex)
     if tex then tex:SetVertexColor(TINT_R, TINT_G, TINT_B) end
 end
 
+-- Totem borders
+if TotemFrame then
+    local function TintChildren(...)
+        for i = 1, select("#", ...) do
+            Tint((select(i, ...)).Border)
+        end
+    end
+    TintChildren(TotemFrame:GetChildren())
+
+    hooksecurefunc(TotemButtonMixin, "OnLoad", function(self)
+        self.Border:SetVertexColor(TINT_R, TINT_G, TINT_B)
+    end)
+end
+
 local f = CreateFrame("Frame")
 f:RegisterEvent("PLAYER_ENTERING_WORLD")
 f:SetScript("OnEvent", function(self)
@@ -80,7 +94,6 @@ f:SetScript("OnEvent", function(self)
     Tint(MiniMapTrackingButtonBorder)
     Tint(MinimapBorder)
     Tint(MiniMapMailBorder)
-    Tint(MiniMapCraftingBorder)
     Tint(QueueStatusButtonBorder)
     Tint(TimeManagerClockButtonBackground)
 
@@ -88,24 +101,6 @@ f:SetScript("OnEvent", function(self)
     Tint(PlayerFrameGroupIndicatorRight)
     Tint(PlayerFrameGroupIndicatorMiddle)
     Tint(PlayerFrameGroupIndicatorLeft)
-
-    -- Evoker ebon might bar
-    local emb = EvokerEbonMightBar
-    if emb then
-        Tint(emb.RightBorder)
-        Tint(emb.Border)
-        Tint(emb.LeftBorder)
-    end
-
-    local tf = TotemFrame
-    if tf then
-        local function TintActiveTotems(self)
-            if not self.totemPool then return end
-            for totem in self.totemPool:EnumerateActive() do Tint(totem.Border) end
-        end
-        TintActiveTotems(tf)
-        hooksecurefunc(tf, "Update", TintActiveTotems)
-    end
 
     ns.ForEachLDBIcon(function(button) Tint(button.border) end)
 end)

@@ -8,6 +8,13 @@ local _, ns = ...
 local LibStub = LibStub
 local next    = next
 
+-- Hidden parent
+do
+    local hidden = CreateFrame("Frame", nil, UIParent)
+    hidden:Hide()
+    ns.hidden = hidden
+end
+
 do
     local consumers = {}
     local registered = false
