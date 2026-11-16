@@ -248,14 +248,14 @@ local function SkinFrame(frame)
     nameBg:SetTexture(STATUSBAR_TEX)
 
     local setHbTexture     = hb.SetStatusBarTexture
-    local setHbColor       = hb.SetStatusBarColor
     local setMaskPoint     = mask.SetPoint
     local setRightPoint    = rightText.SetPoint
+
+    hb:SetStatusBarColor(0, 1, 0)
 
     -- Hook: CheckClassification
     hooksecurefunc(frame, "CheckClassification", function()
         setHbTexture(hb, STATUSBAR_TEX)
-        setHbColor(hb, 0, 1, 0)
         setMaskPoint(mask, "TOPLEFT", hb, "TOPLEFT", -3.133, 1.236)
         setRightPoint(rightText, "RIGHT", hb, "RIGHT", -4, -4)
     end)
