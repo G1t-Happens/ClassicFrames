@@ -10,11 +10,9 @@ local UnitClassBase         = UnitClassBase
 local UnitPlayerControlled  = UnitPlayerControlled
 local UnitIsTapDenied       = UnitIsTapDenied
 local UnitReaction          = UnitReaction
-local UnitIsUnit            = UnitIsUnit
-local IsInInstance          = IsInInstance
-local GetArenaOpponentSpec  = GetArenaOpponentSpec
-local GetSpecNameForSpecID  = GetSpecializationNameForSpecID
 local GetClassColor         = C_ClassColor.GetClassColor
+local RAID_CLASS_COLORS     = RAID_CLASS_COLORS
+local issecretvalue         = issecretvalue
 local FACTION_BAR_COLORS    = FACTION_BAR_COLORS
 local hooksecurefunc        = hooksecurefunc
 
@@ -27,11 +25,9 @@ local TEX_GUIDE     = "Interface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES"
 local TEX_QUEST     = "Interface\\TargetingFrame\\PortraitQuestBadge"
 local FONT_FRIZ     = "Fonts\\FRIZQT__.TTF"
 
--- Arena spec state
-local inArena      = false  -- refreshed once per zone, never per target change
-local specNameByID = {}     -- specID -> localised name; static data, never invalidated
-local labelByIdx   = {}     -- arena index -> "Affliction 1"; rebuilt only when the slot's specID changes
-local specIDByIdx  = {}     -- arena index -> specID its label was built from
+-- Cached widget methods
+local SetStatusBarColor = TargetFrame.TargetFrameContent.TargetFrameContentMain.ManaBar.SetStatusBarColor
+local SetVertexColor    = TargetFrame.TargetFrameContainer.FrameTexture.SetVertexColor
 
 -- Helpers
 
@@ -40,21 +36,26 @@ local function SetBarColorByUnit(bar, unit)
     if UnitIsPlayer(unit) then
         if UnitIsConnected(unit) then
             local class = UnitClassBase(unit)
-            local color = class and GetClassColor(class)
+            local color
+            if issecretvalue(class) then
+                color = GetClassColor(class)
+            else
+                color = RAID_CLASS_COLORS[class]
+            end
             if color then
-                bar:SetStatusBarColor(color.r, color.g, color.b)
+                SetStatusBarColor(bar, color.r, color.g, color.b)
             end
         else
-            bar:SetStatusBarColor(.5, .5, .5)
+            SetStatusBarColor(bar, .5, .5, .5)
         end
     elseif UnitIsTapDenied(unit) then
         if not UnitPlayerControlled(unit) then
-            bar:SetStatusBarColor(.5, .5, .5)
+            SetStatusBarColor(bar, .5, .5, .5)
         end
     else
         local color = FACTION_BAR_COLORS[UnitReaction(unit, "player")]
         if color then
-            bar:SetStatusBarColor(color.r, color.g, color.b)
+            SetStatusBarColor(bar, color.r, color.g, color.b)
         end
     end
 end
@@ -63,21 +64,26 @@ local function SetVertexColorByUnit(tex, unit)
     if UnitIsPlayer(unit) then
         if UnitIsConnected(unit) then
             local class = UnitClassBase(unit)
-            local color = class and GetClassColor(class)
+            local color
+            if issecretvalue(class) then
+                color = GetClassColor(class)
+            else
+                color = RAID_CLASS_COLORS[class]
+            end
             if color then
-                tex:SetVertexColor(color.r, color.g, color.b)
+                SetVertexColor(tex, color.r, color.g, color.b)
             end
         else
-            tex:SetVertexColor(.5, .5, .5)
+            SetVertexColor(tex, .5, .5, .5)
         end
     elseif UnitIsTapDenied(unit) then
         if not UnitPlayerControlled(unit) then
-            tex:SetVertexColor(.5, .5, .5)
+            SetVertexColor(tex, .5, .5, .5)
         end
     else
         local color = FACTION_BAR_COLORS[UnitReaction(unit, "player")]
         if color then
-            tex:SetVertexColor(color.r, color.g, color.b)
+            SetVertexColor(tex, color.r, color.g, color.b)
         end
     end
 end
@@ -203,8 +209,6 @@ local function SkinFrame(frame)
         ComboFrame:SetFrameLevel(ctx:GetFrameLevel() + 1)
     end
 
-    local SetName = name.SetText
-
     local ft   = container.FrameTexture
     local mask = hbContainer.HealthBarMask
 
@@ -254,33 +258,6 @@ local function SkinFrame(frame)
         setHbColor(hb, 0, 1, 0)
         setMaskPoint(mask, "TOPLEFT", hb, "TOPLEFT", -3.133, 1.236)
         setRightPoint(rightText, "RIGHT", hb, "RIGHT", -4, -4)
-
-        if inArena then
-            local idx, id, gender
-            if UnitIsUnit(unit, "arena1") then       idx = 1; id, gender = GetArenaOpponentSpec(1)
-            elseif UnitIsUnit(unit, "arena2") then   idx = 2; id, gender = GetArenaOpponentSpec(2)
-            elseif UnitIsUnit(unit, "arena3") then   idx = 3; id, gender = GetArenaOpponentSpec(3)
-            end
-
-            if id and id > 0 then
-                local s = labelByIdx[idx]
-                if s == nil or specIDByIdx[idx] ~= id then
-                    s = nil
-                    local n = specNameByID[id]
-                    if not n then
-                        n = GetSpecNameForSpecID(id, gender)
-                        if n then specNameByID[id] = n end
-                    end
-                    if n then
-                        s = n .. " " .. idx
-                        labelByIdx[idx]  = s
-                        specIDByIdx[idx] = id
-                    end
-                end
-
-                if s then SetName(name, s) end
-            end
-        end
     end)
 
     -- Hook: CheckFaction
@@ -408,12 +385,21 @@ do
     end
 end
 
--- Arena state
+-- Unit-filtered UNIT_HEALTH
 do
-    local f = CreateFrame("Frame")
-    f:RegisterEvent("PLAYER_ENTERING_WORLD")
-    f:SetScript("OnEvent", function()
-        local _, instanceType = IsInInstance()
-        inArena = (GetArenaOpponentSpec ~= nil) and instanceType == "arena"
-    end)
+    local function FilterHealth(frame)
+        frame:UnregisterEvent("UNIT_HEALTH")
+        frame:RegisterUnitEvent("UNIT_HEALTH", frame.unit)
+    end
+
+    FilterHealth(TargetFrame)
+    FilterHealth(FocusFrame)
+    for i = 1, 5 do
+        local boss = _G["Boss" .. i .. "TargetFrame"]
+        if boss then FilterHealth(boss) end
+    end
 end
+
+-- OnUpdate off
+TargetFrame:SetOnUpdateMode(Enum.OnUpdateMode.Disabled)
+FocusFrame:SetOnUpdateMode(Enum.OnUpdateMode.Disabled)

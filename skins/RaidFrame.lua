@@ -8,13 +8,14 @@ local hooksecurefunc = hooksecurefunc
 -- Cached texture path
 local barTexture = "Interface\\AddOns\\ClassicFrames\\textures\\UI-StatusBar"
 
--- Frames already skinned. A plain local table beats a frame field here
+-- Frames already seen. A plain local table beats a frame field here
 local skinned = {}
 
 
 hooksecurefunc("CompactUnitFrame_SetUpFrame", function(frame)
-    if skinned[frame] or frame:IsForbidden() then return end
+    if skinned[frame] then return end
     skinned[frame] = true
+    if frame:IsForbidden() or frame.HealthBarsContainer then return end
 
     local healthBar = frame.healthBar
     if healthBar then
